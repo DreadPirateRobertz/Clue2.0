@@ -5,20 +5,15 @@ import java.util.Set;
 
 public class BoardCell {
 
-
     private int row,col;
     private char initial;
     private char secretPassage = '0';
     private DoorDirection doorDirection;
     private boolean roomLabel;
     private boolean roomCenter;
-
-
-
     private boolean doorway;
     private boolean occupied;
     private Set<BoardCell> adjList;
-
 
     public BoardCell(int row, int col) { //Parameterized Constructor
         adjList = new HashSet<>();  //Initialize adjacency list
@@ -26,7 +21,6 @@ public class BoardCell {
         this.col = col;
         doorDirection = DoorDirection.NONE;
     }
-
 
     public int getRow() { return row; }
     public void setRow(int row) { this.row = row; }
@@ -70,7 +64,6 @@ public class BoardCell {
         this.secretPassage = secretPassage;
     }
     public char getSecretPassage() { return secretPassage;}
-
     public boolean getOccupied(){
         return occupied;
     }

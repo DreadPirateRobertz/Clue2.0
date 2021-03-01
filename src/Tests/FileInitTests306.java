@@ -14,10 +14,9 @@ import clueGame.Room;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import java.io.FileNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 public class FileInitTests306 {
 	// Constants that I will use to test whether the file was loaded correctly

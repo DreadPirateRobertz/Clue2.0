@@ -17,10 +17,6 @@ public class Room {
     public void setDoorCell(BoardCell doorCell) {
         doorCells.add(doorCell);
     }
-
-
-
-
     public void setIdentifier(char identifier) {
         this.identifier = identifier;
     }

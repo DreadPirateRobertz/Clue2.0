@@ -11,13 +11,11 @@ public class Board {
     private Map<Character, Room> roomMap;
     String layoutConfigFile;
     String setupConfigFile;
-
-
     private static int NUM_ROWS;      //These have to be changed if their 306 board is running
     private static int NUM_COLS;     //^^^ Critical^^^\\
+
+
     private static Board theInstance = new Board();
-
-
     //Private constructor to ensure only one -> Singleton Pattern
     private Board() {
         super();
@@ -26,9 +24,6 @@ public class Board {
         return theInstance;
     }
 
-    public static void main(String[] args) {
-
-    }
 
     public void initialize()  {
 
@@ -140,15 +135,55 @@ public class Board {
                 grid[row][col].setInitial(initial); //Filling in the grid according to the data harnessed from the ArrayList csvData
                 index++;
                 classify_room_symbology(row, col, csv, initial);
-
             }
         }
         index = 0;
-        for (int rows = 0; rows < NUM_ROWS; rows++) {
-            for (int cols = 0; cols < NUM_COLS; cols++) {
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLS; col++) {
                 String csv = csvData.get(index);  //Grabbing the string from the arrayList with the index
-                sealTheRooms(rows, cols, csv); //Now that the grid is built you can assign all the doors to a particular Room
+                sealTheRooms(row, col, csv); //Now that the grid is built you can assign all the doors to a particular Room
                 index++;
+            }
+        }
+    }
+    private void classify_room_symbology(int row, int col, String csv, char initial) {
+        if(csv.length() > 1){ //If string has special characters contained after the initial let's sort them out!
+            char key = csv.charAt(1);
+            switch(key) {
+                case '#' -> { //Setting Label Cell
+                    grid[row][col].setLabel();
+                    Room roomy = roomMap.get(initial);
+                    roomy.setLabelCell(grid[row][col]);
+                }
+                case '*' -> { //Setting Center Cell
+                    grid[row][col].setRoomCenter();
+                    Room roomy = roomMap.get(initial);
+                    roomy.setCenterCell(grid[row][col]);
+                }
+                case '^' -> {
+                    grid[row][col].setDoorDirection(DoorDirection.UP);
+                    grid[row][col].setDoorway();
+
+                }
+                case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL
+                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in sealTheRooms method after grid is filled
+                    grid[row][col].setDoorway();
+                }
+                case '>' -> {
+                    grid[row][col].setDoorDirection(DoorDirection.RIGHT);
+                    grid[row][col].setDoorway();
+
+                }
+                case 'v' -> {
+                    grid[row][col].setDoorDirection(DoorDirection.DOWN);
+                    grid[row][col].setDoorway();
+                }
+                default -> {//The last item that will fall to default will be Secret Cells
+                    grid[row][col].setSecretPassage(key); //Assigning Secret cell/Room logic
+                    Room roomy = roomMap.get(initial);
+                    roomy.setSecretCell(grid[row][col]);
+                }
+
             }
         }
     }
@@ -176,48 +211,6 @@ public class Board {
                     Room roomy = roomMap.get(grid[row + 1][col].getInitial());
                     roomy.setDoorCell(grid[row][col]);
                 }
-            }
-        }
-    }
-
-    private void classify_room_symbology(int row, int col, String csv, char initial) {
-        if(csv.length() > 1){ //If string has special characters contained after the initial let's sort them out!
-            char key = csv.charAt(1);
-            switch(key) {  
-                case '#' -> { //Setting Label Cell
-                    grid[row][col].setLabel();
-                    Room roomy = roomMap.get(initial);
-                    roomy.setLabelCell(grid[row][col]);
-                }
-                case '*' -> { //Setting Center Cell
-                    grid[row][col].setRoomCenter();
-                    Room roomy = roomMap.get(initial);
-                    roomy.setCenterCell(grid[row][col]);
-                }
-                case '^' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.UP);
-                    grid[row][col].setDoorway();
-
-                }
-                case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL 
-                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in sealTheRooms method after grid is filled
-                    grid[row][col].setDoorway();
-                }
-                case '>' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.RIGHT);
-                    grid[row][col].setDoorway();
-
-                }
-                case 'v' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.DOWN);
-                    grid[row][col].setDoorway();
-                }
-                default -> {//The last item that will fall to default will be Secret Cells
-                    grid[row][col].setSecretPassage(key); //Assigning Secret cell/Room logic
-                    Room roomy = roomMap.get(initial);
-                    roomy.setSecretCell(grid[row][col]); 
-                }
-
             }
         }
     }
@@ -324,37 +317,22 @@ public class Board {
                     continue;
                 }
             }
-//            else if (numSteps == 1 && adjCell.isRoomCenter()){
-//                targets.add(adjCell);//:)
-//                continue; //STOPS when room center (*) cell is found and does not keep going
-//            }
             else {
                 findAllTargets(adjCell, numSteps-1); //Recurse
             }
             visited.remove(adjCell);//Remove from visited list
         }
     }
-    
-
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial());}
     public Room getRoom(char key){ return roomMap.get(key); }
     public int getNumRows() { return NUM_ROWS; }
     public int getNumColumns() { return NUM_COLS; }
     public BoardCell getCell(int x, int y) { return grid[x][y]; }
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList();}
-
     private static void setNumRows(int numRows) {
         NUM_ROWS = numRows;
     }
-
-    private static void setNumCols(int numCols) {
-        NUM_COLS = numCols;
-
-    }
-
-    public Set<BoardCell> getTargets() {
-
-        return targets;
-    }
+    private static void setNumCols(int numCols) { NUM_COLS = numCols; }
+    public Set<BoardCell> getTargets() { return targets; }
 }
 //

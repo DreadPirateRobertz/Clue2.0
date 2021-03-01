@@ -1,19 +1,10 @@
 package Tests;
+
 import clueGame.Board;
 import clueGame.BoardCell;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import clueGame.Board;
-import clueGame.BoardCell;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardAdjTargetTest306 {
@@ -54,7 +45,6 @@ public class BoardAdjTargetTest306 {
 		assertTrue(testList.contains(board.getCell(17, 18)));
 		assertTrue(testList.contains(board.getCell(2, 2)));
 	}
-
 
 	// Ensure door locations include their rooms and also additional walkways
 	// These cells are LIGHT ORANGE on the planning spreadsheet
@@ -113,7 +103,6 @@ public class BoardAdjTargetTest306 {
 		assertTrue(testList.contains(board.getCell(10, 14)));
 
 	}
-
 
 	// Tests out of room center, 1, 3 and 4
 	// These are LIGHT BLUE on the planning spreadsheet

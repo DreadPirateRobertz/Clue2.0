@@ -7,10 +7,7 @@ import clueGame.Room;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import java.io.FileNotFoundException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FileInitTest {
     // Constants that I will use to test whether the file was loaded correctly
@@ -83,7 +80,6 @@ public class FileInitTest {
         cell = board.getCell(21, 7);
         Assertions.assertFalse(cell.isDoorway());
     }
-
 
     // Test that we have the correct number of doors
     @Test

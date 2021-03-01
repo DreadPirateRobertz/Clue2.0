@@ -261,7 +261,6 @@ public class BoardAdjTargetTest {
         assertTrue(targets.contains(board.getCell(15, 14)));
     }
 
-
     @Test
     // test to make sure occupied locations do not cause problems
     public void testTargetsOccupied() {
@@ -288,7 +287,6 @@ public class BoardAdjTargetTest {
         assertTrue(targets.contains(board.getCell(6, 23)));
         assertTrue(targets.contains(board.getCell(3, 20)));
 
-
         // check leaving a room with a blocked doorway
         board.getCell(10, 14).setOccupied(true);
         board.calcTargets(board.getCell(15, 14), 3);
@@ -301,7 +299,7 @@ public class BoardAdjTargetTest {
 
     }
     @Test
-    public void TestRooms(){
+    public void roomTest(){
         assertEquals('I', board.getCell(12,3).getInitial());
         assertEquals("ImmersiveVR", board.getRoom(board.getCell(12,3)).getName());
         assertEquals(board.getCell(15,3), board.getRoom(board.getCell(12,3)).getCenterCell());
