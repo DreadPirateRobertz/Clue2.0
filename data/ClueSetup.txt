@@ -1,0 +1,14 @@
+//Rooms
+Room, Brig, B
+Room, Galley, G
+Room, Engine, E
+Room, Medical, M
+Room, Airlock, A
+Room, ImmersiveVR, I
+Room, Therapy, T
+Room, Laboratory, L
+Room, Ordnance, O
+//Other Spaces
+Space, Unused, X
+Space, Walkway, W
+ 
