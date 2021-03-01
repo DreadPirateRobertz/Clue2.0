@@ -301,7 +301,7 @@ public class BoardAdjTargetTest {
 
     }
     @Test
-    public void roomTest(){
+    public void TestRooms(){
         assertEquals('I', board.getCell(12,3).getInitial());
         assertEquals("ImmersiveVR", board.getRoom(board.getCell(12,3)).getName());
         assertEquals(board.getCell(15,3), board.getRoom(board.getCell(12,3)).getCenterCell());

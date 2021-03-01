@@ -96,13 +96,13 @@ public class Board {
             String tempy = in.nextLine(); //Grab it all
             String[] splitData = tempy.split(","); //Harness the data
             for(int index = 0; index < splitData.length; index++){
-                if(index == 0) {
-                    String temp = splitData[0];     //This code block I had to put in because of some weird error with my own .csv file
-                    char x = temp.charAt(0);   //It didn't like the first letter (X) being read in without a comma but when I put in the comma I had to skip
-                    if (!Character.isLetter(x)) { //over the blank entry in the array, splitData[0]= ""
-                        continue;
-                    }
-                }
+//                if(index == 0) {
+//                    String temp = splitData[0];     //This code block I had to put in because of some weird error with my own .csv file
+//                    char x = temp.charAt(0);   //It didn't like the first letter (X) being read in without a comma but when I put in the comma I had to skip
+//                    if (!Character.isLetter(x)) { //over the blank entry in the array, splitData[0]= ""
+//                        continue;           //OKAY, I learned you need to save as a .csv and not a .csv(UTF-8) and this is no longer a problem!
+//                    }
+//                }
                 String str = splitData[index].trim();
                 char key = str.charAt(0);
                 if(roomMap.containsKey(key)) {

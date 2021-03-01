@@ -17,3 +17,6 @@ Rom is not a valid Room or Space card
 There is a size mismatch of your data size of 598 being not of equal size to the grid size of 25x24 you require 600 to fit this grid
 Y is not recognized as being part of this layout, please check your setup configuration
 Rom is not a valid Room or Space card
+There is a size mismatch of your data size of 598 being not of equal size to the grid size of 25x24 you require 600 to fit this grid
+Y is not recognized as being part of this layout, please check your setup configuration
+Rom is not a valid Room or Space card
