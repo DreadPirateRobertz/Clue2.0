@@ -23,17 +23,17 @@ public class BadConfigFormatException extends Exception {
         CharSequence csq = "Error: Incorrect configuration format";
         appendToLog(csq);
     }
-    BadConfigFormatException(String card) throws FileNotFoundException {
+    public BadConfigFormatException(String card) throws FileNotFoundException {
         super(card + " is not a valid Room or Space card");
         CharSequence csq = card + " is not a valid Room or Space card";
         appendToLog(csq);
     }
-    BadConfigFormatException(char key) throws FileNotFoundException {
+    public BadConfigFormatException(char key) throws FileNotFoundException {
         super(key + " is not recognized as being part of this layout, please check your setup configuration");
         CharSequence csq = key + " is not recognized as being part of this layout, please check your setup configuration";
         appendToLog(csq);
     }
-    BadConfigFormatException(int size, int rows, int cols) throws FileNotFoundException {
+    public BadConfigFormatException(int size, int rows, int cols) throws FileNotFoundException {
         super("There is a size mismatch of your data size of " + size +" being not of equal size to the grid size of " + rows + "x" + cols + " you require "
                         + rows*cols + " to fit this grid");
 
