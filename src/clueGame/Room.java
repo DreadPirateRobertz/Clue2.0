@@ -10,8 +10,9 @@ public class Room {
     private BoardCell secretCell;
     private ArrayList<BoardCell> doorCells = new ArrayList<>();
 
+    //Now, it'll be easy to retrieve all the doors when doing the center (*) cell's adjacency list
     public ArrayList<BoardCell> getDoorCells() {
-        return doorCells;  //Nice now it'll be easy to retrieve all the doors when doing the center (*) adjacency list
+        return doorCells;
     }
 
     public void setDoorCell(BoardCell doorCell) {
