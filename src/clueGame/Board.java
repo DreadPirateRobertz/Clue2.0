@@ -8,8 +8,8 @@ public class Board {
     private Set<BoardCell> visited;
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
-    String layoutConfigFile;
-    String setupConfigFile;
+    private String layoutConfigFile;
+    private String setupConfigFile;
     private static int NUM_ROWS;
     private static int NUM_COLS;
 
@@ -50,11 +50,10 @@ public class Board {
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         roomMap = new HashMap<>();
-        FileReader reader = new FileReader(setupConfigFile);  //So we can read the file
-        Scanner in = new Scanner(reader); //FileReader is wrapped into the Scanner class
-        while (in.hasNext())//Go until EOF
+        Scanner inFile = setInFile(setupConfigFile);
+        while (inFile.hasNext())//Go until EOF
         {
-            String data = in.nextLine();
+            String data = inFile.nextLine();
             if (data.contains("//")) {  //Edit out pesky comments :)
                 continue;
             }
@@ -62,6 +61,11 @@ public class Board {
             roomMap.put(room.getIdentifier(), room); //Add it to the map
         }
 
+    }
+
+    private Scanner setInFile(String file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file);  //So we can read the file
+        return new Scanner(reader);
     }
 
     private Room setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
@@ -81,12 +85,11 @@ public class Board {
 
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
-        FileReader reader = new FileReader(layoutConfigFile);  //So we can read the file
-        Scanner in = new Scanner(reader); //FileReader is wrapped into the Scanner class
+        Scanner inFile = setInFile(layoutConfigFile);
         ArrayList<String> csvData = new ArrayList<>();
-        while(in.hasNext())//Go until EOF
+        while(inFile.hasNext())//Go until EOF
         {
-            String data = in.nextLine(); //Grab it all
+            String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
             for(int index = 0; index < splitData.length; index++){
 //                if(index == 0) {
@@ -196,7 +199,7 @@ public class Board {
                     Room roomy = roomMap.get(grid[row - 1][col].getInitial()); //It'll be easy to retrieve all the doors when doing the center (*) adjacency list
                     roomy.setDoorCell(grid[row][col]);
                 }
-                case '<' -> {
+                case '<' -> { 
                     Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <door is pointing to which room
                     roomy.setDoorCell(grid[row][col]);  //Assigning the Doors to an ArrayList<Boardcell>                                 
                 }
@@ -251,16 +254,17 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
-            char room = cell.getInitial();//this inspired me to sealTheRooms so this would work smoothly
-            Room thisRoom = roomMap.get(room);
-            ArrayList<BoardCell> theDoors = thisRoom.getDoorCells();
-
-            if(thisRoom.getSecretCell() != null) {//Is there a secret passageway?
-                addSecret(cell, thisRoom); //If there is a secret passage this leads you to center (*) cell of that room
-            }//Using var here because it's less cluttered and easier to read w/o "BoardCell" Identifier
-            for (var door : theDoors) { //For each door in the doors   //var is equivalent to auto in c++
+            char roomID = cell.getInitial();//this inspired me to sealTheRooms so this would work smoothly
+            Room room = roomMap.get(roomID);
+            ArrayList<BoardCell> theRoom = room.getDoorCells();
+            
+            //Using var here because it's less cluttered and easier to read w/o BoardCell identifier
+            for (var door : theRoom) { //For each door in the room  //var is equivalent to auto in c++
                 cell.addAdjacency(door);//assign each to the center (*) cell
-            }   //For each door in the doors
+            }  
+            
+            if(room.getSecretCell() != null)//Is there a secret passageway?
+                addSecret(cell, room); //If there is a secret passage this leads you to center (*) cell of that room
         }
     }
 
