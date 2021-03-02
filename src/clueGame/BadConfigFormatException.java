@@ -12,10 +12,9 @@ the other will take a String as a parameter (messages should be more specific).
 public class BadConfigFormatException extends Exception {
          //Please note: log file needs to be deleted or manually cleared upon review in between runs -> not a great way to do in program
          //because it clears it here as it tries to append to log or clears/deleted log if you put logic elsewhere in the program
-
-         PrintWriter out = new PrintWriter(new FileOutputStream(//Create PrintWriter object to output to file
-            new File("logfile.txt"),  //Code snippet from StackOverFLow on how to append properly
-            true /* append = true */)); ;
+        //Trying to figure this out in another part of the program but it's always clearing the file and then not writing to it here.....
+         PrintWriter out = new PrintWriter(new FileOutputStream(("logfile.txt"),true));//Create PrintWriter object to output to file
+                                                         //Code snippet from StackOverFLow on how to append properly
 
 
     BadConfigFormatException() throws FileNotFoundException {  //Never triggers in my code since I did a special constructor for each error I encountered

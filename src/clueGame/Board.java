@@ -1,7 +1,6 @@
 package clueGame;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 public class Board {
@@ -11,9 +10,8 @@ public class Board {
     private Map<Character, Room> roomMap;
     String layoutConfigFile;
     String setupConfigFile;
-    private static int NUM_ROWS;      //These have to be changed if their 306 board is running
-    private static int NUM_COLS;     //^^^ Critical^^^\\
-
+    private static int NUM_ROWS;
+    private static int NUM_COLS;
 
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
