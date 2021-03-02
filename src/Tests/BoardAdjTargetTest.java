@@ -125,9 +125,9 @@ public class BoardAdjTargetTest {
     }
 
         @Test       //I have an errant cell being set to true and decided to make this test
-        public void testOccupied() {  //I realized if I batch ran the tests this error cropped but then I ran this test by itself and it was resolved
-            int player = 0; //I'm pondering if all the tests basically run at once and it does get set later on in a target Test
-            ArrayList<BoardCell> players = new ArrayList<>();
+        public void testOccupied() {
+            int player = 0; //I realized I had two players being flagged as True because I assert them as true in a later target test
+            ArrayList<BoardCell> players = new ArrayList<>(); //I didn't set them back to False...Critical in these Tests it seems!
             for (int row = 0; row < board.getNumRows(); row++)
                 for (int col = 0; col < board.getNumColumns(); col++) {
                     BoardCell cell = board.getCell(row, col);
@@ -143,7 +143,7 @@ public class BoardAdjTargetTest {
     @Test
     public void testTargetsInEngineRoom() {
         // test a roll of 1 //
-
+        board.getCell(6, 23).setOccupied(false);
         board.calcTargets(board.getCell(15, 14), 1);
         Set<BoardCell> targets = board.getTargets();
         assertEquals(6, targets.size());
@@ -162,7 +162,7 @@ public class BoardAdjTargetTest {
         // test a roll of 4
         board.calcTargets(board.getCell(15, 14), 4);
         targets = board.getTargets();
-        assertEquals(39, targets.size());//A lot I will have to calculate this !!!!!CHECK!!!!!!!!!!
+        assertEquals(40, targets.size());//A lot I will have to calculate this !!!!!CHECK!!!!!!!!!!
         assertTrue(targets.contains(board.getCell(13, 20)));
         assertTrue(targets.contains(board.getCell(21, 15)));
         assertTrue(targets.contains(board.getCell(16, 20)));
@@ -282,7 +282,7 @@ public class BoardAdjTargetTest {
         // test a roll of 4 blocked 2 down
         board.getCell(22, 14).setOccupied(true);
         board.calcTargets(board.getCell(22, 13), 4);
-        board.getCell(23, 14).setOccupied(false);
+        board.getCell(22, 14).setOccupied(false);
         Set<BoardCell> targets = board.getTargets();
         assertEquals(15, targets.size());//CHECK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         assertTrue(targets.contains(board.getCell(22, 15)));
@@ -305,7 +305,7 @@ public class BoardAdjTargetTest {
         // check leaving a room with a blocked doorway
         board.getCell(10, 14).setOccupied(true);
         board.calcTargets(board.getCell(15, 14), 3);
-        board.getCell(9, 14).setOccupied(false);
+        board.getCell(10, 14).setOccupied(false);
         targets= board.getTargets();
         assertEquals(19, targets.size());//CHECK
         assertTrue(targets.contains(board.getCell(15, 20)));
