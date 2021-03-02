@@ -125,8 +125,8 @@ public class BoardAdjTargetTest {
     }
 
         @Test       //I have an errant cell being set to true and decided to make this test
-        public void testOccupied() {
-            int player = 0;
+        public void testOccupied() {  //I realized if I batch ran the tests this error cropped but then I ran this test by itself and it was resolved
+            int player = 0; //I'm pondering if all the tests basically run at once and it does get set later on in a target Test
             ArrayList<BoardCell> players = new ArrayList<>();
             for (int row = 0; row < board.getNumRows(); row++)
                 for (int col = 0; col < board.getNumColumns(); col++) {
@@ -136,8 +136,7 @@ public class BoardAdjTargetTest {
                         players.add(cell);
                     }
                 }
-            board.calcTargets(board.getCell(22, 14), 1);
-            Assertions.assertEquals(0, players);
+            Assertions.assertEquals(0, player);
         }
 
     // Tests out of room center, 1, 3 and 4
@@ -145,7 +144,7 @@ public class BoardAdjTargetTest {
     public void testTargetsInEngineRoom() {
         // test a roll of 1 //
 
-        board.calcTargets(board.getCell(22, 14), 1);
+        board.calcTargets(board.getCell(15, 14), 1);
         Set<BoardCell> targets = board.getTargets();
         assertEquals(6, targets.size());
         assertTrue(targets.contains(board.getCell(14, 10)));
