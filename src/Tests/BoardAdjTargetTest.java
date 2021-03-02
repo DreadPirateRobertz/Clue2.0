@@ -4,9 +4,11 @@ import clueGame.Board;
 
 import clueGame.BoardCell;
 import clueGame.DoorDirection;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,13 +124,27 @@ public class BoardAdjTargetTest {
 
     }
 
+        @Test
+        public void testOccupied() {
+            int player = 0;
+            ArrayList<BoardCell> players = new ArrayList<>();
+            for (int row = 0; row < board.getNumRows(); row++)
+                for (int col = 0; col < board.getNumColumns(); col++) {
+                    BoardCell cell = board.getCell(row, col);
+                    if (cell.getOccupied()) {
+                        player++;
+                        players.add(cell);
+                    }
+                }
+            board.calcTargets(board.getCell(22, 14), 1);
+            Assertions.assertEquals(0, players);
+        }
 
     // Tests out of room center, 1, 3 and 4
-    // These are LIGHT BLUE on the planning spreadsheet
     @Test
     public void testTargetsInEngineRoom() {
         // test a roll of 1 //
-        board.getCell(10, 14).setOccupied(false);  //Literally no idea how this is getting set to TRUE for occupied
+
         board.calcTargets(board.getCell(15, 14), 1);
         Set<BoardCell> targets = board.getTargets();
         assertEquals(6, targets.size());
@@ -299,7 +315,7 @@ public class BoardAdjTargetTest {
 
     }
     @Test
-    public void roomTest(){
+    public void TestRooms(){
         assertEquals('I', board.getCell(12,3).getInitial());
         assertEquals("ImmersiveVR", board.getRoom(board.getCell(12,3)).getName());
         assertEquals(board.getCell(15,3), board.getRoom(board.getCell(12,3)).getCenterCell());
