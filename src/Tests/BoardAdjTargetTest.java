@@ -89,7 +89,7 @@ public class BoardAdjTargetTest {
     }
 
     // Test a variety of walkway scenarios
-    // These tests are Dark Orange on the planning spreadsheet
+    // These tests are Light Yellow on the Test spreadsheet (ClueLayOutTest.xlsx)
     @Test
     public void testAdjacencyWalkways() {
         // Test general hallway, not adjacent to doors
@@ -124,22 +124,8 @@ public class BoardAdjTargetTest {
 
     }
 
-        @Test       //I have an errant cell being set to true and decided to make this test
-        public void testOccupied() {
-            int player = 0; //I realized I had two players being flagged as True because I assert them as true in a later target test
-            ArrayList<BoardCell> players = new ArrayList<>(); //I didn't set them back to False...Critical in these Tests it seems!
-            for (int row = 0; row < board.getNumRows(); row++)
-                for (int col = 0; col < board.getNumColumns(); col++) {
-                    BoardCell cell = board.getCell(row, col);
-                    if (cell.getOccupied()) {
-                        player++;
-                        players.add(cell);
-                    }
-                }
-            Assertions.assertEquals(0, player);
-        }
 
-    // Tests out of room center, 1, 3 and 4
+    // Tests out of room center, 1, 3 and 4      //Dark Purple
     @Test
     public void testTargetsInEngineRoom() {
         // test a roll of 1 //
@@ -216,7 +202,7 @@ public class BoardAdjTargetTest {
     }
 
     // Tests out of room center, 1, 3 and 4
-    // These are LIGHT BLUE on the planning spreadsheet
+    // These are Purple on ClueLayoutTest
     @Test
     public void testTargetsAtDoor() {
         // test a roll of 1, at door
@@ -276,7 +262,7 @@ public class BoardAdjTargetTest {
         assertTrue(targets.contains(board.getCell(15, 14)));
     }
 
-    @Test
+    @Test  //These are red
     // test to make sure occupied locations do not cause problems
     public void testTargetsOccupied() {
         // test a roll of 4 blocked 2 down
@@ -313,8 +299,25 @@ public class BoardAdjTargetTest {
         assertTrue(targets.contains(board.getCell(14, 19)));
 
     }
+
     @Test
-    public void TestRooms(){
+    public void testOccupied() {
+        int player = 0; //I realized I had two players being flagged as True because I assert them as true in a later target test
+        ArrayList<BoardCell> players = new ArrayList<>(); //I didn't set them back to False...Critical in these Tests it seems!
+        for (int row = 0; row < board.getNumRows(); row++)
+            for (int col = 0; col < board.getNumColumns(); col++) {
+                BoardCell cell = board.getCell(row, col);
+                if (cell.getOccupied()) {
+                    player++;
+                    players.add(cell);
+                }
+            }
+        Assertions.assertEquals(0, player);
+    }
+
+    //Bronze
+    @Test
+    public void testRooms(){
         assertEquals('I', board.getCell(12,3).getInitial());
         assertEquals("ImmersiveVR", board.getRoom(board.getCell(12,3)).getName());
         assertEquals(board.getCell(15,3), board.getRoom(board.getCell(12,3)).getCenterCell());
