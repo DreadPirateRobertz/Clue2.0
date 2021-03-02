@@ -124,7 +124,7 @@ public class BoardAdjTargetTest {
 
     }
 
-        @Test
+        @Test       //I have an errant cell being set to true and decided to make this test
         public void testOccupied() {
             int player = 0;
             ArrayList<BoardCell> players = new ArrayList<>();
@@ -145,7 +145,7 @@ public class BoardAdjTargetTest {
     public void testTargetsInEngineRoom() {
         // test a roll of 1 //
 
-        board.calcTargets(board.getCell(15, 14), 1);
+        board.calcTargets(board.getCell(22, 14), 1);
         Set<BoardCell> targets = board.getTargets();
         assertEquals(6, targets.size());
         assertTrue(targets.contains(board.getCell(14, 10)));
