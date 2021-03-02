@@ -12,7 +12,6 @@ public class Board {
     private String setupConfigFile;
     private static int NUM_ROWS;
     private static int NUM_COLS;
-
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
     private Board() {
@@ -23,11 +22,10 @@ public class Board {
     }
 
 
-    public void initialize()  {
 
+    public void initialize()  {//Set-up board
         visited = new HashSet<BoardCell>();
         targets = new HashSet<BoardCell>();
-        //Set-up board
 
         try {
             loadSetupConfig();
@@ -51,6 +49,7 @@ public class Board {
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         roomMap = new HashMap<>();//Initialize the map
         Scanner inFile = setInFile(setupConfigFile);
+
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
@@ -67,9 +66,11 @@ public class Board {
         String[] array = data.split(",", 3); //Split this array into 3 using the comma as the delimiter
         Room room = new Room(); //Create a room
         String cardCheck = array[0].trim(); //Exception Testing Variable
+
         if(cardCheck.equals("Room") || cardCheck.equals("Space")) {
             room.setName(array[1].trim()); //Assign name -> Trim whitespace
             data = array[2].trim(); //Next 2 lines are converting string to character
+
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
             return room;
         }
@@ -78,24 +79,18 @@ public class Board {
         }
     }
 
-
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(layoutConfigFile);
         ArrayList<String> csvData = new ArrayList<>();
+
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
             for (int index = 0; index < splitData.length; index++) {
-//                if(index == 0) {
-//                    String temp = splitData[0];     //This code block I had to put in because of some weird error with my own .csv file
-//                    char x = temp.charAt(0);   //It didn't like the first letter (X) being read in without a comma but when I put in the comma I had to skip
-//                    if (!Character.isLetter(x)) { //over the blank entry in the array, splitData[0]= ""
-//                        continue;           //OKAY, I learned you need to save as a .csv and not a .csv(UTF-8) and this is no longer a problem!
-//                    }
-//                }
                 String str = splitData[index].trim();
                 char key = str.charAt(0);
+
                 if (roomMap.containsKey(key)) {
                     csvData.add(str); //Refine the data
                 } else {
@@ -104,26 +99,15 @@ public class Board {
             }
 
         }
-        int size =  setRowsCols(csvData);
-        if(NUM_COLS*NUM_ROWS == size) {
+        int dataSize = setRowsCols(csvData);
+        if(NUM_COLS*NUM_ROWS == dataSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file now let's build the adjacency lists for each of the cells
             findAdjacencies();
         }
         else{
-            throw new BadConfigFormatException(size, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
+            throw new BadConfigFormatException(dataSize, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
         }
     }
-
-
-    private int setRowsCols(ArrayList<String> csvData) {
-        int size = csvData.size();
-        int cols = (int)Math.sqrt(size);
-        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
-        setNumCols(cols);
-        setNumRows(rows);
-        return size;
-        }
-
 
     private void buildGameGrid(ArrayList<String> csvData) {
         grid = new BoardCell[NUM_ROWS][NUM_COLS];//Initialize game grid
@@ -133,15 +117,17 @@ public class Board {
                 grid[row][col] = new BoardCell(row, col);
                 String csv = csvData.get(index);  //Grabbing the string from the arrayList with the index
                 char initial = csv.charAt(0); //I am forcing it to be a character
+
                 grid[row][col].setInitial(initial); //Filling in the grid according to the data harnessed from the ArrayList csvData
-                index++;
                 classify_room_symbology(row, col, csv, initial);
+                index++;
             }
         }
         index = 0;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
+
                 sealTheRooms(row, col, csv); //Now that the grid is built you can assign all the doors to a particular Room
                 index++;
             }
@@ -164,7 +150,6 @@ public class Board {
                 case '^' -> {
                     grid[row][col].setDoorDirection(DoorDirection.UP);
                     grid[row][col].setDoorway();
-
                 }
                 case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL
                     grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in sealTheRooms method after grid is filled
@@ -173,7 +158,6 @@ public class Board {
                 case '>' -> {
                     grid[row][col].setDoorDirection(DoorDirection.RIGHT);
                     grid[row][col].setDoorway();
-
                 }
                 case 'v' -> {
                     grid[row][col].setDoorDirection(DoorDirection.DOWN);
@@ -189,7 +173,7 @@ public class Board {
         }
     }
     /*Function is going to help out a lot because then you don't have to do any nasty hard code or sloppy code
-    to fill (*) center room adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
+    to fill (*) center cell adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
     are directly adjacent
      */
     private void sealTheRooms(int row, int col, String csv) {
@@ -197,11 +181,11 @@ public class Board {
             char key = csv.charAt(1);
             switch (key) {
                 case '^' -> {
-                    Room roomy = roomMap.get(grid[row - 1][col].getInitial()); //It'll be easy to retrieve all the doors when doing the center (*) adjacency list
+                    Room roomy = roomMap.get(grid[row - 1][col].getInitial());
                     roomy.setDoorCell(grid[row][col]);
                 }
                 case '<' -> { 
-                    Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <door is pointing to which room
+                    Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <<<<door is pointing to which Room
                     roomy.setDoorCell(grid[row][col]);  //Assigning the Doors to an ArrayList<Boardcell>                                 
                 }
                 case '>' -> {
@@ -214,12 +198,14 @@ public class Board {
                 }
             }
         }
+
+
     }
 
     private void findAdjacencies() {
-        for (int i = 0; i < NUM_ROWS; i++) {  //Sets all the adjacency lists for each cell
-            for (int j = 0; j < NUM_COLS; j++) {
-                calcAdjacencies(grid[i][j]);
+        for (int row = 0; row < NUM_ROWS; row++) {  //Sets all the adjacency lists for each cell
+            for (int col = 0; col < NUM_COLS; col++) {
+                calcAdjacencies(grid[row][col]);
             }
         }
     }
@@ -235,21 +221,25 @@ public class Board {
                 case RIGHT -> {
                     Room room = roomMap.get(grid[cell.getRow()][cell.getCol() + 1].getInitial());
                     BoardCell center = room.getCenterCell();
+
                     cell.addAdjacency(center);
                 }
                 case LEFT -> {
                     Room room = roomMap.get(grid[cell.getRow()][cell.getCol() - 1].getInitial());
                     BoardCell center = room.getCenterCell();
+
                     cell.addAdjacency(center);
                 }
                 case UP -> {
                     Room room = roomMap.get(grid[cell.getRow() - 1][cell.getCol()].getInitial());
                     BoardCell center = room.getCenterCell();
+
                     cell.addAdjacency(center);
                 }
                 case DOWN -> {
                     Room room = roomMap.get(grid[cell.getRow() + 1][cell.getCol()].getInitial());
                     BoardCell center = room.getCenterCell();
+
                     cell.addAdjacency(center);
                 }
             }
@@ -270,31 +260,36 @@ public class Board {
     }
 
     private void addSecret(BoardCell cell, Room room) {
-        BoardCell doorOfSecrets = room.getSecretCell(); //Find the room
-        char secretKey = doorOfSecrets.getSecretPassage(); //Obtain the secret key
-        Room secretRoom = roomMap.get(secretKey);//Burrow our way to the Secret Room
-        doorOfSecrets = secretRoom.getCenterCell();//To unveil the Center(*) of the new secret Room :)
-        cell.addAdjacency(doorOfSecrets);
+        BoardCell secretRoomCenter = room.getSecretCell(); //Find the room
+        char secretKey = secretRoomCenter.getSecretPassage(); //Obtain the secret key
+        Room secretRoom = roomMap.get(secretKey); //Put in the secretKey to obtain the secretRoom                                       //Burrowing through passage
+        secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
+
+        cell.addAdjacency(secretRoomCenter);
     }
 
     private void addItUp(BoardCell cell) { //Normal adjacency rules for adding cells
         if (cell.getCol() < NUM_COLS - 1) {
             BoardCell cell_Right = getCell(cell.getRow() , cell.getCol()+1);
+
             if (cell_Right.getInitial() == 'W')
-                cell.addAdjacency(cell_Right); //Refactored variables for readability
+                cell.addAdjacency(cell_Right); //Refactored variables variables for readability
         }
         if (cell.getCol() > 0) {
             BoardCell cell_Left = getCell(cell.getRow(), cell.getCol()-1);
+
             if (cell_Left.getInitial() == 'W')
                 cell.addAdjacency(cell_Left);
         }
         if (cell.getRow() > 0) {
             BoardCell cell_Up = getCell(cell.getRow()-1, cell.getCol() );
+
             if (cell_Up.getInitial() == 'W')
                 cell.addAdjacency(cell_Up);
         }
         if (cell.getRow() < NUM_ROWS - 1) {
             BoardCell cell_Down = getCell(cell.getRow()+1, cell.getCol() );
+
             if (cell_Down.getInitial() == 'W')
                 cell.addAdjacency(cell_Down);
         }
@@ -308,6 +303,7 @@ public class Board {
     }
     private void findAllTargets(BoardCell thisCell, int numSteps){
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
+
         for(var adjCell : adjacentCells){//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
             if(visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter())) { //better with this style
                 continue; //Critical to not do a break right here since you want it to keep cycling through the adjacencies
@@ -326,6 +322,14 @@ public class Board {
         }
     }
 
+    private int setRowsCols(ArrayList<String> csvData) {
+        int size = csvData.size();
+        int cols = (int)Math.sqrt(size);
+        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
+        setNumCols(cols);
+        setNumRows(rows);
+        return size;
+    }
     private Scanner setInFile(String file) throws FileNotFoundException {
         FileReader reader = new FileReader(file);  //So we can read the file
         return new Scanner(reader);
