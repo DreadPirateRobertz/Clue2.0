@@ -49,7 +49,7 @@ public class Board {
     }
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
-        roomMap = new HashMap<>();
+        roomMap = new HashMap<>();//Initialize the map
         Scanner inFile = setInFile(setupConfigFile);
         while (inFile.hasNext())//Go until EOF
         {
@@ -61,11 +61,6 @@ public class Board {
             roomMap.put(room.getIdentifier(), room); //Add it to the map
         }
 
-    }
-
-    private Scanner setInFile(String file) throws FileNotFoundException {
-        FileReader reader = new FileReader(file);  //So we can read the file
-        return new Scanner(reader);
     }
 
     private Room setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
@@ -87,11 +82,11 @@ public class Board {
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(layoutConfigFile);
         ArrayList<String> csvData = new ArrayList<>();
-        while(inFile.hasNext())//Go until EOF
+        while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
-            for(int index = 0; index < splitData.length; index++){
+            for (int index = 0; index < splitData.length; index++) {
 //                if(index == 0) {
 //                    String temp = splitData[0];     //This code block I had to put in because of some weird error with my own .csv file
 //                    char x = temp.charAt(0);   //It didn't like the first letter (X) being read in without a comma but when I put in the comma I had to skip
@@ -101,32 +96,38 @@ public class Board {
 //                }
                 String str = splitData[index].trim();
                 char key = str.charAt(0);
-                if(roomMap.containsKey(key)) {
+                if (roomMap.containsKey(key)) {
                     csvData.add(str); //Refine the data
-                }
-                else{
+                } else {
                     throw new BadConfigFormatException(key);
                 }
             }
-        }
-        int size = csvData.size(); 
-        int cols = (int)Math.sqrt(size);
-        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
-        setNumCols(cols);
-        setNumRows(rows);
 
+        }
+        int size =  setRowsCols(csvData);
         if(NUM_COLS*NUM_ROWS == size) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file now let's build the adjacency lists for each of the cells
             findAdjacencies();
         }
         else{
-            throw new BadConfigFormatException(size, rows, cols);//Wrong size....you get a custom exception:)
+            throw new BadConfigFormatException(size, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
         }
     }
 
+
+    private int setRowsCols(ArrayList<String> csvData) {
+        int size = csvData.size();
+        int cols = (int)Math.sqrt(size);
+        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
+        setNumCols(cols);
+        setNumRows(rows);
+        return size;
+        }
+
+
     private void buildGameGrid(ArrayList<String> csvData) {
-        grid = new BoardCell[NUM_ROWS][NUM_COLS];
-        int index = 0; //Using this index var to cycle through the ArrayList of csvData
+        grid = new BoardCell[NUM_ROWS][NUM_COLS];//Initialize game grid
+        int index = 0; //Using this index variable to cycle through the ArrayList of csvData
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 grid[row][col] = new BoardCell(row, col);
@@ -323,6 +324,11 @@ public class Board {
             }
             visited.remove(adjCell);//Remove from visited list
         }
+    }
+
+    private Scanner setInFile(String file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file);  //So we can read the file
+        return new Scanner(reader);
     }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial());}
     public Room getRoom(char key){ return roomMap.get(key); }
