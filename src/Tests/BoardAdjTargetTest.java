@@ -1,7 +1,6 @@
 package Tests;
 
 import clueGame.Board;
-
 import clueGame.BoardCell;
 import clueGame.DoorDirection;
 import org.junit.jupiter.api.Assertions;

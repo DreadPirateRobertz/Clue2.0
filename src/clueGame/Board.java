@@ -1,6 +1,7 @@
 package clueGame;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 public class Board {
@@ -10,33 +11,33 @@ public class Board {
     private Map<Character, Room> roomMap;
     private String layoutConfigFile;
     private String setupConfigFile;
-    private static int NUM_ROWS;
-    private static int NUM_COLS;
+    private int num_rows;
+    private int num_cols;
+
     private static Board theInstance = new Board();
+
     //Private constructor to ensure only one -> Singleton Pattern
     private Board() {
         super();
     }
-    public static Board getInstance(){
+
+    public static Board getInstance() {
         return theInstance;
     }
 
 
-
-    public void initialize()  {//Set-up board
-        visited = new HashSet<BoardCell>();
-        targets = new HashSet<BoardCell>();
+    public void initialize() {//Set-up board
+        visited = new HashSet<>();
+        targets = new HashSet<>();
 
         try {
             loadSetupConfig();
-        }
-        catch (FileNotFoundException | BadConfigFormatException e){
+        } catch (FileNotFoundException | BadConfigFormatException e) {
             System.out.println(e.getMessage());
         }
         try {
             loadLayoutConfig();
-        }
-        catch (FileNotFoundException | BadConfigFormatException e) {
+        } catch (FileNotFoundException | BadConfigFormatException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -95,18 +96,18 @@ public class Board {
             }
         }
         int gridSize = setRowsCols(csvData);
-        if (NUM_COLS * NUM_ROWS == gridSize) {
+        if (num_cols * num_rows == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file now let's build the adjacency lists for each of the cells
             findAdjacencies();
         } else
-            throw new BadConfigFormatException(gridSize, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
+            throw new BadConfigFormatException(gridSize, num_rows, num_cols);//Wrong size....you get a custom exception:)
     }
 
     private void buildGameGrid(ArrayList<String> csvData) {
-        grid = new BoardCell[NUM_ROWS][NUM_COLS];//Initialize game grid
+        grid = new BoardCell[num_rows][num_cols];//Initialize game grid
         int index = 0; //Using this index variable to cycle through the ArrayList of csvData
-        for (int row = 0; row < NUM_ROWS; row++) {
-            for (int col = 0; col < NUM_COLS; col++) {
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
                 grid[row][col] = new BoardCell(row, col);
                 String csv = csvData.get(index);  //Grabbing the string from the arrayList with the index
                 char initial = csv.charAt(0); //I am forcing it to be a character
@@ -117,8 +118,8 @@ public class Board {
             }
         }
         index = 0;
-        for (int row = 0; row < NUM_ROWS; row++) {
-            for (int col = 0; col < NUM_COLS; col++) {
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
                 String csv = csvData.get(index);  //Grabbing the string from the ArrayList at the appropriate index
                 //Now that the grid is built you can assign all the doors to a particular Room
                 sealTheRooms(row, col, csv);
@@ -194,8 +195,8 @@ public class Board {
     }
 
     private void findAdjacencies() {
-        for (int row = 0; row < NUM_ROWS; row++)  //Sets all the adjacency lists for each cell
-            for (int col = 0; col < NUM_COLS; col++)
+        for (int row = 0; row < num_rows; row++)  //Sets all the adjacency lists for each cell
+            for (int col = 0; col < num_cols; col++)
                 calcAdjacencies(grid[row][col]);
     }
 
@@ -257,26 +258,26 @@ public class Board {
     }
 
     private void addItUp(BoardCell cell) { //Normal adjacency rules for adding cells
-        if (cell.getCol() < NUM_COLS - 1) {
-            BoardCell cell_Right = getCell(cell.getRow() , cell.getCol()+1);
+        if (cell.getCol() < num_cols - 1) {
+            BoardCell cell_Right = getCell(cell.getRow(), cell.getCol() + 1);
 
             if (cell_Right.getInitial() == 'W')
                 cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
         if (cell.getCol() > 0) {
-            BoardCell cell_Left = getCell(cell.getRow(), cell.getCol()-1);
+            BoardCell cell_Left = getCell(cell.getRow(), cell.getCol() - 1);
 
             if (cell_Left.getInitial() == 'W')
                 cell.addAdjacency(cell_Left);
         }
         if (cell.getRow() > 0) {
-            BoardCell cell_Up = getCell(cell.getRow()-1, cell.getCol() );
+            BoardCell cell_Up = getCell(cell.getRow() - 1, cell.getCol());
 
             if (cell_Up.getInitial() == 'W')
                 cell.addAdjacency(cell_Up);
         }
-        if (cell.getRow() < NUM_ROWS - 1) {
-            BoardCell cell_Down = getCell(cell.getRow()+1, cell.getCol() );
+        if (cell.getRow() < num_rows - 1) {
+            BoardCell cell_Down = getCell(cell.getRow() + 1, cell.getCol());
 
             if (cell_Down.getInitial() == 'W')
                 cell.addAdjacency(cell_Down);
@@ -311,32 +312,52 @@ public class Board {
 
     private int setRowsCols(ArrayList<String> csvData) {
         int size = csvData.size();
-        int cols = (int)Math.sqrt(size);
-        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
+        int cols = (int) Math.sqrt(size);
+        int rows = (int) Math.ceil(size / (double) cols); //ceil rounds UP
         setNumCols(cols);
         setNumRows(rows);
         return size;
     }
+
     private Scanner setInFile(String file) throws FileNotFoundException {
         FileReader reader = new FileReader(file); //So we can read the file
         return new Scanner(reader);
     }
-    public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial());}
-    public Room getRoom(char key){ return roomMap.get(key); }
-    public int getNumRows() { return NUM_ROWS; }
-    public int getNumColumns() { return NUM_COLS; }
-    public BoardCell getCell(int x, int y) { return grid[x][y]; }
+
+    public Room getRoom(BoardCell cell) {
+        return roomMap.get(cell.getInitial());
+    }
+
+    public Room getRoom(char key) {
+        return roomMap.get(key);
+    }
+
+    public int getNumRows() {
+        return num_rows;
+    }
+
+    public int getNumColumns() {
+        return num_cols;
+    }
+
+    public BoardCell getCell(int x, int y) {
+        return grid[x][y];
+    }
+
+    public Set<BoardCell> getTargets() {
+        return targets;
+    }
 
     public Set<BoardCell> getAdjList(int row, int col) {
         return getCell(row, col).getAdjList();
     }
 
-    private static void setNumRows(int numRows) {
-        NUM_ROWS = numRows;
+    private void setNumRows(int rows) {
+        num_rows = rows;
     }
 
-    private static void setNumCols(int numCols) {
-        NUM_COLS = numCols;
+    private void setNumCols(int cols) {
+        num_cols = cols;
     }
-    public Set<BoardCell> getTargets() { return targets; }
+
 }

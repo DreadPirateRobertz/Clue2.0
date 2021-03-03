@@ -4,7 +4,9 @@ import clueGame.Board;
 import clueGame.BoardCell;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardAdjTargetTest306 {
