@@ -5,9 +5,7 @@ import java.util.ArrayList;
 public class Room {
     private String name;
     private char identifier;
-    private BoardCell labelCell;
-    private BoardCell centerCell;
-    private BoardCell secretCell;
+    private BoardCell labelCell, centerCell, secretCell;
     private ArrayList<BoardCell> doorCells = new ArrayList<>();
 
     //Getters

@@ -7,12 +7,9 @@ public class BoardCell {
 
     private int row,col;
     private char initial;
-    private char secretPassage = '0';
+    private char secretPassage;
     private DoorDirection doorDirection;
-    private boolean roomLabel;
-    private boolean roomCenter;
-    private boolean doorway;
-    private boolean occupied;
+    private boolean roomLabel, roomCenter, doorway, occupied;
     private Set<BoardCell> adjList;
 
     public BoardCell(int row, int col) { //Parameterized Constructor
@@ -37,8 +34,6 @@ public class BoardCell {
     public boolean isRoomCenter() { return roomCenter; }
     //Setters
     public void addAdjacency(BoardCell cell) { adjList.add(cell); }
-    public void setRow(int row) { this.row = row; }
-    public void setCol(int col) { this.col = col; }
     public void setInitial(char initial) { this.initial = initial; }
     public void setDoorway() { doorway = true; }
     public void setDoorDirection(DoorDirection doorDirection) {
