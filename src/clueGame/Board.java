@@ -53,13 +53,12 @@ public class Board {
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            if (data.contains("//")) {  //Edit out pesky comments :)
+            if (data.contains("//"))   //Edit out pesky comments :)
                 continue;
-            }
+
             Room room = setupRoom(data); //Configures room with name and identifier
             roomMap.put(room.getIdentifier(), room); //Add it to the map
         }
-
     }
 
     private Room setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
@@ -67,16 +66,13 @@ public class Board {
         Room room = new Room(); //Create a room
         String cardCheck = array[0].trim(); //Exception Testing Variable
 
-        if(cardCheck.equals("Room") || cardCheck.equals("Space")) {
+        if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
             room.setName(array[1].trim()); //Assign name -> Trim whitespace
             data = array[2].trim(); //Next 2 lines are converting string to character
-
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
             return room;
-        }
-        else{
+        } else
             throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
-        }
     }
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -87,26 +83,23 @@ public class Board {
         {
             String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
-            for (int index = 0; index < splitData.length; index++) {
-                String str = splitData[index].trim();
-                char key = str.charAt(0);
+            //For each index of splitData
+            for (var index : splitData) { //var is equivalent to auto, I think they make the for-each loops read more intuitively
+                String cleanData = index.trim();
+                char key = cleanData.charAt(0);
 
-                if (roomMap.containsKey(key)) {
-                    csvData.add(str); //Refine the data
-                } else {
+                if (roomMap.containsKey(key))
+                    csvData.add(cleanData); //Now the data has been refined from raw input
+                else
                     throw new BadConfigFormatException(key);
-                }
             }
-
         }
-        int dataSize = setRowsCols(csvData);
-        if(NUM_COLS*NUM_ROWS == dataSize) {
+        int gridSize = setRowsCols(csvData);
+        if (NUM_COLS * NUM_ROWS == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file now let's build the adjacency lists for each of the cells
             findAdjacencies();
-        }
-        else{
-            throw new BadConfigFormatException(dataSize, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
-        }
+        } else
+            throw new BadConfigFormatException(gridSize, NUM_ROWS, NUM_COLS);//Wrong size....you get a custom exception:)
     }
 
     private void buildGameGrid(ArrayList<String> csvData) {
@@ -126,17 +119,17 @@ public class Board {
         index = 0;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
-                String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
-
-                sealTheRooms(row, col, csv); //Now that the grid is built you can assign all the doors to a particular Room
+                String csv = csvData.get(index);  //Grabbing the string from the ArrayList at the appropriate index
+                //Now that the grid is built you can assign all the doors to a particular Room
+                sealTheRooms(row, col, csv);
                 index++;
             }
         }
     }
     private void classify_room_symbology(int row, int col, String csv, char initial) {
-        if(csv.length() > 1){ //If string has special characters contained after the initial let's sort them out!
+        if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
-            switch(key) {
+            switch (key) {
                 case '#' -> { //Setting Label Cell
                     grid[row][col].setLabel();
                     Room roomy = roomMap.get(initial);
@@ -184,7 +177,7 @@ public class Board {
                     Room roomy = roomMap.get(grid[row - 1][col].getInitial());
                     roomy.setDoorCell(grid[row][col]);
                 }
-                case '<' -> { 
+                case '<' -> {
                     Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <<<<door is pointing to which Room
                     roomy.setDoorCell(grid[row][col]);  //Assigning the Doors to an ArrayList<Boardcell>                                 
                 }
@@ -198,23 +191,19 @@ public class Board {
                 }
             }
         }
-
-
     }
 
     private void findAdjacencies() {
-        for (int row = 0; row < NUM_ROWS; row++) {  //Sets all the adjacency lists for each cell
-            for (int col = 0; col < NUM_COLS; col++) {
+        for (int row = 0; row < NUM_ROWS; row++)  //Sets all the adjacency lists for each cell
+            for (int col = 0; col < NUM_COLS; col++)
                 calcAdjacencies(grid[row][col]);
-            }
-        }
     }
 
     public void calcAdjacencies(BoardCell cell) {
 
-        if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter()) {
-            addItUp(cell);  //Primitives such as chars can not use .equals method
-        }
+        if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())
+            addItUp(cell);  //Primitives such as chars cannot use .equals method
+
         else if (cell.isDoorway()) {
             addItUp(cell);
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
@@ -248,21 +237,20 @@ public class Board {
             char roomID = cell.getInitial();//this inspired me to sealTheRooms so this would work smoothly
             Room room = roomMap.get(roomID);
             ArrayList<BoardCell> theRoom = room.getDoorCells();
-            
-            //Using var here because it's less cluttered and easier to read w/o BoardCell identifier
-            for (var door : theRoom) { //For each door in the room  //var is equivalent to auto in c++
+
+            //Using var here because it's less cluttered and easier to read w/o BoardCell type
+            for (var door : theRoom)  //For each door in theRoom  //var is equivalent to auto in c++
                 cell.addAdjacency(door);//assign each to the center (*) cell
-            }  
-            
-            if(room.getSecretCell() != null)//Is there a secret passageway?
+
+            if (room.getSecretCell() != null)//Is there a secret passageway?
                 addSecret(cell, room); //If there is a secret passage this leads you to center (*) cell of that room
         }
     }
 
     private void addSecret(BoardCell cell, Room room) {
         BoardCell secretRoomCenter = room.getSecretCell(); //Find the room
-        char secretKey = secretRoomCenter.getSecretPassage(); //Obtain the secret key
-        Room secretRoom = roomMap.get(secretKey); //Put in the secretKey to obtain the secretRoom                                       //Burrowing through passage
+        char secretKey = secretRoomCenter.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
+        Room secretRoom = roomMap.get(secretKey); //Put in the secretKey to obtain the secretRoom
         secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
 
         cell.addAdjacency(secretRoomCenter);
@@ -273,7 +261,7 @@ public class Board {
             BoardCell cell_Right = getCell(cell.getRow() , cell.getCol()+1);
 
             if (cell_Right.getInitial() == 'W')
-                cell.addAdjacency(cell_Right); //Refactored variables variables for readability
+                cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
         if (cell.getCol() > 0) {
             BoardCell cell_Left = getCell(cell.getRow(), cell.getCol()-1);
@@ -301,22 +289,21 @@ public class Board {
         targets.clear();//Reset
         findAllTargets(startCell, pathLength);
     }
-    private void findAllTargets(BoardCell thisCell, int numSteps){
+    private void findAllTargets(BoardCell thisCell, int numSteps) {
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
 
-        for(var adjCell : adjacentCells){//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
-            if(visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter())) { //better with this style
+        for (var adjCell : adjacentCells) {//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
+            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter()))  //better with this style
                 continue; //Critical to not do a break right here since you want it to keep cycling through the adjacencies
-            }
+
             visited.add(adjCell); //Add to visited list
-            if(numSteps == 1 || adjCell.isRoomCenter()) { //Base Case
+            if (numSteps == 1 || adjCell.isRoomCenter()) { //Base Case
                 targets.add(adjCell);//BAM
-                if(adjCell.isRoomCenter()){//If you reach this room center cell...advance to next adjCell
+                if (adjCell.isRoomCenter()) {//If you reach this room center cell...advance to next adjCell
                     continue;
                 }
-            }
-            else {
-                findAllTargets(adjCell, numSteps-1); //Recurse
+            } else {
+                findAllTargets(adjCell, numSteps - 1); //Recurse
             }
             visited.remove(adjCell);//Remove from visited list
         }
@@ -331,7 +318,7 @@ public class Board {
         return size;
     }
     private Scanner setInFile(String file) throws FileNotFoundException {
-        FileReader reader = new FileReader(file);  //So we can read the file
+        FileReader reader = new FileReader(file); //So we can read the file
         return new Scanner(reader);
     }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial());}
@@ -339,11 +326,17 @@ public class Board {
     public int getNumRows() { return NUM_ROWS; }
     public int getNumColumns() { return NUM_COLS; }
     public BoardCell getCell(int x, int y) { return grid[x][y]; }
-    public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList();}
+
+    public Set<BoardCell> getAdjList(int row, int col) {
+        return getCell(row, col).getAdjList();
+    }
+
     private static void setNumRows(int numRows) {
         NUM_ROWS = numRows;
     }
-    private static void setNumCols(int numCols) { NUM_COLS = numCols; }
+
+    private static void setNumCols(int numCols) {
+        NUM_COLS = numCols;
+    }
     public Set<BoardCell> getTargets() { return targets; }
 }
-//
