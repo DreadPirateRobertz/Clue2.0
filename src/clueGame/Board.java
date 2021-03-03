@@ -310,6 +310,16 @@ public class Board {
         }
     }
 
+
+
+    //Getters
+    public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
+    public Room getRoom(char key) { return roomMap.get(key); }
+    public int getNumRows() { return num_rows; }
+    public int getNumColumns() { return num_cols; }
+    public BoardCell getCell(int x, int y) { return grid[x][y]; }
+    public Set<BoardCell> getTargets() { return targets; }
+    //Setters
     private int setRowsCols(ArrayList<String> csvData) {
         int size = csvData.size();
         int cols = (int) Math.sqrt(size);
@@ -318,49 +328,15 @@ public class Board {
         setNumRows(rows);
         return size;
     }
-
-
-    //Getters
-    public Room getRoom(BoardCell cell) {
-        return roomMap.get(cell.getInitial());
-    }
-
-    public Room getRoom(char key) {
-        return roomMap.get(key);
-    }
-
-    public int getNumRows() {
-        return num_rows;
-    }
-
-    public int getNumColumns() {
-        return num_cols;
-    }
-
-    public BoardCell getCell(int x, int y) {
-        return grid[x][y];
-    }
-
-    public Set<BoardCell> getTargets() {
-        return targets;
-    }
-
-    //Setters
     private Scanner setInFile(String file) throws FileNotFoundException {
         FileReader reader = new FileReader(file); //So we can read the file
         return new Scanner(reader);
     }
-
     public Set<BoardCell> getAdjList(int row, int col) {
         return getCell(row, col).getAdjList();
     }
-
-    private void setNumRows(int rows) {
-        num_rows = rows;
-    }
-
+    private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) {
         num_cols = cols;
     }
-
 }
