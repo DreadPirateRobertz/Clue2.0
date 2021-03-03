@@ -180,7 +180,7 @@ public class Board {
                 }
                 case '<' -> {
                     Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <<<<door is pointing to which Room
-                    roomy.setDoorCell(grid[row][col]);  //Assigning the Doors to an ArrayList<Boardcell>                                 
+                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<Boardcell>
                 }
                 case '>' -> {
                     Room roomy = roomMap.get(grid[row][col + 1].getInitial());
@@ -319,11 +319,8 @@ public class Board {
         return size;
     }
 
-    private Scanner setInFile(String file) throws FileNotFoundException {
-        FileReader reader = new FileReader(file); //So we can read the file
-        return new Scanner(reader);
-    }
 
+    //Getters
     public Room getRoom(BoardCell cell) {
         return roomMap.get(cell.getInitial());
     }
@@ -346,6 +343,12 @@ public class Board {
 
     public Set<BoardCell> getTargets() {
         return targets;
+    }
+
+    //Setters
+    private Scanner setInFile(String file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file); //So we can read the file
+        return new Scanner(reader);
     }
 
     public Set<BoardCell> getAdjList(int row, int col) {
