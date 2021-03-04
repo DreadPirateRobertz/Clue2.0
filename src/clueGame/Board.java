@@ -79,7 +79,7 @@ public class Board {
         {
             String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
-            //For each index in the array splitData
+            //For each index in splitData
             for (var index : splitData) { //var is equivalent to auto, I think they make the for-each loops read more intuitively
                 String cleanData = index.trim();
                 char key = cleanData.charAt(0);
@@ -115,9 +115,9 @@ public class Board {
         index = 0;
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                String csv = csvData.get(index);  //Grabbing the string from the ArrayList at the appropriate index
+                String csv = csvData.get(index);
                 //Now that the grid is built you can assign all the doors to a particular Room
-                sealTheRooms(row, col, csv);
+                countTheExits(row, col, csv);
                 index++;
             }
         }
@@ -141,7 +141,7 @@ public class Board {
                     grid[row][col].setDoorway();
                 }
                 case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL
-                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in sealTheRooms method after grid is filled
+                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in countTheExits method after grid is filled
                     grid[row][col].setDoorway();
                 }
                 case '>' -> {
@@ -165,7 +165,7 @@ public class Board {
     to fill (*) center cell adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
     are directly adjacent
      */
-    private void sealTheRooms(int row, int col, String csv) {
+    private void countTheExits(int row, int col, String csv) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
             switch (key) {
@@ -175,7 +175,7 @@ public class Board {
                 }
                 case '<' -> {
                     Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <<<<door is pointing to which Room
-                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<Boardcell>
+                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<Boardcell> doorCells
                 }
                 case '>' -> {
                     Room roomy = roomMap.get(grid[row][col + 1].getInitial());
@@ -198,7 +198,7 @@ public class Board {
     public void calcAdjacencies(BoardCell cell, int row, int col) {
 
         if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())
-            addItUp(cell, row, col);  //Primitives such as chars cannot use .equals method
+            addItUp(cell, row, col); //Primitives such as chars cannot use .equals method
         else if (cell.isDoorway()) {
             addItUp(cell, row, col);
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
@@ -288,13 +288,13 @@ public class Board {
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
 
         for (var adjCell : adjacentCells) {//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
-            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter()))  //better with this style
+            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter()))
                 continue; //Critical to not do a break right here since you want it to keep cycling through the adjacencies
 
             visited.add(adjCell); //Add to visited list
             if (numSteps == 1 || adjCell.isRoomCenter()) { //Base Case
                 targets.add(adjCell);//BAM
-                if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP
+                if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP advancing
                     continue;
                 }
             } else {
@@ -306,6 +306,9 @@ public class Board {
 
 
     //Getters
+    public Set<BoardCell> getAdjList(int row, int col) {
+        return getCell(row, col).getAdjList();
+    }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
     public int getNumRows() { return num_rows; }
@@ -323,14 +326,11 @@ public class Board {
     }
     private int setRowsCols(ArrayList<String> csvData) {
         int size = csvData.size();
-        int cols = (int) Math.sqrt(size);
-        int rows = (int) Math.ceil(size / (double) cols); //ceil rounds UP
+        int cols = (int)Math.sqrt(size);
+        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
         setNumCols(cols);
         setNumRows(rows);
         return size;
-    }
-    public Set<BoardCell> getAdjList(int row, int col) {
-        return getCell(row, col).getAdjList();
     }
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) {

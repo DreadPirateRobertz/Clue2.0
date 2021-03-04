@@ -8,7 +8,7 @@ public class BoardCell {
     private char initial;
     private char secretPassage = '0'; //It's null setting distracts me in the debugger so I set it to '0'
     private DoorDirection doorDirection;
-    private boolean roomLabel, roomCenter, doorway, occupied;
+    private boolean roomCenter, roomLabel, doorway, occupied;
     private Set<BoardCell> adjList;
 
     public BoardCell(int row, int col) {

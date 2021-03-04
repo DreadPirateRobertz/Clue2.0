@@ -261,7 +261,7 @@ public class BoardAdjTargetTest {
         assertTrue(targets.contains(board.getCell(15, 14)));
     }
 
-    @Test  //These are red
+    @Test                                                               //Red
     // test to make sure occupied locations do not cause problems
     public void testTargetsOccupied() {
         // test a roll of 4 blocked 2 down
@@ -301,7 +301,7 @@ public class BoardAdjTargetTest {
 
     @Test
     public void testOccupied() {
-        int player = 0; //I realized I had two players being flagged as True because I assert them as true in a later target test
+        int player = 0; //I realized I had two players being flagged as True because I assert them as true in a target test
         ArrayList<BoardCell> players = new ArrayList<>(); //I didn't set them back to False...Critical in these Tests it seems!
         for (int row = 0; row < board.getNumRows(); row++)
             for (int col = 0; col < board.getNumColumns(); col++) {
