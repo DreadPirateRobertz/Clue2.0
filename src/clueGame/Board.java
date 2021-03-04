@@ -243,10 +243,10 @@ public class Board {
     }
 
     private void addSecret(BoardCell cell, Room room) {
-        BoardCell secretRoomCenter = room.getSecretCell(); //Find the room
-        char secretKey = secretRoomCenter.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
+        BoardCell secretCell = room.getSecretCell(); //Find the secret cell
+        char secretKey = secretCell.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
         Room secretRoom = getRoom(secretKey); //Put in the secretKey to obtain the secretRoom
-        secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
+        BoardCell secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
 
         cell.addAdjacency(secretRoomCenter);
     }
