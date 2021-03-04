@@ -5,24 +5,19 @@ import java.util.Set;
 
 public class BoardCell {
 
-    private int row,col;
     private char initial;
     private char secretPassage;
     private DoorDirection doorDirection;
     private boolean roomLabel, roomCenter, doorway, occupied;
     private Set<BoardCell> adjList;
 
-    public BoardCell(int row, int col) { //Parameterized Constructor
+    public BoardCell() { //Default Constructor
         adjList = new HashSet<>();  //Initialize adjacency list
-        this.row = row;
-        this.col = col;
         doorDirection = DoorDirection.NONE;
     }
 
     //Getters
     public Set<BoardCell> getAdjList() { return adjList; }
-    public int getRow() { return row; }
-    public int getCol() { return col; }
     public char getInitial() { return initial; }
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }

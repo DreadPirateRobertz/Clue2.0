@@ -42,11 +42,6 @@ public class Board {
         }
     }
 
-    public void setConfigFiles(String layout, String legend) {
-        setupConfigFile = legend;
-        layoutConfigFile = layout;
-    }
-
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         roomMap = new HashMap<>();//Initialize the map
         Scanner inFile = setInFile(setupConfigFile);
@@ -84,7 +79,7 @@ public class Board {
         {
             String data = inFile.nextLine(); //Grab it all
             String[] splitData = data.split(","); //Harness the data
-            //For each index of splitData
+            //For each index in the array splitData
             for (var index : splitData) { //var is equivalent to auto, I think they make the for-each loops read more intuitively
                 String cleanData = index.trim();
                 char key = cleanData.charAt(0);
@@ -108,7 +103,7 @@ public class Board {
         int index = 0; //Using this index variable to cycle through the ArrayList of csvData
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                grid[row][col] = new BoardCell(row, col);
+                grid[row][col] = new BoardCell();
                 String csv = csvData.get(index);  //Grabbing the string from the arrayList with the index
                 char initial = csv.charAt(0); //I am forcing it to be a character
 
@@ -197,37 +192,36 @@ public class Board {
     private void findAdjacencies() {
         for (int row = 0; row < num_rows; row++)  //Sets all the adjacency lists for each cell
             for (int col = 0; col < num_cols; col++)
-                calcAdjacencies(grid[row][col]);
+                calcAdjacencies(grid[row][col], row, col);
     }
 
-    public void calcAdjacencies(BoardCell cell) {
+    public void calcAdjacencies(BoardCell cell, int row, int col) {
 
         if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())
-            addItUp(cell);  //Primitives such as chars cannot use .equals method
-
+            addItUp(cell, row, col);  //Primitives such as chars cannot use .equals method
         else if (cell.isDoorway()) {
-            addItUp(cell);
+            addItUp(cell, row, col);
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
                 case RIGHT -> {
-                    Room room = roomMap.get(grid[cell.getRow()][cell.getCol() + 1].getInitial());
+                    Room room = roomMap.get(grid[row][col + 1].getInitial());
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case LEFT -> {
-                    Room room = roomMap.get(grid[cell.getRow()][cell.getCol() - 1].getInitial());
+                    Room room = roomMap.get(grid[row][col - 1].getInitial());
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case UP -> {
-                    Room room = roomMap.get(grid[cell.getRow() - 1][cell.getCol()].getInitial());
+                    Room room = roomMap.get(grid[row - 1][col].getInitial());
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case DOWN -> {
-                    Room room = roomMap.get(grid[cell.getRow() + 1][cell.getCol()].getInitial());
+                    Room room = roomMap.get(grid[row + 1][col].getInitial());
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
@@ -257,27 +251,27 @@ public class Board {
         cell.addAdjacency(secretRoomCenter);
     }
 
-    private void addItUp(BoardCell cell) { //Normal adjacency rules for adding cells
-        if (cell.getCol() < num_cols - 1) {
-            BoardCell cell_Right = getCell(cell.getRow(), cell.getCol() + 1);
+    private void addItUp(BoardCell cell, int row, int col) { //Normal adjacency rules for adding cells
+        if (col < num_cols - 1) {
+            BoardCell cell_Right = getCell(row, col+ 1);
 
             if (cell_Right.getInitial() == 'W')
                 cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
-        if (cell.getCol() > 0) {
-            BoardCell cell_Left = getCell(cell.getRow(), cell.getCol() - 1);
+        if (col > 0) {
+            BoardCell cell_Left = getCell(row, col-1);
 
             if (cell_Left.getInitial() == 'W')
                 cell.addAdjacency(cell_Left);
         }
-        if (cell.getRow() > 0) {
-            BoardCell cell_Up = getCell(cell.getRow() - 1, cell.getCol());
+        if (row > 0) {
+            BoardCell cell_Up = getCell(row - 1, col);
 
             if (cell_Up.getInitial() == 'W')
                 cell.addAdjacency(cell_Up);
         }
-        if (cell.getRow() < num_rows - 1) {
-            BoardCell cell_Down = getCell(cell.getRow() + 1, cell.getCol());
+        if (row < num_rows - 1) {
+            BoardCell cell_Down = getCell(row + 1, col);
 
             if (cell_Down.getInitial() == 'W')
                 cell.addAdjacency(cell_Down);
@@ -311,15 +305,22 @@ public class Board {
     }
 
 
-
     //Getters
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
     public int getNumRows() { return num_rows; }
     public int getNumColumns() { return num_cols; }
-    public BoardCell getCell(int x, int y) { return grid[x][y]; }
+    public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
     //Setters
+    public void setConfigFiles(String layout, String legend) {
+        setupConfigFile = legend;
+        layoutConfigFile = layout;
+    }
+    private Scanner setInFile(String file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file); //So we can read the file
+        return new Scanner(reader);
+    }
     private int setRowsCols(ArrayList<String> csvData) {
         int size = csvData.size();
         int cols = (int) Math.sqrt(size);
@@ -327,10 +328,6 @@ public class Board {
         setNumCols(cols);
         setNumRows(rows);
         return size;
-    }
-    private Scanner setInFile(String file) throws FileNotFoundException {
-        FileReader reader = new FileReader(file); //So we can read the file
-        return new Scanner(reader);
     }
     public Set<BoardCell> getAdjList(int row, int col) {
         return getCell(row, col).getAdjList();
