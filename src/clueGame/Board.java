@@ -92,8 +92,8 @@ public class Board {
         }
         int gridSize = setRowsCols(csvData);
         if (num_cols * num_rows == gridSize) {
-            buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file now let's build the adjacency lists for each of the cells
-            findAdjacencies();
+            buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file
+            findAdjacencies();//Let's build the adjacency lists for each of the cells
         } else
             throw new BadConfigFormatException(gridSize, num_rows, num_cols);//Wrong size....you get a custom exception:)
     }
@@ -128,12 +128,12 @@ public class Board {
             switch (key) {
                 case '#' -> { //Setting Label Cell
                     grid[row][col].setLabel();
-                    Room roomy = roomMap.get(initial);
+                    Room roomy = getRoom(initial);
                     roomy.setLabelCell(grid[row][col]);
                 }
                 case '*' -> { //Setting Center Cell
                     grid[row][col].setRoomCenter();
-                    Room roomy = roomMap.get(initial);
+                    Room roomy = getRoom(initial);
                     roomy.setCenterCell(grid[row][col]);
                 }
                 case '^' -> {
@@ -154,7 +154,7 @@ public class Board {
                 }
                 default -> {//The last item that will fall to default will be Secret Cells
                     grid[row][col].setSecretPassage(key); //Assigning Secret cell/Room logic
-                    Room roomy = roomMap.get(initial);
+                    Room roomy = getRoom(initial);
                     roomy.setSecretCell(grid[row][col]);
                 }
 
@@ -163,26 +163,26 @@ public class Board {
     }
     /*Function is going to help out a lot because then you don't have to do any nasty hard code or sloppy code
     to fill (*) center cell adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
-    are directly adjacent
+    are directly adjacent.  ALl the Rooms have 2-6 doors on our SpaceShip design.
      */
     private void countTheExits(int row, int col, String csv) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
             switch (key) {
                 case '^' -> {
-                    Room roomy = roomMap.get(grid[row - 1][col].getInitial());
+                    Room roomy = getRoom(grid[row - 1][col]);
                     roomy.setDoorCell(grid[row][col]);
                 }
                 case '<' -> {
-                    Room roomy = roomMap.get(grid[row][col - 1].getInitial()); //The <<<<door is pointing to which Room
+                    Room roomy = getRoom(grid[row][col - 1]); //The <<<<door is pointing to which Room
                     roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<Boardcell> doorCells
                 }
                 case '>' -> {
-                    Room roomy = roomMap.get(grid[row][col + 1].getInitial());
+                    Room roomy = getRoom(grid[row][col + 1]);
                     roomy.setDoorCell(grid[row][col]);
                 }
                 case 'v' -> {
-                    Room roomy = roomMap.get(grid[row + 1][col].getInitial());
+                    Room roomy = getRoom(grid[row + 1][col]);
                     roomy.setDoorCell(grid[row][col]);
                 }
             }
@@ -203,25 +203,25 @@ public class Board {
             addItUp(cell, row, col);
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
                 case RIGHT -> {
-                    Room room = roomMap.get(grid[row][col + 1].getInitial());
+                    Room room = getRoom(grid[row][col + 1]);
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case LEFT -> {
-                    Room room = roomMap.get(grid[row][col - 1].getInitial());
+                    Room room = getRoom(grid[row][col - 1]);
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case UP -> {
-                    Room room = roomMap.get(grid[row - 1][col].getInitial());
+                    Room room = getRoom(grid[row - 1][col]);
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
                 }
                 case DOWN -> {
-                    Room room = roomMap.get(grid[row + 1][col].getInitial());
+                    Room room = getRoom(grid[row + 1][col]);
                     BoardCell center = room.getCenterCell();
 
                     cell.addAdjacency(center);
@@ -230,7 +230,7 @@ public class Board {
         }
         else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
             char roomID = cell.getInitial();//this inspired me to sealTheRooms so this would work smoothly
-            Room room = roomMap.get(roomID);
+            Room room = getRoom(roomID);
             ArrayList<BoardCell> theRoom = room.getDoorCells();
 
             //Using var here because it's less cluttered and easier to read w/o BoardCell type
@@ -245,7 +245,7 @@ public class Board {
     private void addSecret(BoardCell cell, Room room) {
         BoardCell secretRoomCenter = room.getSecretCell(); //Find the room
         char secretKey = secretRoomCenter.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
-        Room secretRoom = roomMap.get(secretKey); //Put in the secretKey to obtain the secretRoom
+        Room secretRoom = getRoom(secretKey); //Put in the secretKey to obtain the secretRoom
         secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
 
         cell.addAdjacency(secretRoomCenter);
