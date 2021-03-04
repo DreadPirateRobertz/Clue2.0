@@ -103,9 +103,9 @@ public class Board {
         int index = 0; //Using this index variable to cycle through the ArrayList of csvData
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                grid[row][col] = new BoardCell();
-                String csv = csvData.get(index);  //Grabbing the string from the arrayList with the index
-                char initial = csv.charAt(0); //I am forcing it to be a character
+                grid[row][col] = new BoardCell(row, col);
+                String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
+                char initial = csv.charAt(0); //Storing the first index of csv into initial
 
                 grid[row][col].setInitial(initial); //Filling in the grid according to the data harnessed from the ArrayList csvData
                 classify_room_symbology(row, col, csv, initial);
@@ -253,13 +253,13 @@ public class Board {
 
     private void addItUp(BoardCell cell, int row, int col) { //Normal adjacency rules for adding cells
         if (col < num_cols - 1) {
-            BoardCell cell_Right = getCell(row, col+ 1);
+            BoardCell cell_Right = getCell(row, col + 1);
 
             if (cell_Right.getInitial() == 'W')
                 cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
         if (col > 0) {
-            BoardCell cell_Left = getCell(row, col-1);
+            BoardCell cell_Left = getCell(row, col - 1);
 
             if (cell_Left.getInitial() == 'W')
                 cell.addAdjacency(cell_Left);
@@ -294,7 +294,7 @@ public class Board {
             visited.add(adjCell); //Add to visited list
             if (numSteps == 1 || adjCell.isRoomCenter()) { //Base Case
                 targets.add(adjCell);//BAM
-                if (adjCell.isRoomCenter()) {//If you reach this room center cell...advance to next adjCell
+                if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP
                     continue;
                 }
             } else {

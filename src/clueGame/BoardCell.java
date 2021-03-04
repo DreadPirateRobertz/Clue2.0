@@ -4,15 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BoardCell {
-
+    private int row, col;
     private char initial;
-    private char secretPassage;
+    private char secretPassage = '0'; //It's null setting distracts me in the debugger so I set it to '0'
     private DoorDirection doorDirection;
     private boolean roomLabel, roomCenter, doorway, occupied;
     private Set<BoardCell> adjList;
 
-    public BoardCell() { //Default Constructor
-        adjList = new HashSet<>();  //Initialize adjacency list
+    public BoardCell(int row, int col) {
+        this.row = row;
+        this.col = col;
+        adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }
 
