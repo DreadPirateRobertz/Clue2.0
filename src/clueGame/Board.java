@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
+
 public class Board {
     private Set<BoardCell> targets;
     private Set<BoardCell> visited;
@@ -105,10 +106,10 @@ public class Board {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col] = new BoardCell(row, col);
                 String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
-                char initial = csv.charAt(0); //Storing the first index of csv into initial
+                char roomID = csv.charAt(0); //Storing the first index of csv into roomID
 
-                grid[row][col].setInitial(initial); //Filling in the grid according to the data harnessed from the ArrayList csvData
-                classify_room_symbology(row, col, csv, initial);
+                grid[row][col].setInitial(roomID); //Filling in the grid according to the data harnessed from the ArrayList csvData
+                classify_room_symbology(row, col, csv, roomID);
                 index++;
             }
         }
@@ -122,18 +123,18 @@ public class Board {
             }
         }
     }
-    private void classify_room_symbology(int row, int col, String csv, char initial) {
+    private void classify_room_symbology(int row, int col, String csv, char roomID) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
-            char key = csv.charAt(1);
-            switch (key) {
+            char symbol = csv.charAt(1);
+            switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     grid[row][col].setLabel();
-                    Room roomy = getRoom(initial);
+                    Room roomy = getRoom(roomID);
                     roomy.setLabelCell(grid[row][col]);
                 }
                 case '*' -> { //Setting Center Cell
                     grid[row][col].setRoomCenter();
-                    Room roomy = getRoom(initial);
+                    Room roomy = getRoom(roomID);
                     roomy.setCenterCell(grid[row][col]);
                 }
                 case '^' -> {
@@ -153,8 +154,8 @@ public class Board {
                     grid[row][col].setDoorway();
                 }
                 default -> {//The last item that will fall to default will be Secret Cells
-                    grid[row][col].setSecretPassage(key); //Assigning Secret cell/Room logic
-                    Room roomy = getRoom(initial);
+                    grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
+                    Room roomy = getRoom(roomID);
                     roomy.setSecretCell(grid[row][col]);
                 }
 
