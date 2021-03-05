@@ -50,16 +50,11 @@ public class Board {
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            if (data.contains("//"))   //Edit out pesky comments :)
-                continue;
-
-            //Configures each Room with name and identifier & then sets the room
-            setupRoom(data);
+            if (!data.contains("//")) //Edit out pesky comments :)
+                setupRoom(data); //Configures each Room with name and identifier & then sets the room
         }
+        inFile.close();
     }
-
-
-
 
     private void setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
         String[] array = data.split(",", 3); //Split this array into 3 using the comma as the delimiter
@@ -70,6 +65,7 @@ public class Board {
             room.setName(array[1].trim()); //Assign name -> Trim whitespace
             data = array[2].trim(); //Next 2 lines are converting string to character
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
+
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
             throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
@@ -86,14 +82,15 @@ public class Board {
             //For each index in splitData
             for (var index : splitData) { //var is equivalent to auto, I think they make the for-each loops read more intuitively
                 String cleanData = index.trim();
-                char key = cleanData.charAt(0);
+                char roomID = cleanData.charAt(0);
 
-                if (roomMap.containsKey(key))
+                if (roomMap.containsKey(roomID))
                     csvData.add(cleanData); //Now the data has been refined from raw input
                 else
-                    throw new BadConfigFormatException(key);
+                    throw new BadConfigFormatException(roomID); //Means an undefined letter was found in the file data
             }
         }
+        inFile.close();
         int gridSize = setRowsCols(csvData);
         if (num_cols * num_rows == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file
