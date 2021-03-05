@@ -53,12 +53,15 @@ public class Board {
             if (data.contains("//"))   //Edit out pesky comments :)
                 continue;
 
-            Room room = setupRoom(data); //Configures room with name and identifier
-            roomMap.put(room.getIdentifier(), room); //Add it to the map
+            //Configures each Room with name and identifier & then sets the room
+            setupRoom(data);
         }
     }
 
-    private Room setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
+
+
+
+    private void setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
         String[] array = data.split(",", 3); //Split this array into 3 using the comma as the delimiter
         Room room = new Room(); //Create a room
         String cardCheck = array[0].trim(); //Exception Testing Variable
@@ -67,7 +70,7 @@ public class Board {
             room.setName(array[1].trim()); //Assign name -> Trim whitespace
             data = array[2].trim(); //Next 2 lines are converting string to character
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
-            return room;
+            setRoom(room);//Effectively adding the Room to the roomMap
         } else
             throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
     }
@@ -333,8 +336,7 @@ public class Board {
         setNumRows(rows);
         return size;
     }
+    private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
-    private void setNumCols(int cols) {
-        num_cols = cols;
-    }
+    private void setNumCols(int cols) { num_cols = cols; }
 }
