@@ -15,6 +15,8 @@ public class Board {
     private int num_rows;
     private int num_cols;
 
+
+
     private static Board theInstance = new Board();
 
     //Private constructor to ensure only one -> Singleton Pattern
@@ -118,7 +120,7 @@ public class Board {
             for (int col = 0; col < num_cols; col++) {
                 String csv = csvData.get(index);
                 //Now that the grid is built you can assign all the doors to a particular Room
-                countTheExits(row, col, csv);
+                assignDoors(row, col, csv);
                 index++;
             }
         }
@@ -142,7 +144,7 @@ public class Board {
                     grid[row][col].setDoorway();
                 }
                 case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL
-                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in countTheExits method after grid is filled
+                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in assignDoors method after grid is filled
                     grid[row][col].setDoorway();
                 }
                 case '>' -> {
@@ -166,7 +168,7 @@ public class Board {
     to fill (*) center cell adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
     are directly adjacent.  ALl the Rooms have 2-6 doors on our SpaceShip design.
      */
-    private void countTheExits(int row, int col, String csv) {
+    private void assignDoors(int row, int col, String csv) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
             switch (key) {
@@ -230,7 +232,7 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
-            char roomID = cell.getInitial();//this inspired me to sealTheRooms so this would work smoothly
+            char roomID = cell.getInitial();//this inspired me to assignDoors so this would work smoothly
             Room room = getRoom(roomID);
             ArrayList<BoardCell> theRoom = room.getDoorCells();
 
