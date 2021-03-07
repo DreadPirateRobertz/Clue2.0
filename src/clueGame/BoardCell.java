@@ -6,7 +6,7 @@ import java.util.Set;
 public class BoardCell {
     private int row, col;
     private char initial;
-    private char secretPassage = '0'; //It's null setting distracts me in the debugger so I set it to '0'
+    private char secretPassage;
     private DoorDirection doorDirection;
     private boolean roomCenter, roomLabel, doorway, occupied;
     private Set<BoardCell> adjList;
@@ -14,6 +14,7 @@ public class BoardCell {
     public BoardCell(int row, int col) {
         this.row = row;
         this.col = col;
+        secretPassage = '0'; //It's null setting distracts me in the debugger so I set it to '0'
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }

@@ -15,19 +15,14 @@ public class Board {
     private int num_rows;
     private int num_cols;
 
-
-
     private static Board theInstance = new Board();
-
     //Private constructor to ensure only one -> Singleton Pattern
     private Board() {
         super();
     }
-
     public static Board getInstance() {
         return theInstance;
     }
-
 
     public void initialize() {//Set-up board
         visited = new HashSet<>();
@@ -200,10 +195,10 @@ public class Board {
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
 
-        if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())
-            addItUp(cell, row, col); //Primitives such as chars cannot use .equals method
+        if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())//Primitives such as chars cannot use .equals method
+            addStandardAdj(cell, row, col);
         else if (cell.isDoorway()) {
-            addItUp(cell, row, col);
+            addStandardAdj(cell, row, col);
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
                 case RIGHT -> {
                     Room room = getRoom(grid[row][col + 1]);
@@ -254,7 +249,7 @@ public class Board {
         cell.addAdjacency(secretRoomCenter);
     }
 
-    private void addItUp(BoardCell cell, int row, int col) { //Normal adjacency rules for adding cells
+    private void addStandardAdj(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
         if (col < num_cols - 1) {
             BoardCell cell_Right = getCell(row, col + 1);
 
