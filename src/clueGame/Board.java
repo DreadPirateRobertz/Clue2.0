@@ -96,7 +96,7 @@ public class Board {
             throw new BadConfigFormatException(gridSize, num_rows, num_cols);//Wrong size....you get a custom exception:)
     }
 
-    private void buildGameGrid(ArrayList<String> csvData) {
+    private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
         grid = new BoardCell[num_rows][num_cols];//Initialize game grid
         int index = 0; //Using this index variable to cycle through the ArrayList of csvData
         for (int row = 0; row < num_rows; row++) {
@@ -120,7 +120,7 @@ public class Board {
             }
         }
     }
-    private void classify_room_symbology(int row, int col, String csv, char roomID) {
+    private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
             switch (symbol) {
@@ -151,11 +151,14 @@ public class Board {
                     grid[row][col].setDoorway();
                 }
                 default -> {//The last item that will fall to default will be Secret Cells
-                    grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
-                    Room roomy = getRoom(roomID);
-                    roomy.setSecretCell(grid[row][col]);
+                    if(roomMap.containsKey(symbol)) {
+                        grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
+                        Room roomy = getRoom(roomID);
+                        roomy.setSecretCell(grid[row][col]);
+                    }
+                    else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
+                        throw new BadConfigFormatException(symbol);//just in case there's a secret cell with an invalid secret passageway
                 }
-
             }
         }
     }
@@ -173,7 +176,7 @@ public class Board {
                 }
                 case '<' -> {
                     Room roomy = getRoom(grid[row][col - 1]); //The <<<<door is pointing to which Room
-                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<Boardcell> doorCells
+                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<BoardCell> doorCells
                 }
                 case '>' -> {
                     Room roomy = getRoom(grid[row][col + 1]);
