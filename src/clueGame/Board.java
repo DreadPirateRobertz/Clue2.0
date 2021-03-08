@@ -150,14 +150,14 @@ public class Board {
                     grid[row][col].setDoorDirection(DoorDirection.DOWN);
                     grid[row][col].setDoorway();
                 }
-                default -> {//The last item that will fall to default will be Secret Cells
+                default -> {//The last item that will fall to default should be Secret Cells
                     if(roomMap.containsKey(symbol)) {
                         grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
                         Room roomy = getRoom(roomID);
                         roomy.setSecretCell(grid[row][col]);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
-                        throw new BadConfigFormatException(symbol);//just in case there's a secret cell with an invalid secret passageway/also catches any errant character that isn't a doorway
+                        throw new BadConfigFormatException(symbol);//just in case there's an errand SECOND character in the layout file
                 }
             }
         }
