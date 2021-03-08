@@ -186,7 +186,7 @@ public class Board {
                     Room roomy = getRoom(grid[row + 1][col]);
                     roomy.setDoorCell(grid[row][col]);
                 }
-            }
+            } //All necessary error checking should have been done and adding a default to break seems redundant
         }
     }
 
