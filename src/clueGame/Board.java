@@ -157,7 +157,7 @@ public class Board {
                         roomy.setSecretCell(grid[row][col]);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
-                        throw new BadConfigFormatException(symbol);//just in case there's an errand SECOND character in the layout file
+                        throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
                 }
             }
         }
