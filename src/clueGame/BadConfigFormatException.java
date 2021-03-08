@@ -33,10 +33,10 @@ public class BadConfigFormatException extends Exception {
         appendToLog(csq);
     }
     public BadConfigFormatException(int size, int rows, int cols) throws FileNotFoundException {
-        super("There is a size mismatch of your data size of " + size +" being not of equal size to the grid size of " + rows + "x" + cols + " you require "
+        super("There is a size mismatch of your data size of " + size +" being not of equal size to the grid size of " + rows + "x" + cols + ". You require a data size of "
                         + rows*cols + " to fit this grid");
 
-        CharSequence csq = "There is a size mismatch of your data size of " + size + " being not of equal size to the grid size of " + rows + "x" + cols + " you require "
+        CharSequence csq = "There is a size mismatch of your data size of " + size + " being not of equal size to the grid size of " + rows + "x" + cols + ". You require a data size of "
                 + rows*cols + " to fit this grid";    //Tried to clean up but super needs to be first and was weird about casting a csq to String
         appendToLog(csq);
     }
