@@ -33,17 +33,17 @@ public class BadConfigFormatException extends Exception {
         appendToLog(csq);
     }
     public BadConfigFormatException(int size, int rows, int cols) throws FileNotFoundException {
-        super("There is a size mismatch of your data size of " + size +" being not of equal size to the grid size of " + rows + "x" + cols + ". You require a data size of "
-                        + rows*cols + " to fit this grid");
+        super("There is a size mismatch of your data size of " + size +" being insufficient to fill the grid[" + rows + "x" + cols + "]. You require a data size of "
+                        + rows*cols);
 
-        CharSequence csq = "There is a size mismatch of your data size of " + size + " being not of equal size to the grid size of " + rows + "x" + cols + ". You require a data size of "
-                + rows*cols + " to fit this grid";    //Tried to clean up but super needs to be first and was weird about casting a csq to String
+        CharSequence csq = "There is a size mismatch of your data size of " + size + " being insufficient to fill the grid[" + rows + "x" + cols + "]. You require a data size of "
+                + rows*cols;    //Tried to clean up but super needs to be first and was weird about casting a csq to String
         appendToLog(csq);
     }
 
     private void appendToLog(CharSequence csq) {
         out.append(csq);
-        out.append('\n');
+        out.append("\n");
         out.close();
     }
 

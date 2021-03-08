@@ -8,12 +8,11 @@
 /httpRequests/
 *.ini
 *.iml
-/.idea/*.xml
+/.idea
+/out
 /.idea/*.ini
 /Tests/Tests/*.ini
 /Tests/*.ini
 .classpath
-OldClueLayout.xlsx
 .project
-/logfile.txt
 /data/logfile.txt
