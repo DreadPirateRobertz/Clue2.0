@@ -81,7 +81,7 @@ public class Board {
                 String cleanData = index.trim();
                 char roomID = cleanData.charAt(0);
 
-                if (roomMap.containsKey(roomID))
+                if (roomMap.containsKey(roomID))//Debated making an isRoom method but it's clunky and this conveys meaning better, used only one other time in code
                     csvData.add(cleanData); //Now the data has been refined from raw input
                 else
                     throw new BadConfigFormatException(roomID); //Means an undefined letter was found in the file data
@@ -157,7 +157,7 @@ public class Board {
                         roomy.setSecretCell(grid[row][col]);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
-                        throw new BadConfigFormatException(symbol);//just in case there's a secret cell with an invalid secret passageway
+                        throw new BadConfigFormatException(symbol);//just in case there's a secret cell with an invalid secret passageway/also catches any errant character that isn't a doorway
                 }
             }
         }
@@ -230,7 +230,7 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
-            char roomID = cell.getInitial();//this inspired me to assignDoors so this would work smoothly
+            char roomID = cell.getInitial();//this inspired me to write the assignDoors method so this would work smoothly
             Room room = getRoom(roomID);
             ArrayList<BoardCell> theRoom = room.getDoorCells();
 
