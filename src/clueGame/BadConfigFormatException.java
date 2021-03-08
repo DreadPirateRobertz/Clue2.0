@@ -28,8 +28,8 @@ public class BadConfigFormatException extends Exception {
         appendToLog(csq);
     }
     public BadConfigFormatException(char key) throws FileNotFoundException {
-        super(key + " is not recognized as being part of this layout, please check your setup configuration");
-        CharSequence csq = key + " is not recognized as being part of this layout, please check your setup configuration";
+        super(key + " is not recognized as being part of this layout, please check your configuration file(s)");
+        CharSequence csq = key + " is not recognized as being part of this layout, please check your configuration file(s)";
         appendToLog(csq);
     }
     public BadConfigFormatException(int size, int rows, int cols) throws FileNotFoundException {
