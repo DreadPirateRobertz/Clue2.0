@@ -112,6 +112,7 @@ public class Board {
             }
         }
     }
+
     private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
@@ -184,7 +185,6 @@ public class Board {
                         center = room.getCenterCell();
                         doorway.addAdjacency(center);
                         center.addAdjacency(doorway);
-
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
@@ -202,9 +202,7 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center
-            char roomID = cell.getInitial();//this inspired me to write the assignDoors method so this would work smoothly
-            room = getRoom(roomID);
-
+            room = getRoom(cell);
             if (room.getSecretCell() != null)//Is there a secret passageway?
                 addSecret(cell, room); //If there is a secret passage this leads you to center (*) cell of that room
         }
@@ -248,6 +246,7 @@ public class Board {
         targets.clear();//Reset
         findAllTargets(startCell, pathLength);
     }
+
     private void findAllTargets(BoardCell thisCell, int numSteps) {
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
 
