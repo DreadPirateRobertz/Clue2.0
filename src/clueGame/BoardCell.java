@@ -18,6 +18,9 @@ public class BoardCell {
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }
+    public BoardCell(){
+
+    }
 
     //Getters
     public Set<BoardCell> getAdjList() { return adjList; }
@@ -25,13 +28,14 @@ public class BoardCell {
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }
     public boolean getOccupied() { return occupied; }
+                    //Is'ers
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() {
         return roomLabel;
     }
     public boolean isRoomCenter() { return roomCenter; }
     //Setters
-    public void addAdjacency(BoardCell cell) { adjList.add(cell); }
+    public void addAdjacency(BoardCell cell) { adjList.add(cell); }  //My OCD will be changing this to set, post code review.
     public void setInitial(char initial) { this.initial = initial; }
     public void setDoorway() { doorway = true; }
     public void setDoorDirection(DoorDirection doorDirection) {

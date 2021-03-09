@@ -123,16 +123,17 @@ public class Board {
     private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
+            Room room = new Room();
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     grid[row][col].setLabel();
-                    Room roomy = getRoom(roomID);
-                    roomy.setLabelCell(grid[row][col]);
+                    room = getRoom(roomID);
+                    room.setLabelCell(grid[row][col]);
                 }
                 case '*' -> { //Setting Center Cell
                     grid[row][col].setRoomCenter();
-                    Room roomy = getRoom(roomID);
-                    roomy.setCenterCell(grid[row][col]);
+                    room = getRoom(roomID);
+                    room.setCenterCell(grid[row][col]);
                 }
                 case '^' -> {
                     grid[row][col].setDoorDirection(DoorDirection.UP);
@@ -153,8 +154,8 @@ public class Board {
                 default -> {//The last item that will fall to default should be Secret Cells
                     if(roomMap.containsKey(symbol)) {
                         grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
-                        Room roomy = getRoom(roomID);
-                        roomy.setSecretCell(grid[row][col]);
+                        room = getRoom(roomID);
+                        room.setSecretCell(grid[row][col]);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
                         throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
@@ -169,22 +170,23 @@ public class Board {
     private void assignDoors(int row, int col, String csv) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
+            Room room = new Room();
             switch (key) {
                 case '^' -> {
-                    Room roomy = getRoom(grid[row - 1][col]);
-                    roomy.setDoorCell(grid[row][col]);
+                    room = getRoom(grid[row - 1][col]);
+                    room.setDoorCell(grid[row][col]);
                 }
                 case '<' -> {
-                    Room roomy = getRoom(grid[row][col - 1]); //The <<<<door is pointing to which Room
-                    roomy.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<BoardCell> doorCells
+                    room = getRoom(grid[row][col - 1]); //The <<<<door is pointing to which Room
+                    room.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<BoardCell> doorCells
                 }
                 case '>' -> {
-                    Room roomy = getRoom(grid[row][col + 1]);
-                    roomy.setDoorCell(grid[row][col]);
+                    room = getRoom(grid[row][col + 1]);
+                    room.setDoorCell(grid[row][col]);
                 }
                 case 'v' -> {
-                    Room roomy = getRoom(grid[row + 1][col]);
-                    roomy.setDoorCell(grid[row][col]);
+                    room = getRoom(grid[row + 1][col]);
+                    room.setDoorCell(grid[row][col]);
                 }
             } //All necessary error checking should have been done and adding a default to break seems redundant
         }
@@ -200,31 +202,30 @@ public class Board {
 
         if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
+
         else if (cell.isDoorway()) {
             addWalkways(cell, row, col);
+            BoardCell center = new BoardCell();
+            Room room = new Room();
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
                 case RIGHT -> {
-                    Room room = getRoom(grid[row][col + 1]);
-                    BoardCell center = room.getCenterCell();
-
+                    room = getRoom(grid[row][col + 1]);
+                    center = room.getCenterCell();
                     cell.addAdjacency(center);
                 }
                 case LEFT -> {
-                    Room room = getRoom(grid[row][col - 1]);
-                    BoardCell center = room.getCenterCell();
-
+                    room = getRoom(grid[row][col - 1]);
+                    center = room.getCenterCell();
                     cell.addAdjacency(center);
                 }
                 case UP -> {
-                    Room room = getRoom(grid[row - 1][col]);
-                    BoardCell center = room.getCenterCell();
-
+                    room = getRoom(grid[row - 1][col]);
+                    center = room.getCenterCell();
                     cell.addAdjacency(center);
                 }
                 case DOWN -> {
-                    Room room = getRoom(grid[row + 1][col]);
-                    BoardCell center = room.getCenterCell();
-
+                    room = getRoom(grid[row + 1][col]);
+                    center = room.getCenterCell();
                     cell.addAdjacency(center);
                 }
             }
