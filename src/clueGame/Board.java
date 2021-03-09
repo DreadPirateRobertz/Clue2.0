@@ -199,40 +199,41 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
+        BoardCell center;
+        Room room;
 
-        if (cell.getInitial() != 'X' && !cell.isDoorway() && !cell.isRoomCenter())//Primitives such as chars cannot use .equals method
+        if (cell.getInitial() == 'W') {//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
 
-        else if (cell.isDoorway()) {
-            addWalkways(cell, row, col);
-            BoardCell center;
-            Room room;
-            switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
-                case RIGHT -> {
-                    room = getRoom(grid[row][col + 1]);
-                    center = room.getCenterCell();
-                    cell.addAdjacency(center);
-                }
-                case LEFT -> {
-                    room = getRoom(grid[row][col - 1]);
-                    center = room.getCenterCell();
-                    cell.addAdjacency(center);
-                }
-                case UP -> {
-                    room = getRoom(grid[row - 1][col]);
-                    center = room.getCenterCell();
-                    cell.addAdjacency(center);
-                }
-                case DOWN -> {
-                    room = getRoom(grid[row + 1][col]);
-                    center = room.getCenterCell();
-                    cell.addAdjacency(center);
+            if (cell.isDoorway()) {
+
+                switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
+                    case RIGHT -> {
+                        room = getRoom(grid[row][col + 1]);
+                        center = room.getCenterCell();
+                        cell.addAdjacency(center);
+                    }
+                    case LEFT -> {
+                        room = getRoom(grid[row][col - 1]);
+                        center = room.getCenterCell();
+                        cell.addAdjacency(center);
+                    }
+                    case UP -> {
+                        room = getRoom(grid[row - 1][col]);
+                        center = room.getCenterCell();
+                        cell.addAdjacency(center);
+                    }
+                    case DOWN -> {
+                        room = getRoom(grid[row + 1][col]);
+                        center = room.getCenterCell();
+                        cell.addAdjacency(center);
+                    }
                 }
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
             char roomID = cell.getInitial();//this inspired me to write the assignDoors method so this would work smoothly
-            Room room = getRoom(roomID);
+            room = getRoom(roomID);
             ArrayList<BoardCell> theRoom = room.getDoorCells();
 
             //Using var here because it's less cluttered and easier to read w/o BoardCell type
