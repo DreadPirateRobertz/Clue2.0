@@ -162,42 +162,40 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
-        BoardCell center;
+        BoardCell center, door;
         Room room;
 
         if (cell.getInitial() == 'W') {//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
+                door = cell; //Making it explicit and hopefully more readable was the intention
 
-                switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
+                switch (door.getDoorDirection()) {
                     case RIGHT -> {
                         room = getRoom(grid[row][col + 1]);
                         center = room.getCenterCell();
-
-                        center.addAdjacency(cell);//This will add the room center to the door's adj list
-                        cell.addAdjacency(center);//This will add the door to the center's adj list
+                        door.addAdjacency(center); //This will add the room center to the door's adj list
+                        center.addAdjacency(door); //This will add the door to the center's adj list
                     }                             //Note: Originally was assigning doors to the room with a separate method
-                    case LEFT -> {                //and was taking care of this logic in the else-if below but it was functionality that was not needed and reduced code and time complexity
+                    case LEFT -> {               //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         room = getRoom(grid[row][col - 1]);
                         center = room.getCenterCell();
+                        door.addAdjacency(center);
+                        center.addAdjacency(door);
 
-                        center.addAdjacency(cell);
-                        cell.addAdjacency(center);
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
                         center = room.getCenterCell();
-
-                        center.addAdjacency(cell);
-                        cell.addAdjacency(center);
+                        door.addAdjacency(center);
+                        center.addAdjacency(door);
                     }
                     case DOWN -> {
                         room = getRoom(grid[row + 1][col]);
                         center = room.getCenterCell();
-
-                        center.addAdjacency(cell);
-                        cell.addAdjacency(center);
+                        door.addAdjacency(center);
+                        center.addAdjacency(door);
                     }
                 }
             }
@@ -223,25 +221,21 @@ public class Board {
     private void addWalkways(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
         if (col < num_cols - 1) {
             BoardCell cell_Right = getCell(row, col + 1);
-
             if (cell_Right.getInitial() == 'W')
                 cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
         if (col > 0) {
             BoardCell cell_Left = getCell(row, col - 1);
-
             if (cell_Left.getInitial() == 'W')
                 cell.addAdjacency(cell_Left);
         }
         if (row > 0) {
             BoardCell cell_Up = getCell(row - 1, col);
-
             if (cell_Up.getInitial() == 'W')
                 cell.addAdjacency(cell_Up);
         }
         if (row < num_rows - 1) {
             BoardCell cell_Down = getCell(row + 1, col);
-
             if (cell_Down.getInitial() == 'W')
                 cell.addAdjacency(cell_Down);
         }
