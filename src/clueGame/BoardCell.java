@@ -32,7 +32,7 @@ public class BoardCell {
     }
     public boolean isRoomCenter() { return roomCenter; }
     //Setters
-    public void addAdjacency(BoardCell cell) { adjList.add(cell); }  //My OCD will be changing this to set, post code review.
+    public void addAdjacency(BoardCell cell) { adjList.add(cell); }
     public void setInitial(char initial) { this.initial = initial; }
     public void setDoorway() { doorway = true; }
     public void setDoorDirection(DoorDirection doorDirection) {

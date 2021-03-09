@@ -174,24 +174,28 @@ public class Board {
                     case RIGHT -> {
                         room = getRoom(grid[row][col + 1]);
                         center = room.getCenterCell();
-                        center.addAdjacency(cell);  //This will add the door to the center cell's adj list
-                        cell.addAdjacency(center); //This will add the room center to the door //Originally was assigning doors to the room with a separate method
-                    }                                                                          //and was taking care of this logic in the else-if below
-                    case LEFT -> {
+
+                        center.addAdjacency(cell);//This will add the room center to the door's adj list
+                        cell.addAdjacency(center);//This will add the door to the center's adj list
+                    }                             //Note: Originally was assigning doors to the room with a separate method
+                    case LEFT -> {                //and was taking care of this logic in the else-if below but it was functionality that was not needed and reduced code and time complexity
                         room = getRoom(grid[row][col - 1]);
                         center = room.getCenterCell();
+
                         center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
                         center = room.getCenterCell();
+
                         center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
                     case DOWN -> {
                         room = getRoom(grid[row + 1][col]);
                         center = room.getCenterCell();
+
                         center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
