@@ -110,15 +110,6 @@ public class Board {
                 index++;
             }
         }
-        index = 0;
-        for (int row = 0; row < num_rows; row++) {
-            for (int col = 0; col < num_cols; col++) {
-                String csv = csvData.get(index);
-                //Now that the grid is built you can assign all the doors to a particular Room
-                assignDoors(row, col, csv);
-                index++;
-            }
-        }
     }
     private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
@@ -139,8 +130,8 @@ public class Board {
                     grid[row][col].setDoorDirection(DoorDirection.UP);
                     grid[row][col].setDoorway();
                 }
-                case '<' -> { //Setting doors to cells....you can't set ALL the doors to the Room...yet because everything around you is NULL
-                    grid[row][col].setDoorDirection(DoorDirection.LEFT);//this will be done in assignDoors method after grid is filled
+                case '<' -> {
+                    grid[row][col].setDoorDirection(DoorDirection.LEFT);
                     grid[row][col].setDoorway();
                 }
                 case '>' -> {
@@ -163,34 +154,6 @@ public class Board {
             }
         }
     }
-    /*Function is going to help out a lot because then you don't have to do any nasty hard code or sloppy code
-    to fill (*) center cell adjacency conditions.  The center of the Room space acts as a single space and all doorways and secret passageways
-    are directly adjacent.  ALl the Rooms have 2-6 doors on our SpaceShip design.
-     */
-    private void assignDoors(int row, int col, String csv) {
-        if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
-            char key = csv.charAt(1);
-            Room room;
-            switch (key) {
-                case '^' -> {
-                    room = getRoom(grid[row - 1][col]);
-                    room.setDoorCell(grid[row][col]);
-                }
-                case '<' -> {
-                    room = getRoom(grid[row][col - 1]); //The <<<<door is pointing to which Room
-                    room.setDoorCell(grid[row][col]);  //Assigning the doors to an ArrayList<BoardCell> doorCells
-                }
-                case '>' -> {
-                    room = getRoom(grid[row][col + 1]);
-                    room.setDoorCell(grid[row][col]);
-                }
-                case 'v' -> {
-                    room = getRoom(grid[row + 1][col]);
-                    room.setDoorCell(grid[row][col]);
-                }
-            } //All necessary error checking should have been done and adding a default to break seems redundant
-        }
-    }
 
     private void findAdjacencies() {
         for (int row = 0; row < num_rows; row++)  //Sets all the adjacency lists for each cell
@@ -211,34 +174,33 @@ public class Board {
                     case RIGHT -> {
                         room = getRoom(grid[row][col + 1]);
                         center = room.getCenterCell();
-                        cell.addAdjacency(center);
-                    }
+                        center.addAdjacency(cell);  //This will add the door to the center cell's adj list
+                        cell.addAdjacency(center); //This will add the room center to the door //Originally was assigning doors to the room with a separate method
+                    }                                                                          //and was taking care of this logic in the else-if below
                     case LEFT -> {
                         room = getRoom(grid[row][col - 1]);
                         center = room.getCenterCell();
+                        center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
                         center = room.getCenterCell();
+                        center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
                     case DOWN -> {
                         room = getRoom(grid[row + 1][col]);
                         center = room.getCenterCell();
+                        center.addAdjacency(cell);
                         cell.addAdjacency(center);
                     }
                 }
             }
         }
-        else if (cell.isRoomCenter()) { //Explicit Room center, Pretty proud of this code block
+        else if (cell.isRoomCenter()) { //Explicit Room center
             char roomID = cell.getInitial();//this inspired me to write the assignDoors method so this would work smoothly
             room = getRoom(roomID);
-            ArrayList<BoardCell> theRoom = room.getDoorCells();
-
-            //Using var here because it's less cluttered and easier to read w/o BoardCell type
-            for (var door : theRoom)  //For each door in theRoom  //var is equivalent to auto in c++
-                cell.addAdjacency(door);//assign each to the center (*) cell
 
             if (room.getSecretCell() != null)//Is there a secret passageway?
                 addSecret(cell, room); //If there is a secret passage this leads you to center (*) cell of that room
@@ -306,7 +268,6 @@ public class Board {
             visited.remove(adjCell);//Remove from visited list
         }
     }
-
 
     //Getters
     public Set<BoardCell> getAdjList(int row, int col) {

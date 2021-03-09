@@ -6,10 +6,7 @@ public class Room {
     private String name;
     private char identifier;
     private BoardCell labelCell, centerCell, secretCell;
-    private ArrayList<BoardCell> doorCells = new ArrayList<>();
-
     //Getters
-    public ArrayList<BoardCell> getDoorCells() { return doorCells; }//Now, it'll be easy to retrieve all the doors when doing the center (*) cell's adjacency list
     public BoardCell getCenterCell() {
         return centerCell;
     }
@@ -18,9 +15,6 @@ public class Room {
     public String getName() { return name; }
     public BoardCell getLabelCell() { return labelCell; }
     //Setters
-    public void setDoorCell(BoardCell doorCell) {
-        doorCells.add(doorCell);
-    }
     public void setIdentifier(char identifier) {
         this.identifier = identifier;
     }
