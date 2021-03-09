@@ -99,6 +99,7 @@ public class Board {
     private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
         grid = new BoardCell[num_rows][num_cols];//Initialize game grid
         int index = 0; //Using this index variable to cycle through the ArrayList of csvData
+
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col] = new BoardCell(row, col);
@@ -162,40 +163,40 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
-        BoardCell center, door;
+        BoardCell center, doorway;
         Room room;
 
         if (cell.getInitial() == 'W') {//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
-                door = cell; //Making it explicit and hopefully more readable was the intention
+                doorway = cell; //Making it explicit and hopefully more readable was the intention
 
-                switch (door.getDoorDirection()) {
+                switch (doorway.getDoorDirection()) { //This is the Way :)
                     case RIGHT -> {
                         room = getRoom(grid[row][col + 1]);
                         center = room.getCenterCell();
-                        door.addAdjacency(center); //This will add the room center to the door's adj list
-                        center.addAdjacency(door); //This will add the door to the center's adj list
-                    }                             //Note: Originally was assigning doors to the room with a separate method
-                    case LEFT -> {               //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
+                        doorway.addAdjacency(center);//This will add the room center to the doorway's adj list
+                        center.addAdjacency(doorway);//This will add the doorway to the center's adj list
+                    }                               //Note: Originally was assigning doors to the Room with a separate method
+                    case LEFT -> {                 //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         room = getRoom(grid[row][col - 1]);
                         center = room.getCenterCell();
-                        door.addAdjacency(center);
-                        center.addAdjacency(door);
+                        doorway.addAdjacency(center);
+                        center.addAdjacency(doorway);
 
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
                         center = room.getCenterCell();
-                        door.addAdjacency(center);
-                        center.addAdjacency(door);
+                        doorway.addAdjacency(center);
+                        center.addAdjacency(doorway);
                     }
                     case DOWN -> {
                         room = getRoom(grid[row + 1][col]);
                         center = room.getCenterCell();
-                        door.addAdjacency(center);
-                        center.addAdjacency(door);
+                        doorway.addAdjacency(center);
+                        center.addAdjacency(doorway);
                     }
                 }
             }
@@ -268,9 +269,7 @@ public class Board {
     }
 
     //Getters
-    public Set<BoardCell> getAdjList(int row, int col) {
-        return getCell(row, col).getAdjList();
-    }
+    public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
     public int getNumRows() { return num_rows; }
