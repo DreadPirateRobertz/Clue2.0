@@ -123,7 +123,7 @@ public class Board {
     private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
-            Room room = new Room();
+            Room room;
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     grid[row][col].setLabel();
@@ -170,7 +170,7 @@ public class Board {
     private void assignDoors(int row, int col, String csv) {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char key = csv.charAt(1);
-            Room room = new Room();
+            Room room;
             switch (key) {
                 case '^' -> {
                     room = getRoom(grid[row - 1][col]);
@@ -205,8 +205,8 @@ public class Board {
 
         else if (cell.isDoorway()) {
             addWalkways(cell, row, col);
-            BoardCell center = new BoardCell();
-            Room room = new Room();
+            BoardCell center;
+            Room room;
             switch (cell.getDoorDirection()) { //Center cells are directly adjacent to all doorways
                 case RIGHT -> {
                     room = getRoom(grid[row][col + 1]);

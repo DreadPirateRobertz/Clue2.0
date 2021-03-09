@@ -18,9 +18,6 @@ public class BoardCell {
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }
-    public BoardCell(){
-
-    }
 
     //Getters
     public Set<BoardCell> getAdjList() { return adjList; }
