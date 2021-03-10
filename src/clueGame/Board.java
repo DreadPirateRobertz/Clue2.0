@@ -64,9 +64,11 @@ public class Board {
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
 
             if(cardCheck.equals("Space")) {
-                if (!array[1].trim().equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
-                    room.setWalkway();               //Also this would cover a hallway or breezeway or whatever someone desired to use for a "Walkway"
-            }                                       //Considered naming the method setUsableSpace but this name seems to flow well with the class model
+                String theSpace = array[1].trim();
+
+                if (!theSpace.equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
+                    room.setWalkway();         //Also this would cover a hallway or breezeway or whatever someone desired to use for a "Walkway"
+            }                                 //Considered naming the method setUsableSpace but this name seems to flow well with the class model
 
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
@@ -179,8 +181,8 @@ public class Board {
                 doorWay = cell; //Making it explicit and hopefully more readable was the intention
 
                 switch (doorWay.getDoorDirection()) { //This is the Way...I wanted to emphasize the directional component of this special walkway
-                    case RIGHT -> {
-                        theRoom = getRoom(grid[row][col + 1]);//theRoom -> room..."That's being pointed to"
+                    case RIGHT -> {//theRoom -> room..."That's being pointed to"
+                        theRoom = getRoom(grid[row][col + 1]);
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
                         centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
