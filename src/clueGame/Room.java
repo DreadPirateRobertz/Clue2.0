@@ -17,6 +17,8 @@ public class Room {
     public BoardCell getSecretCell() { return secretCell; }
     public String getName() { return name; }
     public BoardCell getLabelCell() { return labelCell; }
+                    //Is'ers
+    public boolean isWalkWay() {return walkWay;}
     //Setters
     public void setIdentifier(char identifier) {
         this.identifier = identifier;
@@ -31,6 +33,6 @@ public class Room {
     public void setCenterCell(BoardCell cell){ centerCell = cell; }
     public void setWalkway(){walkWay = true;}
 
-    public boolean isWalkWay() {return walkWay;}
+
 
 }

@@ -65,8 +65,9 @@ public class Board {
 
             if(cardCheck.equals("Space")) {
                 if (!array[1].trim().equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
-                    room.setWalkway();               //Also this would cover a hallway or breezeway or whatever someone wanted to use for a "Walkway"
+                    room.setWalkway();               //Also this would cover a hallway or breezeway or whatever someone desired to use for a "Walkway"
             }
+
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
             throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
