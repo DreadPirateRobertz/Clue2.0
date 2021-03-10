@@ -25,7 +25,7 @@ public class BoardCell {
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }
     public boolean getOccupied() { return occupied; }
-                    //Is'ers
+    //Is'ers
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() {
         return roomLabel;

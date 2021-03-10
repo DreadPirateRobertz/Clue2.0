@@ -17,7 +17,7 @@ public class Room {
     public BoardCell getSecretCell() { return secretCell; }
     public String getName() { return name; }
     public BoardCell getLabelCell() { return labelCell; }
-                    //Is'ers
+    //Is'ers
     public boolean isWalkWay() {return walkWay;}
     //Setters
     public void setIdentifier(char identifier) {

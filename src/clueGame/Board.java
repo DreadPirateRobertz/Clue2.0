@@ -280,7 +280,7 @@ public class Board {
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
-                         //Is'ers
+    //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     //Setters
     public void setConfigFiles(String layout, String legend) {
