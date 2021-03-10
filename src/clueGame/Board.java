@@ -170,8 +170,8 @@ public class Board {
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
         BoardCell centerCell, doorWay;
-        Room theRoom;//Since the cell is not in this actual room,
-                    //I liked this variable choice over room, which I find more appropriate in earlier functions
+        Room room, theRoom;//I find distinguishing between these two provides value since theRoom is meant when 'cell' is pointing to theRoom
+                          //and when I use 'room' it is to convey the 'cell' is actually in the room
         if (isWalkway(cell)) {
             addWalkways(cell, row, col);
 
@@ -207,9 +207,9 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center
-            theRoom = getRoom(cell);
-            if (theRoom.getSecretCell() != null)//Is there a secret cell?
-                addSecret(cell, theRoom); //This method leads you to center (*) cell of that room
+            room = getRoom(cell);
+            if (room.getSecretCell() != null)//Is there a secret cell?
+                addSecret(cell, room); //This method leads you to center (*) cell of that room
         }
     }
 
