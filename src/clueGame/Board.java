@@ -106,28 +106,27 @@ public class Board {
                 String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
                 char roomID = csv.charAt(0); //Storing the first index of csv into roomID
 
-                grid[row][col].setInitial(roomID); //Filling in the grid according to the data harnessed from the ArrayList csvData
-                if (csv.length() > 1)  //If string has special characters contained after the initial let's sort them out!
-                    classify_room_symbology(row, col, csv, roomID);
+                grid[row][col].setInitial(roomID);//Setting cell initial which is a Room identifier
+                if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
+                    char symbol = csv.charAt(1);
+                    classify_room_symbology(grid[row][col], symbol);
+                }
                 index++;
             }
         }
     }
 
-    private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
-            char symbol = csv.charAt(1);
+    private void classify_room_symbology(BoardCell cell, char symbol) throws FileNotFoundException, BadConfigFormatException {
             Room room;
-            BoardCell cell = grid[row][col]; //Broadened scope (not sure if I like this yet or not)
-
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     cell.setLabel();
-                    room = getRoom(roomID); //I could use the alternate getter here to add cell directly if I wanted to and not even pass roomID into the function
+                    room = getRoom(cell); //I could use the alternate getter here to add cell directly if I wanted to and not even pass roomID into the function
                     room.setLabelCell(cell);//but it breaks up the code and improves readability
                 }
                 case '*' -> { //Setting Center Cell
                     cell.setRoomCenter();
-                    room = getRoom(roomID);
+                    room = getRoom(cell);
                     room.setCenterCell(cell);
                 }
                 case '^' -> {
@@ -149,7 +148,7 @@ public class Board {
                 default -> {//The last item that will fall to default should be Secret Cells
                     if(roomMap.containsKey(symbol)) {
                         cell.setSecretPassage(symbol); //Assigning Secret cell/Room logic
-                        room = getRoom(roomID);
+                        room = getRoom(cell);
                         room.setSecretCell(cell);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
@@ -204,8 +203,8 @@ public class Board {
         }
         else if (cell.isRoomCenter()) { //Explicit Room center
             room = getRoom(cell);
-            if (room.getSecretCell() != null)//Is there a secret passageway?
-                addSecret(cell, room); //If there is a secret passage this leads you to center (*) cell of that room
+            if (room.getSecretCell() != null)//Is there a secret cell?
+                addSecret(cell, room); //This method leads you to center (*) cell of that room
         }
     }
 
