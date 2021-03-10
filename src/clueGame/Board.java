@@ -67,7 +67,7 @@ public class Board {
                 String theSpace = array[1].trim();
 
                 if (!theSpace.equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
-                    room.setWalkway();         //Also this would cover a hallway or breezeway or whatever someone desired to use for a "Walkway"
+                    room.setWalkway();         //Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for a "Walkway"
             }                                 //Considered naming the method setUsableSpace but this name seems to flow well with the class model
 
             setRoom(room);//Effectively adding the Room to the roomMap
@@ -172,8 +172,8 @@ public class Board {
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
         BoardCell centerCell, doorWay;
-        Room room, theRoom;//I find distinguishing between these two provides value since theRoom is meant when 'cell' is pointing to theRoom
-                          //and when I use 'room' it is to convey the 'cell' is actually in the room
+        Room theRoom;
+
         if (isWalkway(cell)) {
             addWalkways(cell, row, col);
 
@@ -209,19 +209,19 @@ public class Board {
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center
-            room = getRoom(cell);
-            if (room.getSecretCell() != null)//Is there a secret cell?
-                addSecret(cell, room); //This method leads you to center (*) cell of that room
+            BoardCell secretCell = getRoom(cell).getSecretCell();
+
+            if (secretCell != null)//Is there a secret cell?
+                addSecret(cell, secretCell); //This method leads you to center (*) cell of that room
         }
     }
 
-    private void addSecret(BoardCell cell, Room room) {
-        BoardCell secretCell = room.getSecretCell(); //Find the secret cell
+    private void addSecret(BoardCell cell, BoardCell secretCell) {
         char secretKey = secretCell.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
         Room secretRoom = getRoom(secretKey); //Put in the secretKey to obtain the secretRoom
-        BoardCell secretCenterCell = secretRoom.getCenterCell();//To unveil the Center(*)
+        BoardCell secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
 
-        cell.addAdjacency(secretCenterCell);
+        cell.addAdjacency(secretRoomCenter);
     }
 
     private void addWalkways(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
