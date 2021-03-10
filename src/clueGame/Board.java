@@ -88,7 +88,7 @@ public class Board {
                 String cleanData = index.trim();
                 char roomID = cleanData.charAt(0);
 
-                if (roomMap.containsKey(roomID))//Debated making an isRoom method but it's clunky and this conveys meaning better, used only one other time in code
+                if (isRoom(roomID))
                     csvData.add(cleanData); //Now the data has been refined from raw input
                 else
                     throw new BadConfigFormatException(roomID); //Means an undefined letter was found in the file data
@@ -153,7 +153,7 @@ public class Board {
                     cell.setDoorway();
                 }
                 default -> {//The last item that will fall to default should be Secret Cells
-                    if(roomMap.containsKey(symbol)) {
+                    if(isRoom(symbol)) {
                         cell.setSecretPassage(symbol); //Assigning Secret cell/Room logic
                         room = getRoom(cell);
                         room.setSecretCell(cell);
@@ -284,6 +284,7 @@ public class Board {
     public Set<BoardCell> getTargets() { return targets; }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
+    private boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public void setConfigFiles(String layout, String legend) {
         setupConfigFile = legend;
