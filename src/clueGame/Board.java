@@ -153,7 +153,7 @@ public class Board {
                     cell.setDoorway();
                 }
                 default -> {//The last item that will fall to default should be Secret Cells
-                    if(isRoom(symbol)) {
+                    if(isRoom(symbol)) { //If it's gotten to here and fails then this means it's not a Room or any approved symbol
                         cell.setSecretPassage(symbol); //Assigning Secret cell/Room logic
                         room = getRoom(cell);
                         room.setSecretCell(cell);
