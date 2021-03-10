@@ -107,14 +107,14 @@ public class Board {
                 char roomID = csv.charAt(0); //Storing the first index of csv into roomID
 
                 grid[row][col].setInitial(roomID); //Filling in the grid according to the data harnessed from the ArrayList csvData
-                classify_room_symbology(row, col, csv, roomID);
+                if (csv.length() > 1)  //If string has special characters contained after the initial let's sort them out!
+                    classify_room_symbology(row, col, csv, roomID);
                 index++;
             }
         }
     }
 
     private void classify_room_symbology(int row, int col, String csv, char roomID) throws FileNotFoundException, BadConfigFormatException {
-        if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
             Room room;
             BoardCell cell = grid[row][col]; //Broadened scope (not sure if I like this yet or not)
@@ -122,7 +122,7 @@ public class Board {
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     cell.setLabel();
-                    room = getRoom(roomID); //I could use the alternate getter to add cell directly if I wanted to and not even pass it into the function
+                    room = getRoom(roomID); //I could use the alternate getter here to add cell directly if I wanted to and not even pass roomID into the function
                     room.setLabelCell(cell);//but it breaks up the code and improves readability
                 }
                 case '*' -> { //Setting Center Cell
@@ -157,7 +157,6 @@ public class Board {
                 }
             }
         }
-    }
 
     private void findAdjacencies() {
         for (int row = 0; row < num_rows; row++)  //Sets all the adjacency lists for each cell
