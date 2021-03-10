@@ -169,10 +169,10 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
-        BoardCell center, doorWay;
-        Room room;
+        BoardCell centerCell, doorWay;
+        Room theRoom;
 
-        if (isWalkway(cell)) {//Primitives such as chars cannot use .equals method
+        if (isWalkway(cell)) {
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
@@ -180,36 +180,36 @@ public class Board {
 
                 switch (doorWay.getDoorDirection()) { //This is the Way...I wanted to emphasize the directional component of this special walkway
                     case RIGHT -> {
-                        room = getRoom(grid[row][col + 1]);
-                        center = room.getCenterCell();
-                        doorWay.addAdjacency(center);//This will add the room center to the doorWay's adj list
-                        center.addAdjacency(doorWay);//This will add the doorWay to the center's adj list
+                        theRoom = getRoom(grid[row][col + 1]);//theRoom -> room..."That's being pointed to"
+                        centerCell = theRoom.getCenterCell();
+                        doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
+                        centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
                     }                               //Note: Originally was assigning doors to the Room with a separate method
                     case LEFT -> {                 //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
-                        room = getRoom(grid[row][col - 1]);
-                        center = room.getCenterCell();
-                        doorWay.addAdjacency(center);
-                        center.addAdjacency(doorWay);
+                        theRoom = getRoom(grid[row][col - 1]);
+                        centerCell = theRoom.getCenterCell();
+                        doorWay.addAdjacency(centerCell);
+                        centerCell.addAdjacency(doorWay);
                     }
                     case UP -> {
-                        room = getRoom(grid[row - 1][col]);
-                        center = room.getCenterCell();
-                        doorWay.addAdjacency(center);
-                        center.addAdjacency(doorWay);
+                        theRoom = getRoom(grid[row - 1][col]);
+                        centerCell = theRoom.getCenterCell();
+                        doorWay.addAdjacency(centerCell);
+                        centerCell.addAdjacency(doorWay);
                     }
                     case DOWN -> {
-                        room = getRoom(grid[row + 1][col]);
-                        center = room.getCenterCell();
-                        doorWay.addAdjacency(center);
-                        center.addAdjacency(doorWay);
+                        theRoom = getRoom(grid[row + 1][col]);
+                        centerCell = theRoom.getCenterCell();
+                        doorWay.addAdjacency(centerCell);
+                        centerCell.addAdjacency(doorWay);
                     }
                 }
             }
         }
         else if (cell.isRoomCenter()) { //Explicit Room center
-            room = getRoom(cell);
-            if (room.getSecretCell() != null)//Is there a secret cell?
-                addSecret(cell, room); //This method leads you to center (*) cell of that room
+            theRoom = getRoom(cell);
+            if (theRoom.getSecretCell() != null)//Is there a secret cell?
+                addSecret(cell, theRoom); //This method leads you to center (*) cell of that room
         }
     }
 
@@ -302,5 +302,4 @@ public class Board {
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) { num_cols = cols; }
-
 }
