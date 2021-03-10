@@ -170,8 +170,8 @@ public class Board {
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
         BoardCell centerCell, doorWay;
-        Room theRoom;
-
+        Room theRoom;//Since the cell is not in this actual room,
+                    //I liked this variable choice over room, which I find more appropriate in earlier functions
         if (isWalkway(cell)) {
             addWalkways(cell, row, col);
 
