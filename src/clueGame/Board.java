@@ -60,7 +60,7 @@ public class Board {
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
             room.setName(array[1].trim()); //Assign name -> Trim whitespace
-            data = array[2].trim(); //Next 2 lines are converting string to character
+            data = array[2].trim();
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
 
             if(cardCheck.equals("Space")) {
@@ -219,9 +219,9 @@ public class Board {
         BoardCell secretCell = room.getSecretCell(); //Find the secret cell
         char secretKey = secretCell.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
         Room secretRoom = getRoom(secretKey); //Put in the secretKey to obtain the secretRoom
-        BoardCell secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
+        BoardCell secretCenterCell = secretRoom.getCenterCell();//To unveil the Center(*)
 
-        cell.addAdjacency(secretRoomCenter);
+        cell.addAdjacency(secretCenterCell);
     }
 
     private void addWalkways(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
