@@ -14,7 +14,7 @@ public class BoardCell {
     public BoardCell(int row, int col) {
         this.row = row;
         this.col = col;
-        secretPassage = '0'; //It's null setting distracts me in the debugger so I set it to '0'
+        secretPassage = '0'; //Its null setting distracts me in the debugger so I set it to '0'
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }

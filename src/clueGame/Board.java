@@ -121,8 +121,8 @@ public class Board {
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
                     cell.setLabel();
-                    room = getRoom(cell); //I could use the alternate getter here to add cell directly if I wanted to and not even pass roomID into the function
-                    room.setLabelCell(cell);//but it breaks up the code and improves readability
+                    room = getRoom(cell);
+                    room.setLabelCell(cell);
                 }
                 case '*' -> { //Setting Center Cell
                     cell.setRoomCenter();
