@@ -66,7 +66,7 @@ public class Board {
             if(cardCheck.equals("Space")) {
                 if (!array[1].trim().equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
                     room.setWalkway();               //Also this would cover a hallway or breezeway or whatever someone desired to use for a "Walkway"
-            }
+            }                                       //Considered naming the method setUsableSpace but this name seems to flow well with the class model
 
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
