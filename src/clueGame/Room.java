@@ -5,7 +5,10 @@ import java.util.ArrayList;
 public class Room {
     private String name;
     private char identifier;
-    private BoardCell labelCell, centerCell, secretCell;
+    private BoardCell labelCell;
+    private BoardCell centerCell;
+    private BoardCell secretCell;
+    private boolean walkWay;
     //Getters
     public BoardCell getCenterCell() {
         return centerCell;
@@ -26,4 +29,8 @@ public class Room {
         labelCell = cell;
     }
     public void setCenterCell(BoardCell cell){ centerCell = cell; }
+    public void setWalkway(){walkWay = true;}
+
+    public boolean isWalkWay() {return walkWay;}
+
 }

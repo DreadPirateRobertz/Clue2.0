@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-
 public class Board {
     private Set<BoardCell> targets;
     private Set<BoardCell> visited;
@@ -14,6 +13,7 @@ public class Board {
     private String setupConfigFile;
     private int num_rows;
     private int num_cols;
+
 
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
@@ -63,6 +63,10 @@ public class Board {
             data = array[2].trim(); //Next 2 lines are converting string to character
             room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
 
+            if(cardCheck.equals("Space")) {
+                if (!array[1].trim().equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
+                    room.setWalkway();               //Also this would cover a hallway or breezeway or whatever someone wanted to use for a "Walkway"
+            }
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
             throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
@@ -167,7 +171,7 @@ public class Board {
         BoardCell center, doorWay;
         Room room;
 
-        if (cell.getInitial() == 'W') {//Primitives such as chars cannot use .equals method
+        if (isWalkway(cell)) {//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
@@ -220,22 +224,22 @@ public class Board {
     private void addWalkways(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
         if (col < num_cols - 1) {
             BoardCell cell_Right = getCell(row, col + 1);
-            if (cell_Right.getInitial() == 'W')
+            if (isWalkway(cell_Right))
                 cell.addAdjacency(cell_Right); //Refactored variables for readability
         }
         if (col > 0) {
             BoardCell cell_Left = getCell(row, col - 1);
-            if (cell_Left.getInitial() == 'W')
+            if (isWalkway(cell_Left))
                 cell.addAdjacency(cell_Left);
         }
         if (row > 0) {
             BoardCell cell_Up = getCell(row - 1, col);
-            if (cell_Up.getInitial() == 'W')
+            if (isWalkway(cell_Up))
                 cell.addAdjacency(cell_Up);
         }
         if (row < num_rows - 1) {
             BoardCell cell_Down = getCell(row + 1, col);
-            if (cell_Down.getInitial() == 'W')
+            if (isWalkway(cell_Down))
                 cell.addAdjacency(cell_Down);
         }
     }
@@ -275,6 +279,8 @@ public class Board {
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
+                         //Is'ers
+    public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     //Setters
     public void setConfigFiles(String layout, String legend) {
         setupConfigFile = legend;
@@ -295,4 +301,5 @@ public class Board {
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) { num_cols = cols; }
+
 }
