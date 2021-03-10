@@ -117,38 +117,40 @@ public class Board {
         if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
             char symbol = csv.charAt(1);
             Room room;
+            BoardCell cell = grid[row][col]; //Broadened scope (not sure if I like this yet or not)
+
             switch (symbol) {
                 case '#' -> { //Setting Label Cell
-                    grid[row][col].setLabel();
-                    room = getRoom(roomID);
-                    room.setLabelCell(grid[row][col]);
+                    cell.setLabel();
+                    room = getRoom(roomID); //I could use the alternate getter to add cell directly if I wanted to and not even pass it into the function
+                    room.setLabelCell(cell);//but it breaks up the code and improves readability
                 }
                 case '*' -> { //Setting Center Cell
-                    grid[row][col].setRoomCenter();
+                    cell.setRoomCenter();
                     room = getRoom(roomID);
-                    room.setCenterCell(grid[row][col]);
+                    room.setCenterCell(cell);
                 }
                 case '^' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.UP);
-                    grid[row][col].setDoorway();
+                    cell.setDoorDirection(DoorDirection.UP);
+                    cell.setDoorway();
                 }
                 case '<' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.LEFT);
-                    grid[row][col].setDoorway();
+                    cell.setDoorDirection(DoorDirection.LEFT);
+                    cell.setDoorway();
                 }
                 case '>' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.RIGHT);
-                    grid[row][col].setDoorway();
+                    cell.setDoorDirection(DoorDirection.RIGHT);
+                    cell.setDoorway();
                 }
                 case 'v' -> {
-                    grid[row][col].setDoorDirection(DoorDirection.DOWN);
-                    grid[row][col].setDoorway();
+                    cell.setDoorDirection(DoorDirection.DOWN);
+                    cell.setDoorway();
                 }
                 default -> {//The last item that will fall to default should be Secret Cells
                     if(roomMap.containsKey(symbol)) {
-                        grid[row][col].setSecretPassage(symbol); //Assigning Secret cell/Room logic
+                        cell.setSecretPassage(symbol); //Assigning Secret cell/Room logic
                         room = getRoom(roomID);
-                        room.setSecretCell(grid[row][col]);
+                        room.setSecretCell(cell);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
                         throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
@@ -164,39 +166,39 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
-        BoardCell center, doorway;
+        BoardCell center, doorWay;
         Room room;
 
         if (cell.getInitial() == 'W') {//Primitives such as chars cannot use .equals method
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
-                doorway = cell; //Making it explicit and hopefully more readable was the intention
+                doorWay = cell; //Making it explicit and hopefully more readable was the intention
 
-                switch (doorway.getDoorDirection()) { //This is the Way :)
+                switch (doorWay.getDoorDirection()) { //This is the Way...I wanted to emphasize the directional component of this special walkway
                     case RIGHT -> {
                         room = getRoom(grid[row][col + 1]);
                         center = room.getCenterCell();
-                        doorway.addAdjacency(center);//This will add the room center to the doorway's adj list
-                        center.addAdjacency(doorway);//This will add the doorway to the center's adj list
+                        doorWay.addAdjacency(center);//This will add the room center to the doorWay's adj list
+                        center.addAdjacency(doorWay);//This will add the doorWay to the center's adj list
                     }                               //Note: Originally was assigning doors to the Room with a separate method
                     case LEFT -> {                 //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         room = getRoom(grid[row][col - 1]);
                         center = room.getCenterCell();
-                        doorway.addAdjacency(center);
-                        center.addAdjacency(doorway);
+                        doorWay.addAdjacency(center);
+                        center.addAdjacency(doorWay);
                     }
                     case UP -> {
                         room = getRoom(grid[row - 1][col]);
                         center = room.getCenterCell();
-                        doorway.addAdjacency(center);
-                        center.addAdjacency(doorway);
+                        doorWay.addAdjacency(center);
+                        center.addAdjacency(doorWay);
                     }
                     case DOWN -> {
                         room = getRoom(grid[row + 1][col]);
                         center = room.getCenterCell();
-                        doorway.addAdjacency(center);
-                        center.addAdjacency(doorway);
+                        doorWay.addAdjacency(center);
+                        center.addAdjacency(doorWay);
                     }
                 }
             }
