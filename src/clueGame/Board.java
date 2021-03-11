@@ -5,14 +5,14 @@ import java.io.FileReader;
 import java.util.*;
 
 public class Board {
-    private Set<BoardCell> targets;
-    private Set<BoardCell> visited;
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
+    private Set<BoardCell> targets;
+    private Set<BoardCell> visited;
+    private static int num_rows;
+    private static int num_cols;
     private String layoutConfigFile;
     private String setupConfigFile;
-    private int num_rows;
-    private int num_cols;
 
 
     private static Board theInstance = new Board();
@@ -165,7 +165,7 @@ public class Board {
         }
 
     private void findAdjacencies() {
-        for (int row = 0; row < num_rows; row++)  //Sets all the adjacency lists for each cell
+        for (int row = 0; row < num_rows; row++)//Sets all the adjacency lists for each cell
             for (int col = 0; col < num_cols; col++)
                 calcAdjacencies(grid[row][col], row, col);
     }
@@ -178,11 +178,11 @@ public class Board {
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
-                doorWay = cell; //Making it explicit and hopefully more readable was the intention
+                doorWay = cell;//Making it explicit and hopefully more readable was the intention
 
-                switch (doorWay.getDoorDirection()) { //This is the Way...I wanted to emphasize the directional component of this special walkway
-                    case RIGHT -> {//theRoom -> room..."That's being pointed to"
-                        theRoom = getRoom(grid[row][col + 1]);
+                switch (doorWay.getDoorDirection()) {//This is the Way...I wanted to emphasize the directional component of this special walkway
+                    case RIGHT -> {
+                        theRoom = getRoom(grid[row][col + 1]);//theRoom -> "That's being pointed to"
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
                         centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
