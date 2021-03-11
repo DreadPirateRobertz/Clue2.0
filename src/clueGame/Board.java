@@ -48,7 +48,7 @@ public class Board {
         {
             String data = inFile.nextLine();
             if (!data.contains("//")) //Edit out pesky comments :)
-                setupRoom(data); //Configures each Room with name and identifier & then sets the room
+                setupRoom(data);//Configures each Room with name and identifier & then sets the room
         }
         inFile.close();
     }
@@ -59,9 +59,9 @@ public class Board {
         String cardCheck = array[0].trim(); //Exception Testing Variable
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
-            room.setName(array[1].trim()); //Assign name -> Trim whitespace
+            room.setName(array[1].trim());//Assign name -> Trim whitespace
             data = array[2].trim();
-            room.setIdentifier(data.charAt(0)); //Initial/Identifier extracted
+            room.setIdentifier(data.charAt(0));//Initial/Identifier extracted
 
             if(cardCheck.equals("Space")) {
                 String theSpace = array[1].trim();
@@ -81,15 +81,15 @@ public class Board {
 
         while (inFile.hasNext())//Go until EOF
         {
-            String data = inFile.nextLine(); //Grab it all
+            String data = inFile.nextLine();//Grab it all
             String[] splitData = data.split(","); //Harness the data
             //For each index in splitData
-            for (var index : splitData) { //var is equivalent to auto, I think they make the for-each loops read more intuitively
+            for (var index : splitData) {//var is equivalent to auto, I think they make the for-each loops read more intuitively
                 String cleanData = index.trim();
                 char roomID = cleanData.charAt(0);
 
                 if (isRoom(roomID))
-                    csvData.add(cleanData); //Now the data has been refined from raw input
+                    csvData.add(cleanData);//Now the data has been refined from raw input
                 else
                     throw new BadConfigFormatException(roomID); //Means an undefined letter was found in the file data
             }
@@ -105,16 +105,16 @@ public class Board {
 
     private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
         grid = new BoardCell[num_rows][num_cols];//Initialize game grid
-        int index = 0; //Using this index variable to cycle through the ArrayList of csvData
+        int index = 0;//Using this index variable to cycle through the ArrayList of csvData
 
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col] = new BoardCell(row, col);
-                String csv = csvData.get(index);  //Grabbing the string from the ArrayList with the index
-                char roomID = csv.charAt(0); //Storing the first index of csv into roomID
+                String csv = csvData.get(index);//Grabbing the string from the ArrayList with the index
+                char roomID = csv.charAt(0);//Storing the first index of csv into roomID
 
                 grid[row][col].setInitial(roomID);//Setting cell initial which is a Room identifier
-                if (csv.length() > 1) { //If string has special characters contained after the initial let's sort them out!
+                if (csv.length() > 1) {//If string has special characters contained after the initial let's sort them out!
                     char symbol = csv.charAt(1);
                     classify_room_symbology(grid[row][col], symbol);
                 }
@@ -126,12 +126,12 @@ public class Board {
     private void classify_room_symbology(BoardCell cell, char symbol) throws FileNotFoundException, BadConfigFormatException {
             Room room;
             switch (symbol) {
-                case '#' -> { //Setting Label Cell
+                case '#' -> {//Setting Label Cell
                     cell.setLabel();
                     room = getRoom(cell);
                     room.setLabelCell(cell);
                 }
-                case '*' -> { //Setting Center Cell
+                case '*' -> {//Setting Center Cell
                     cell.setRoomCenter();
                     room = getRoom(cell);
                     room.setCenterCell(cell);
@@ -153,9 +153,9 @@ public class Board {
                     cell.setDoorway();
                 }
                 default -> {//The last item that will fall to default should be Secret Cells
-                    if(isRoom(symbol)) { //If it's gotten to here and fails then this means it's not a Room or any approved symbol
-                        cell.setSecretPassage(symbol); //Assigning Secret cell/Room logic
-                        room = getRoom(cell);
+                    if(isRoom(symbol)) {//If it's gotten to here and fails then this means it's not a Room or any approved symbol
+                        cell.setSecretPassage(symbol);
+                        room = getRoom(cell);//Assigning Secret cell/Room logic
                         room.setSecretCell(cell);
                     }
                     else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
@@ -178,16 +178,16 @@ public class Board {
             addWalkways(cell, row, col);
 
             if (cell.isDoorway()) {
-                doorWay = cell;//Making it explicit and hopefully more readable was the intention
-
-                switch (doorWay.getDoorDirection()) {//This is the Way...I wanted to emphasize the directional component of this special walkway
+                doorWay = cell;
+                //This is the Way...I wanted to emphasize the directional component of this special walkway
+                switch (doorWay.getDoorDirection()) {
                     case RIGHT -> {
-                        theRoom = getRoom(grid[row][col + 1]);//theRoom -> "That's being pointed to"
+                        theRoom = getRoom(grid[row][col + 1]);//doorWay------>>>theRoom
                         centerCell = theRoom.getCenterCell();
-                        doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
-                        centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
-                    }                               //Note: Originally was assigning doors to the Room with a separate method
-                    case LEFT -> {                 //and was taking care of this logic in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
+                        doorWay.addAdjacency(centerCell);
+                        centerCell.addAdjacency(doorWay);
+                    }                               //Note: Originally was assigning doorWays to the Room with a separate method that req'd an additional cycle of the grid
+                    case LEFT -> {                 //and was taking care of adding doorWays in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         theRoom = getRoom(grid[row][col - 1]);
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);
@@ -196,8 +196,8 @@ public class Board {
                     case UP -> {
                         theRoom = getRoom(grid[row - 1][col]);
                         centerCell = theRoom.getCenterCell();
-                        doorWay.addAdjacency(centerCell);
-                        centerCell.addAdjacency(doorWay);
+                        doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
+                        centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
                     }
                     case DOWN -> {
                         theRoom = getRoom(grid[row + 1][col]);
@@ -284,7 +284,7 @@ public class Board {
     public Set<BoardCell> getTargets() { return targets; }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
-    private boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
+    public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public void setConfigFiles(String layout, String legend) {
         setupConfigFile = legend;
