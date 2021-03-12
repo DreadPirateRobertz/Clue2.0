@@ -17,8 +17,8 @@ public class BadConfigFormatException extends Exception {
                                                          //Code snippet from StackOverFLow on how to append properly
 
 
-    BadConfigFormatException() throws FileNotFoundException {  //Never triggers in my code since I did a special constructor for each error I encountered
-        super("Error: Incorrect configuration format");       //Leaving in code, for the case of general usage later on
+    BadConfigFormatException() throws FileNotFoundException {//Never triggers in my code since I did a special constructor for each error I encountered
+        super("Error: Incorrect configuration format");     //Leaving in code, for the case of general usage later on
         CharSequence csq = "Error: Incorrect configuration format";
         appendToLog(csq);
     }

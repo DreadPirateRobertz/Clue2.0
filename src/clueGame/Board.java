@@ -7,13 +7,9 @@ import java.util.*;
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
-    private Set<BoardCell> targets;
-    private Set<BoardCell> visited;
-    private static int num_rows;
-    private static int num_cols;
-    private String layoutConfigFile;
-    private String setupConfigFile;
-
+    private Set<BoardCell> targets, visited;
+    private static int num_rows, num_cols;
+    private String setupConfigFile, layoutConfigFile;
 
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
@@ -47,16 +43,16 @@ public class Board {
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            if (!data.contains("//")) //Edit out pesky comments :)
+            if (!data.contains("//"))//Edit out pesky comments :)
                 setupRoom(data);//Configures each Room with name and identifier & then sets the room
         }
         inFile.close();
     }
 
     private void setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
-        String[] array = data.split(",", 3); //Split this array into 3 using the comma as the delimiter
-        Room room = new Room(); //Create a room
-        String cardCheck = array[0].trim(); //Exception Testing Variable
+        String[] array = data.split(",", 3);//Split this array into 3 using the comma as the delimiter
+        Room room = new Room();//Create a room
+        String cardCheck = array[0].trim();//Exception Testing Variable
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
             room.setName(array[1].trim());//Assign name -> Trim whitespace
@@ -64,11 +60,11 @@ public class Board {
             room.setIdentifier(data.charAt(0));//Initial/Identifier extracted
 
             if(cardCheck.equals("Space")) {
-                String theSpace = array[1].trim();
-
-                if (!theSpace.equals("Unused")) //I put this in so I didn't have to hardcode 'W' in the code
-                    room.setWalkway();         //Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for a "Walkway"
-            }                                 //Considered naming the method setUsableSpace but this name seems to flow well with the class model
+                String space = array[1].trim();
+                //if space equals anything but Unused...then setWalkway
+                if (!space.equals("Unused"))//I put this in so I didn't have to hardcode 'W' in the code
+                    room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for a "Walkway"
+            }                       //Considered naming the method setUsableSpace but setWalkway seems to flow well with the class model
 
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
@@ -82,7 +78,7 @@ public class Board {
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();//Grab it all
-            String[] splitData = data.split(","); //Harness the data
+            String[] splitData = data.split(",");//Harness the data
             //For each index in splitData
             for (var index : splitData) {//var is equivalent to auto, I think they make the for-each loops read more intuitively
                 String cleanData = index.trim();
@@ -91,7 +87,7 @@ public class Board {
                 if (isRoom(roomID))
                     csvData.add(cleanData);//Now the data has been refined from raw input
                 else
-                    throw new BadConfigFormatException(roomID); //Means an undefined letter was found in the file data
+                    throw new BadConfigFormatException(roomID);//Means an undefined letter was found in the file data
             }
         }
         inFile.close();
@@ -171,6 +167,7 @@ public class Board {
     }
 
     public void calcAdjacencies(BoardCell cell, int row, int col) {
+        DoorDirection theWay = cell.getDoorDirection();
         BoardCell centerCell, doorWay;
         Room theRoom;
 
@@ -179,15 +176,14 @@ public class Board {
 
             if (cell.isDoorway()) {
                 doorWay = cell;
-                //This is the Way...I wanted to emphasize the directional component of this special walkway
-                switch (doorWay.getDoorDirection()) {
+                switch (theWay) {//This is theWay... :)
                     case RIGHT -> {
                         theRoom = getRoom(grid[row][col + 1]);//doorWay------>>>theRoom
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);
                         centerCell.addAdjacency(doorWay);
-                    }                               //Note: Originally was assigning doorWays to the Room with a separate method that req'd an additional cycle of the grid
-                    case LEFT -> {                 //and was taking care of adding doorWays in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
+                    }                    //Note: Originally was assigning doorWays to the Room with a separate method that req'd an additional cycle of the grid
+                    case LEFT -> {      //and was taking care of adding doorWays in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         theRoom = getRoom(grid[row][col - 1]);
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);
@@ -196,7 +192,7 @@ public class Board {
                     case UP -> {
                         theRoom = getRoom(grid[row - 1][col]);
                         centerCell = theRoom.getCenterCell();
-                        doorWay.addAdjacency(centerCell);//This will add the room centerCell to the doorWay's adj list
+                        doorWay.addAdjacency(centerCell);//This will add the centerCell to the doorWay's adj list
                         centerCell.addAdjacency(doorWay);//This will add the doorWay to the centerCell's adj list
                     }
                     case DOWN -> {
@@ -208,27 +204,27 @@ public class Board {
                 }
             }
         }
-        else if (cell.isRoomCenter()) { //Explicit Room center
+        else if (cell.isRoomCenter()) {//Explicit Room center
             BoardCell secretCell = getRoom(cell).getSecretCell();
 
             if (secretCell != null)//Is there a secret cell?
-                addSecret(cell, secretCell); //This method leads you to center (*) cell of that room
+                addSecret(cell, secretCell);//This method leads you to center (*) cell of that room
         }
     }
 
     private void addSecret(BoardCell cell, BoardCell secretCell) {
-        char secretKey = secretCell.getSecretPassage(); //Obtain the secret key and burrow through the secret passage
-        Room secretRoom = getRoom(secretKey); //Put in the secretKey to obtain the secretRoom
+        char secretKey = secretCell.getSecretPassage();//Obtain the secret key and burrow through the secret passage
+        Room secretRoom = getRoom(secretKey);//Put in the secretKey to obtain the secretRoom
         BoardCell secretRoomCenter = secretRoom.getCenterCell();//To unveil the Center(*)
 
         cell.addAdjacency(secretRoomCenter);
     }
 
-    private void addWalkways(BoardCell cell, int row, int col) { //Standard adjacency rules for adding cells
+    private void addWalkways(BoardCell cell, int row, int col) {//Standard adjacency rules for adding cells
         if (col < num_cols - 1) {
             BoardCell cell_Right = getCell(row, col + 1);
             if (isWalkway(cell_Right))
-                cell.addAdjacency(cell_Right); //Refactored variables for readability
+                cell.addAdjacency(cell_Right);//Refactored variables for readability
         }
         if (col > 0) {
             BoardCell cell_Left = getCell(row, col - 1);
@@ -259,10 +255,10 @@ public class Board {
 
         for (var adjCell : adjacentCells) {//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
             if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter()))
-                continue; //Critical to not do a break right here since you want it to keep cycling through the adjacencies
+                continue;//Critical to not do a break right here since you want it to keep cycling through the adjacencies
 
-            visited.add(adjCell); //Add to visited list
-            if (numSteps == 1 || adjCell.isRoomCenter()) { //Base Case
+            visited.add(adjCell);//Add to visited list
+            if (numSteps == 1 || adjCell.isRoomCenter()) {//Base Case
                 targets.add(adjCell);//BAM
                 if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP advancing
                     continue;
@@ -291,13 +287,13 @@ public class Board {
         layoutConfigFile = layout;
     }
     private Scanner setInFile(String file) throws FileNotFoundException {
-        FileReader reader = new FileReader(file); //So we can read the file
+        FileReader reader = new FileReader(file);//So we can read the file
         return new Scanner(reader);
     }
     private int setRowsCols(ArrayList<String> csvData) {
         int size = csvData.size();
         int cols = (int)Math.sqrt(size);
-        int rows = (int)Math.ceil(size/(double)cols); //ceil rounds UP
+        int rows = (int)Math.ceil(size/(double)cols);//ceil rounds UP
         setNumCols(cols);
         setNumRows(rows);
         return size;

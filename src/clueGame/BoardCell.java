@@ -5,8 +5,7 @@ import java.util.Set;
 
 public class BoardCell {
     private int row, col;
-    private char initial;
-    private char secretPassage;
+    private char initial, secretPassage;
     private DoorDirection doorDirection;
     private boolean roomCenter, roomLabel, doorway, occupied;
     private Set<BoardCell> adjList;
