@@ -23,6 +23,7 @@ public class Board {
     public void initialize() {//Set-up board
         visited = new HashSet<>();
         targets = new HashSet<>();
+        roomMap = new HashMap<>();
 
         try {
             loadSetupConfig();
@@ -37,14 +38,14 @@ public class Board {
     }
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
-        roomMap = new HashMap<>();//Initialize the map
         Scanner inFile = setInFile(setupConfigFile);
 
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            if (!data.contains("//"))//Edit out pesky comments :)
+            if (!data.contains("//")) {//Edit out pesky comments :)
                 setupRoom(data);//Configures each Room with name and identifier & then sets the room
+            }
         }
         inFile.close();
     }
@@ -60,11 +61,13 @@ public class Board {
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
             room.setName(name);
             room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
-            if(cardCheck.equals("Space") && !name.equals("Unused")) //if space equals anything but Unused...then setWalkway...No more hardcoding
-                room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for usable Space
+            if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
+                room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
+            }
             setRoom(room);//Effectively adding the Room to the roomMap
-        } else
+        } else {
             throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
+        }
     }
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -80,10 +83,12 @@ public class Board {
                 String cleanData = index.trim();
                 char roomID = cleanData.charAt(0);
 
-                if (isRoom(roomID))
+                if (isRoom(roomID)) {
                     csvData.add(cleanData);//Now the data has been refined from raw input
-                else
+                }
+                else {
                     throw new BadConfigFormatException(roomID);//Means an undefined letter was found in the file data
+                }
             }
         }
         inFile.close();
@@ -91,8 +96,9 @@ public class Board {
         if (num_cols * num_rows == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file
             findAdjacencies();//Let's build the adjacency lists for each of the cells
-        } else
+        } else {
             throw new BadConfigFormatException(gridSize, num_rows, num_cols);//Wrong size....you get a custom exception:)
+        }
     }
 
     private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
@@ -150,8 +156,9 @@ public class Board {
                         room = getRoom(cell);//Assigning Secret cell/Room logic
                         room.setSecretCell(cell);
                     }
-                    else//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
+                    else {//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
                         throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
+                    }
                 }
             }
         }
@@ -203,8 +210,9 @@ public class Board {
         else if (cell.isRoomCenter()) {//Explicit Room center
             BoardCell secretCell = getRoom(cell).getSecretCell();
 
-            if (secretCell != null)//Is there a secret cell?
+            if (secretCell != null) {//Is there a secret cell?
                 addSecret(cell, secretCell);//This method leads you to center (*) cell of that room
+            }
         }
     }
 
@@ -219,23 +227,27 @@ public class Board {
     private void addWalkways(BoardCell cell, int row, int col) {//Standard adjacency rules for adding cells
         if (col < num_cols - 1) {
             BoardCell cell_Right = getCell(row, col + 1);
-            if (isWalkway(cell_Right))
+            if (isWalkway(cell_Right)) {
                 cell.addAdjacency(cell_Right);//Refactored variables for readability
+            }
         }
         if (col > 0) {
             BoardCell cell_Left = getCell(row, col - 1);
-            if (isWalkway(cell_Left))
+            if (isWalkway(cell_Left)) {
                 cell.addAdjacency(cell_Left);
+            }
         }
         if (row > 0) {
             BoardCell cell_Up = getCell(row - 1, col);
-            if (isWalkway(cell_Up))
+            if (isWalkway(cell_Up)) {
                 cell.addAdjacency(cell_Up);
+            }
         }
         if (row < num_rows - 1) {
             BoardCell cell_Down = getCell(row + 1, col);
-            if (isWalkway(cell_Down))
+            if (isWalkway(cell_Down)) {
                 cell.addAdjacency(cell_Down);
+            }
         }
     }
 
@@ -250,19 +262,19 @@ public class Board {
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
 
         for (var adjCell : adjacentCells) {//I think this is a good use of var(auto in c++) BoardCell seems cumbersome and it conveys the for-each loop explicitly
-            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter()))
+            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter())) {
                 continue;//Critical to not do a break right here since you want it to keep cycling through the adjacencies
-
+            }
             visited.add(adjCell);//Add to visited list
-
             if (numSteps == 1 || adjCell.isRoomCenter()) {//Base Case
                 targets.add(adjCell);//BAM
-                if (adjCell.isRoomCenter()) //If you reach this room center cell...STOP advancing
+                if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP advancing
                     continue;
+                }
             }
-            else
+            else {
                 findAllTargets(adjCell, numSteps - 1); //Recurse
-
+            }
             visited.remove(adjCell);//Remove from visited list
         }
     }
