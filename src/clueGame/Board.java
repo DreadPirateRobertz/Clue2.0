@@ -53,22 +53,20 @@ public class Board {
         String[] array = data.split(",", 3);//Split this array into 3 using the comma as the delimiter
         Room room = new Room();//Create a room
         String cardCheck = array[0].trim();//Exception Testing Variable
+        String name = array[1].trim();
+        data = array[2].trim();
+        char roomID = data.charAt(0);
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
-            room.setName(array[1].trim());//Assign name -> Trim whitespace
-            data = array[2].trim();
-            room.setIdentifier(data.charAt(0));//Initial/Identifier extracted
-
+            room.setName(name);//Assign name -> Trim whitespace
+            room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
             if(cardCheck.equals("Space")) {
-                String space = array[1].trim();
-                //if space equals anything but Unused...then setWalkway
-                if (!space.equals("Unused"))//I put this in so I didn't have to hardcode 'W' in the code
+                if (!name.equals("Unused"))////if space equals anything but Unused...then setWalkway...No more hardcoding
                     room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for a "Walkway"
             }                       //Considered naming the method setUsableSpace but setWalkway seems to flow well with the class model
-
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
-            throw new BadConfigFormatException(cardCheck); //Throws exception if Room card is invalid
+            throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
     }
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -258,14 +256,15 @@ public class Board {
                 continue;//Critical to not do a break right here since you want it to keep cycling through the adjacencies
 
             visited.add(adjCell);//Add to visited list
+
             if (numSteps == 1 || adjCell.isRoomCenter()) {//Base Case
                 targets.add(adjCell);//BAM
-                if (adjCell.isRoomCenter()) {//If you reach this room center cell...STOP advancing
+                if (adjCell.isRoomCenter()) //If you reach this room center cell...STOP advancing
                     continue;
-                }
-            } else {
-                findAllTargets(adjCell, numSteps - 1); //Recurse
             }
+            else
+                findAllTargets(adjCell, numSteps - 1); //Recurse
+
             visited.remove(adjCell);//Remove from visited list
         }
     }

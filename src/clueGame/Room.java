@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Room {
     private String name;
-    private char identifier;
+    private char ID;
     private BoardCell labelCell, centerCell, secretCell;
     private boolean walkWay;
 
@@ -12,15 +12,15 @@ public class Room {
     public BoardCell getCenterCell() {
         return centerCell;
     }
-    public char getIdentifier() { return identifier; }
+    public char getIdentifier() { return ID; }
     public BoardCell getSecretCell() { return secretCell; }
     public String getName() { return name; }
     public BoardCell getLabelCell() { return labelCell; }
     //Is'ers
     public boolean isWalkWay() {return walkWay;}
     //Setters
-    public void setIdentifier(char identifier) {
-        this.identifier = identifier;
+    public void setID(char ID) {
+        this.ID = ID;
     }
     public void setSecretCell(BoardCell secretCell) { this.secretCell = secretCell; }
     public void setName(String name) {
