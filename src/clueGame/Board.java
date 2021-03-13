@@ -58,12 +58,10 @@ public class Board {
         char roomID = data.charAt(0);
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
-            room.setName(name);//Assign name -> Trim whitespace
+            room.setName(name);
             room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
-            if(cardCheck.equals("Space")) {
-                if (!name.equals("Unused"))////if space equals anything but Unused...then setWalkway...No more hardcoding
-                    room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for a "Walkway"
-            }                       //Considered naming the method setUsableSpace but setWalkway seems to flow well with the class model
+            if(cardCheck.equals("Space") && !name.equals("Unused")) //if space equals anything but Unused...then setWalkway...No more hardcoding
+                room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to use for usable Space
             setRoom(room);//Effectively adding the Room to the roomMap
         } else
             throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
@@ -180,8 +178,8 @@ public class Board {
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);
                         centerCell.addAdjacency(doorWay);
-                    }                    //Note: Originally was assigning doorWays to the Room with a separate method that req'd an additional cycle of the grid
-                    case LEFT -> {      //and was taking care of adding doorWays in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
+                    }              //Note: Originally was assigning doorWays to the Room with a separate method that req'd an additional cycle of the grid
+                    case LEFT -> {//and was taking care of adding doorWays in the else-if below but it was functionality that was not needed and this sol'n reduced code and time complexity
                         theRoom = getRoom(grid[row][col - 1]);
                         centerCell = theRoom.getCenterCell();
                         doorWay.addAdjacency(centerCell);
