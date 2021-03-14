@@ -1,13 +1,22 @@
 package clueGame;
 
+import org.junit.jupiter.api.MethodOrderer;
+
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import java.util.Random.*;
 
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
+    private Map<CardType, Set<Card>> cardMap;
+    private Map<String, Player> playerMap;
     private Set<BoardCell> targets, visited;
+    private Set<Card> roomCards;
+    private Set<Card> playerCards;
+    private Set<Card> weaponCards;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
 
@@ -24,6 +33,11 @@ public class Board {
         visited = new HashSet<>();
         targets = new HashSet<>();
         roomMap = new HashMap<>();
+        cardMap = new HashMap<>();
+        playerMap = new HashMap<>();
+        roomCards = new HashSet<>();
+        playerCards = new HashSet<>();
+        weaponCards = new HashSet<>();
 
         try {
             loadSetupConfig();
@@ -39,32 +53,165 @@ public class Board {
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(setupConfigFile);
+        String[] array;
 
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
+            //Split this array into 3 using the comma as the delimiter
             if (!data.contains("//")) {//Edit out pesky comments :)
-                setupRoom(data);//Configures each Room with name and identifier & then sets the room
+
+                if (data.contains("Room") || data.contains("Space")) {
+                    array = data.split(",",3);
+                    setupRoom(array);//Configures each Room with name and identifier & then sets the room
+
+                }
+                else if (data.contains("Person")){
+                    array = data.split(",",5);
+                    setupPlayer(array);
+
+                }
+                else if (data.contains("Weapon")){
+                    array = data.split(",",2);
+                    setupWeapon(array);
+                }
+                else{
+                    throw new BadConfigFormatException();
+                }
             }
         }
         inFile.close();
+        cardMap.put(CardType.ROOM, roomCards);
+        cardMap.put(CardType.PERSON, playerCards);
+        cardMap.put(CardType.WEAPON, weaponCards);
+        deal();
     }
 
-    private void setupRoom(String data) throws BadConfigFormatException, FileNotFoundException {
-        String[] array = data.split(",", 3);//Split this array into 3 using the comma as the delimiter
+    public void deal() {
+        //Setting Solutions cards
+        int x = new Random().nextInt(9);
+        int i = 0;
+
+        for (var room : cardMap.get(CardType.ROOM)) {
+            if (i == x) {
+                Solution.room = room;
+                roomCards.remove(room);
+                cardMap.put(CardType.ROOM, roomCards);
+                break;
+            }
+            i++;
+        }
+        i = 0;
+        x = new Random().nextInt(6);
+        for (var person : cardMap.get(CardType.PERSON)) {
+            if (i == x) {
+                Solution.person = person;
+                playerCards.remove(person);
+                cardMap.put(CardType.PERSON, playerCards);
+                break;
+            }
+            i++;
+        }
+        i = 0;
+        x = new Random().nextInt(6);
+        for (var weapon : cardMap.get(CardType.WEAPON)) {
+            if (i == x) {
+                Solution.weapon = weapon;
+                weaponCards.remove(weapon);
+                cardMap.put(CardType.WEAPON, weaponCards);
+                break;
+            }
+            i++;
+        }
+    }
+    private void setupWeapon(String[] array) throws FileNotFoundException, BadConfigFormatException {
+        String cardCheck = array[0].trim();//Exception Testing Variable
+        String name = array[1].trim();
+        Card card;
+
+        if (cardCheck.equals("Weapon")) {
+            card = new Card(CardType.WEAPON, name);
+            weaponCards.add(card);
+        }
+        else{
+            throw new BadConfigFormatException(cardCheck);
+        }
+
+    }
+    private void setupPlayer(String[] array) throws FileNotFoundException, BadConfigFormatException {
+        String cardCheck = array[0].trim();//Exception Testing Variable
+        String name = array[1].trim();
+        String dataColor = array[2].trim();
+        Color color;
+        Card card;
+        String playerType = array[3].trim();
+        String startLocation = array[4].trim();
+
+
+        switch(dataColor){
+            case "orange" ->{
+                color = Color.orange;
+            }
+            case "magenta" ->{
+                color = Color.magenta;
+            }
+            case "blue" ->{
+                color = Color.blue;
+            }
+            case "cyan" ->{
+                color = Color.cyan;
+            }
+            case "green" ->{
+                color = Color.green;
+            }
+            case "red" ->{
+                color = Color.red;
+            }
+
+            default -> throw new IllegalStateException("Unexpected value: " + dataColor);
+        }
+
+        if (cardCheck.equals("Person")){
+
+            if (playerType.equals("Human")){
+                Human player = new Human(name, color, startLocation);
+                playerMap.put(name, player);
+            }
+            else{
+                Computer player = new Computer(name, color, startLocation);
+                playerMap.put(name, player);
+            }
+            card = new Card(CardType.PERSON, name);
+            playerCards.add(card);
+
+
+        }
+        else {
+            throw new BadConfigFormatException(cardCheck);
+        }
+    }
+
+
+
+    private void setupRoom(String[] array) throws BadConfigFormatException, FileNotFoundException {
         Room room = new Room();//Create a room
         String cardCheck = array[0].trim();//Exception Testing Variable
         String name = array[1].trim();
-        data = array[2].trim();
+        String data = array[2].trim();
         char roomID = data.charAt(0);
+        Card card = new Card(CardType.ROOM, name);
 
         if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
+
             room.setName(name);
             room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
             if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
                 room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
             }
             setRoom(room);//Effectively adding the Room to the roomMap
+            if (cardCheck.equals("Room")) {
+                roomCards.add(card);
+            }
         } else {
             throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
         }
@@ -111,7 +258,7 @@ public class Board {
                 String csv = csvData.get(index);//Grabbing the string from the ArrayList with the index
                 char roomID = csv.charAt(0);//Storing the first index of csv into roomID
 
-                grid[row][col].setInitial(roomID);//Setting cell initial which is a Room identifier
+                grid[row][col].setInitial(roomID);//Setting cell initial which is the roomID
                 if (csv.length() > 1) {//If string has special characters contained after the initial let's sort them out!
                     char symbol = csv.charAt(1);
                     classify_room_symbology(grid[row][col], symbol);
