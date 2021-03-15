@@ -4,6 +4,10 @@ import clueGame.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class gameSetupTests {
@@ -91,6 +95,13 @@ public class gameSetupTests {
         assertFalse(board.getPlayer("Ensign Larry").getMyCards().equals(board.getPlayer("Whipping Boy Todd").getMyCards()));
     }
 
-    //TODO: NEED TEST FOR RANDOM BEHAVIOR
-
+    @Test
+    public void testRandomDeal() {
+        Set<ArrayList<Card>> lottaDeals = new HashSet<>();
+        for (int i = 0; i < 1000; i++) {
+            board.deal();
+            lottaDeals.add(board.getPlayerMapValues());
+        }
+        assertTrue(lottaDeals.size() >= 999);
+    }
 }

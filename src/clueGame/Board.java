@@ -25,65 +25,7 @@ public class Board {
         return theInstance;
     }
 
-    public int getPlayerCount() {
-        return playerCards.size();
-    }
-    public int getPlayerCardTypeCount(){
-        int count = 0;
-        for(var card : playerCards){
-            if(card.getCardType() == CardType.PERSON){
-                count++;
-            }
-        }
-        return count;
-    }
-    public int getAllCardsSize(){
-        return allCards.size();
-    }
-    public int getTotalCardsDealtToPlayers(){
-        int count = 0;
-        for (var list : playerMap.values()) {
-            for (var card : list) {
-                count++;
-            }
-        }
-        return count;
-    }
-    public int getRoomCardTypeCount(){
-        int count = 0;
-        for(var card : roomCards){
-            if(card.getCardType() == CardType.ROOM){
-                count++;
-            }
-        }
-        return count;
-    }
-    public int getWeaponCardTypeCount(){
-        int count = 0;
-        for(var card : weaponCards){
-            if(card.getCardType() == CardType.WEAPON){
-                count++;
-            }
-        }
-        return count;
-    }
 
-    public Player getPlayer(String name){
-        for (var player : playerMap.keySet()){
-            if (player.getName().equals(name)){
-                return player;
-            }
-        }
-        return null;
-    }
-    public boolean isValidPlayer(String name){
-        for (var player : playerCards){
-            if (player.getCardName().equals(name)){
-                return true;
-            }
-        }
-        return false;
-    }
 
     public void initialize() {//Set-up board
         visited = new HashSet<>();
@@ -138,9 +80,6 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-//            System.out.println(Solution.room.getCardName());
-//            System.out.println(Solution.person.getCardName());
-//            System.out.println(Solution.weapon.getCardName());
         }
     }
 
@@ -525,4 +464,72 @@ public class Board {
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) { num_cols = cols; }
+
+    //Testing
+    public int getPlayerCount() {
+        return playerCards.size();
+    }
+    public int getPlayerCardTypeCount(){
+        int count = 0;
+        for(var card : playerCards){
+            if(card.getCardType() == CardType.PERSON){
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getAllCardsSize(){
+        return allCards.size();
+    }
+    public int getTotalCardsDealtToPlayers(){
+        int count = 0;
+        for (var list : playerMap.values()) {
+            for (var card : list) {
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getRoomCardTypeCount(){
+        int count = 0;
+        for(var card : roomCards){
+            if(card.getCardType() == CardType.ROOM){
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getWeaponCardTypeCount(){
+        int count = 0;
+        for(var card : weaponCards){
+            if(card.getCardType() == CardType.WEAPON){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Player getPlayer(String name){
+        for (var player : playerMap.keySet()){
+            if (player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
+    public boolean isValidPlayer(String name){
+        for (var player : playerCards){
+            if (player.getCardName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public ArrayList<Card> getPlayerMapValues() {
+        ArrayList<Card> temp = new ArrayList<>();
+        for (var list : playerMap.values()) {
+            temp.addAll(list);
+        }
+        return temp;
+    }
 }
