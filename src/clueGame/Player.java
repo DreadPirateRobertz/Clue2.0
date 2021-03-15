@@ -22,6 +22,11 @@ public abstract class Player {
     }
 
     private String startLocation;
+
+    public ArrayList<Card> getMyCards() {
+        return myCards;
+    }
+
     private ArrayList<Card> myCards;
     protected int row, col;
 

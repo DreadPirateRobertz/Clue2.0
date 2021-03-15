@@ -2,11 +2,8 @@ package Tests;
 
 import clueGame.*;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.awt.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class gameSetupTests {
@@ -60,7 +57,6 @@ public class gameSetupTests {
         assertEquals(Computer.class, board.getPlayer("Mad Scientist Mikey").getClass());
         assertEquals(Computer.class, board.getPlayer("Commander Sassafras").getClass());
         assertEquals(Computer.class, board.getPlayer("Whipping Boy Todd").getClass());
-
     }
     @Test
     public void testCards() {
@@ -68,7 +64,6 @@ public class gameSetupTests {
         assertEquals(6, board.getPlayerCardTypeCount());
         assertEquals(9, board.getRoomCardTypeCount());
         assertEquals(6, board.getWeaponCardTypeCount());
-        assertEquals(18, board.getTotalCardsDealtToPlayers());
     }
     @Test   //I kept the Solution static because as of right now I don't see the point to creating an instance
     public void testSolution(){
@@ -78,7 +73,22 @@ public class gameSetupTests {
         assertEquals(Card.class, Solution.room.getClass());
         assertEquals(Card.class, Solution.person.getClass());
         assertEquals(Card.class, Solution.weapon.getClass());
-
+    }
+    @Test
+    public void testPlayerDeal(){
+        assertEquals(18, board.getTotalCardsDealtToPlayers());//Total number of cards held by players after deal
+        assertEquals(3, board.getPlayer("Ensign Larry").getMyCards().size());//Assuring even number of cards dealt
+        assertEquals(3, board.getPlayer("Doctor Petunia").getMyCards().size());
+        assertEquals(3, board.getPlayer("Commander Sassafras").getMyCards().size());
+        assertEquals(3, board.getPlayer("Mad Scientist Mikey").getMyCards().size());
+        assertEquals(3, board.getPlayer("Whipping Boy Todd").getMyCards().size());
+        assertEquals(3, board.getPlayer("Prisoner Shifty Eyes").getMyCards().size());
+        assertFalse(board.getPlayer("Prisoner Shifty Eyes").getMyCards().equals(board.getPlayer("Doctor Petunia").getMyCards())); //Testing if any cards dealt twice
+        assertFalse(board.getPlayer("Mad Scientist Mikey").getMyCards().equals(board.getPlayer("Whipping Boy Todd").getMyCards()));
+        assertFalse(board.getPlayer("Prisoner Shifty Eyes").getMyCards().equals(board.getPlayer("Ensign Larry").getMyCards()));
+        assertFalse(board.getPlayer("Ensign Larry").getMyCards().equals(board.getPlayer("Commander Sassafras").getMyCards()));
+        assertFalse(board.getPlayer("Mad Scientist Mikey").getMyCards().equals(board.getPlayer("Commander Sassafras").getMyCards()));
+        assertFalse(board.getPlayer("Ensign Larry").getMyCards().equals(board.getPlayer("Whipping Boy Todd").getMyCards()));
     }
 
     //TODO: NEED TEST FOR RANDOM BEHAVIOR
