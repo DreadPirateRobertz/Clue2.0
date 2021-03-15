@@ -1,24 +1,23 @@
 package clueGame;
 
-import org.junit.jupiter.api.MethodOrderer;
-
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-import java.util.Random.*;
 
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
-    private Map<CardType, Set<Card>> cardMap;
-    private Map<String, Player> playerMap;
+    private Map<Player, ArrayList<Card>> playerMap;
     private Set<BoardCell> targets, visited;
-    private Set<Card> roomCards;
-    private Set<Card> playerCards;
-    private Set<Card> weaponCards;
+    private ArrayList<Card> roomCards;
+    private ArrayList<Card> playerCards;
+    private ArrayList<Card> weaponCards;
+    private ArrayList<Card> allCards;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
+
+
 
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
@@ -33,11 +32,11 @@ public class Board {
         visited = new HashSet<>();
         targets = new HashSet<>();
         roomMap = new HashMap<>();
-        cardMap = new HashMap<>();
         playerMap = new HashMap<>();
-        roomCards = new HashSet<>();
-        playerCards = new HashSet<>();
-        weaponCards = new HashSet<>();
+        roomCards = new ArrayList<>();
+        playerCards = new ArrayList<>();
+        weaponCards = new ArrayList<>();
+        allCards = new ArrayList<>();
 
         try {
             loadSetupConfig();
@@ -62,68 +61,85 @@ public class Board {
             if (!data.contains("//")) {//Edit out pesky comments :)
 
                 if (data.contains("Room") || data.contains("Space")) {
-                    array = data.split(",",3);
+                    array = data.split(",", 3);
                     setupRoom(array);//Configures each Room with name and identifier & then sets the room
 
-                }
-                else if (data.contains("Person")){
-                    array = data.split(",",5);
+                } else if (data.contains("Person")) {
+                    array = data.split(",", 5);
                     setupPlayer(array);
 
-                }
-                else if (data.contains("Weapon")){
-                    array = data.split(",",2);
+                } else if (data.contains("Weapon")) {
+                    array = data.split(",", 2);
                     setupWeapon(array);
-                }
-                else{
+                } else {
                     throw new BadConfigFormatException();
                 }
             }
         }
         inFile.close();
-        cardMap.put(CardType.ROOM, roomCards);
-        cardMap.put(CardType.PERSON, playerCards);
-        cardMap.put(CardType.WEAPON, weaponCards);
         deal();
     }
 
-    public void deal() {
-        //Setting Solutions cards
-        int x = new Random().nextInt(9);
-        int i = 0;
 
-        for (var room : cardMap.get(CardType.ROOM)) {
-            if (i == x) {
-                Solution.room = room;
-                roomCards.remove(room);
-                cardMap.put(CardType.ROOM, roomCards);
+
+    public void deal() {
+
+
+        Collections.shuffle(roomCards);
+        Collections.shuffle(playerCards);
+        Collections.shuffle(weaponCards);
+        for (var x : playerCards) {
+            for (var y : roomCards) {
+                for (var z : weaponCards) {
+                    Solution.person = x;
+                    Solution.room = y;
+                    Solution.weapon = z;
+                    playerCards.remove(x);
+                    roomCards.remove(y);
+                    weaponCards.remove(z);
+                    allCards.remove(x);
+                    allCards.remove(y);
+                    allCards.remove(z);
+                    break;
+                }
                 break;
             }
-            i++;
+            break;
         }
-        i = 0;
-        x = new Random().nextInt(6);
-        for (var person : cardMap.get(CardType.PERSON)) {
-            if (i == x) {
-                Solution.person = person;
-                playerCards.remove(person);
-                cardMap.put(CardType.PERSON, playerCards);
-                break;
+
+        int cardAllotment = allCards.size() / playerMap.keySet().size();
+        ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
+        for (var player : playerMap.keySet()) {
+            Collections.shuffle(allCards);
+            Random random = new Random();
+            Player randomKey = keys.get(random.nextInt(keys.size()));//This allows me totally random access to my playerMap
+            keys.remove(randomKey);
+            ArrayList<Card> cardLoader = new ArrayList<>();
+            int x = cardAllotment;
+
+            for (var card : allCards) {
+                if (x > 0) {
+                    cardLoader.add(card);
+                    x--;
+                }
+                else{
+                    for (var pick : cardLoader){
+                        allCards.remove(pick);
+                    }
+                    break;
+                }
             }
-            i++;
+            playerMap.put(randomKey, cardLoader);
+            Collections.shuffle(allCards);
         }
-        i = 0;
-        x = new Random().nextInt(6);
-        for (var weapon : cardMap.get(CardType.WEAPON)) {
-            if (i == x) {
-                Solution.weapon = weapon;
-                weaponCards.remove(weapon);
-                cardMap.put(CardType.WEAPON, weaponCards);
-                break;
-            }
-            i++;
+
+        for(var player : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
+            player.setMyCards(playerMap.get(player));
         }
+
     }
+
+
     private void setupWeapon(String[] array) throws FileNotFoundException, BadConfigFormatException {
         String cardCheck = array[0].trim();//Exception Testing Variable
         String name = array[1].trim();
@@ -132,6 +148,7 @@ public class Board {
         if (cardCheck.equals("Weapon")) {
             card = new Card(CardType.WEAPON, name);
             weaponCards.add(card);
+            allCards.add(card);
         }
         else{
             throw new BadConfigFormatException(cardCheck);
@@ -175,14 +192,15 @@ public class Board {
 
             if (playerType.equals("Human")){
                 Human player = new Human(name, color, startLocation);
-                playerMap.put(name, player);
+                playerMap.put(player, null);
             }
             else{
                 Computer player = new Computer(name, color, startLocation);
-                playerMap.put(name, player);
+                playerMap.put(player, null);
             }
             card = new Card(CardType.PERSON, name);
             playerCards.add(card);
+            allCards.add(card);
 
 
         }
@@ -211,6 +229,7 @@ public class Board {
             setRoom(room);//Effectively adding the Room to the roomMap
             if (cardCheck.equals("Room")) {
                 roomCards.add(card);
+                allCards.add(card);
             }
         } else {
             throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
