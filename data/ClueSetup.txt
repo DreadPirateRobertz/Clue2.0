@@ -12,16 +12,16 @@ Room, Ordnance, O
 Space, Unused, X
 Space, Walkway, W
 //People
-Person, Whipping Boy Todd, orange, Computer, Galley
-Person, Commander Sassafras, blue, Computer, Engine
-Person, Ensign Larry, red, Computer, ImmersiveVR
-Person, Doctor Petunia, green, Computer, Medical
-Person, Mad Scientist Mikey, magenta, Computer, Laboratory
-Person, Prisoner Shifty Eyes, cyan, Human, Brig
+Person, Whipping Boy Todd, Orange, Computer, Galley
+Person, Commander Sassafras, Blue, Computer, Engine
+Person, Ensign Larry, Red, Computer, ImmersiveVR
+Person, Doctor Petunia, Green, Computer, Medical
+Person, Mad Scientist Mikey, Magenta, Computer, Laboratory
+Person, Prisoner Shifty Eyes, Cyan, Human, Brig
 //Weapons
 Weapon, Rusty Shank
 Weapon, Targeted Thermonuclear Device
 Weapon, Plasma Rifle
 Weapon, Garrote
 Weapon, Meat Hook
-Weapon, Ejection From Airlock
+Weapon, Syringe of Eternal Midnight

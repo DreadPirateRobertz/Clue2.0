@@ -4,19 +4,16 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import java.util.List;
 
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
     private Map<Player, ArrayList<Card>> playerMap;
     private Set<BoardCell> targets, visited;
-    private ArrayList<Card> roomCards;
-    private ArrayList<Card> playerCards;
-    private ArrayList<Card> weaponCards;
-    private ArrayList<Card> allCards;
+    private ArrayList<Card> roomCards, playerCards, weaponCards, allCards;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
-
 
 
     private static Board theInstance = new Board();
@@ -72,123 +69,129 @@ public class Board {
                     array = data.split(",", 2);
                     setupWeapon(array);
                 } else {
-                    throw new BadConfigFormatException();
+                    array = data.split(",", 2);
+                    String cardCheck = array[0].trim();//Exception Testing Variable
+                    throw new BadConfigFormatException(cardCheck);
                 }
             }
         }
         inFile.close();
-        deal();
+        if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
+            deal();
+            System.out.println(Solution.room.getCardName());
+            System.out.println(Solution.person.getCardName());
+            System.out.println(Solution.weapon.getCardName());
+        }
     }
-
-
 
     public void deal() {
 
+        Random randy = new Random();
+        shuffle(roomCards); //Performs the shuffle function x100
+        shuffle(playerCards);
+        shuffle(weaponCards);
 
-        Collections.shuffle(roomCards);
-        Collections.shuffle(playerCards);
-        Collections.shuffle(weaponCards);
-        for (var x : playerCards) {
-            for (var y : roomCards) {
-                for (var z : weaponCards) {
-                    Solution.person = x;
-                    Solution.room = y;
-                    Solution.weapon = z;
-                    playerCards.remove(x);
-                    roomCards.remove(y);
-                    weaponCards.remove(z);
-                    allCards.remove(x);
-                    allCards.remove(y);
-                    allCards.remove(z);
-                    break;
-                }
-                break;
-            }
-            break;
-        }
+        Solution.person = playerCards.get(randy.nextInt(playerCards.size()));
+        Solution.room = roomCards.get(randy.nextInt(roomCards.size()));
+        Solution.weapon = weaponCards.get(randy.nextInt(weaponCards.size()));
+        playerCards.remove(Solution.person);
+        roomCards.remove(Solution.room);
+        weaponCards.remove(Solution.weapon);
+        allCards.remove(Solution.person);
+        allCards.remove(Solution.room);
+        allCards.remove(Solution.weapon);
+        shuffle(allCards);
 
         int cardAllotment = allCards.size() / playerMap.keySet().size();
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
+
         for (var player : playerMap.keySet()) {
-            Collections.shuffle(allCards);
-            Random random = new Random();
-            Player randomKey = keys.get(random.nextInt(keys.size()));//This allows me totally random access to my playerMap
-            keys.remove(randomKey);
+
+            Player randomKey = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap
             ArrayList<Card> cardLoader = new ArrayList<>();
             int x = cardAllotment;
 
-            for (var card : allCards) {
-                if (x > 0) {
-                    cardLoader.add(card);
-                    x--;
-                }
-                else{
-                    for (var pick : cardLoader){
-                        allCards.remove(pick);
-                    }
-                    break;
-                }
-            }
+            if (randy.nextBoolean()) { //50/50 shot of iterating backwards or forwards
+                for (int i = allCards.size() - 1; i >= 0; i--) {
+                    if (x > 0) {
+                        cardLoader.add(allCards.get(i));
+                        x--;
+                    } else {
+                        for (var pick : cardLoader) {
+                            allCards.remove(pick);
+                        }
+                        break;
+                    }}}
+            else {
+                for (var card : allCards) {
+                    if (x > 0) {
+                        cardLoader.add(card);
+                        x--;
+                    } else {
+                        for (var pick : cardLoader) {
+                            allCards.remove(pick);
+                        }
+                        break;
+                    }}}
             playerMap.put(randomKey, cardLoader);
-            Collections.shuffle(allCards);
+            shuffle(allCards);
+            keys.remove(randomKey);
         }
 
         for(var player : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
             player.setMyCards(playerMap.get(player));
         }
-
     }
 
-
-    private void setupWeapon(String[] array) throws FileNotFoundException, BadConfigFormatException {
-        String cardCheck = array[0].trim();//Exception Testing Variable
+    private void setupRoom(String[] array)  {
+        Room room = new Room();//Create a room
+        String cardCheck = array[0].trim();
         String name = array[1].trim();
-        Card card;
+        String data = array[2].trim();
+        char roomID = data.charAt(0);
+        Card card = new Card(CardType.ROOM, name);
 
-        if (cardCheck.equals("Weapon")) {
-            card = new Card(CardType.WEAPON, name);
-            weaponCards.add(card);
+        room.setName(name);
+        room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
+        if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
+            room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
+        }
+        setRoom(room);//Effectively adding the Room to the roomMap
+        if (cardCheck.equals("Room")) {
+            roomCards.add(card);
             allCards.add(card);
         }
-        else{
-            throw new BadConfigFormatException(cardCheck);
-        }
-
     }
-    private void setupPlayer(String[] array) throws FileNotFoundException, BadConfigFormatException {
-        String cardCheck = array[0].trim();//Exception Testing Variable
+
+    private void setupPlayer(String[] array) {
         String name = array[1].trim();
         String dataColor = array[2].trim();
-        Color color;
-        Card card;
         String playerType = array[3].trim();
         String startLocation = array[4].trim();
-
+        Color color;
+        Card card;
 
         switch(dataColor){
-            case "orange" ->{
+            case "Orange" ->{
                 color = Color.orange;
             }
-            case "magenta" ->{
+            case "Magenta" ->{
                 color = Color.magenta;
             }
-            case "blue" ->{
+            case "Blue" ->{
                 color = Color.blue;
             }
-            case "cyan" ->{
+            case "Cyan" ->{
                 color = Color.cyan;
             }
-            case "green" ->{
+            case "Green" ->{
                 color = Color.green;
             }
-            case "red" ->{
+            case "Red" ->{
                 color = Color.red;
             }
-
             default -> throw new IllegalStateException("Unexpected value: " + dataColor);
         }
-
-        if (cardCheck.equals("Person")){
 
             if (playerType.equals("Human")){
                 Human player = new Human(name, color, startLocation);
@@ -201,38 +204,17 @@ public class Board {
             card = new Card(CardType.PERSON, name);
             playerCards.add(card);
             allCards.add(card);
-
-
-        }
-        else {
-            throw new BadConfigFormatException(cardCheck);
-        }
     }
 
-
-
-    private void setupRoom(String[] array) throws BadConfigFormatException, FileNotFoundException {
-        Room room = new Room();//Create a room
+    private void setupWeapon(String[] array) {
         String cardCheck = array[0].trim();//Exception Testing Variable
         String name = array[1].trim();
-        String data = array[2].trim();
-        char roomID = data.charAt(0);
-        Card card = new Card(CardType.ROOM, name);
+        Card card;
 
-        if (cardCheck.equals("Room") || cardCheck.equals("Space")) {
-
-            room.setName(name);
-            room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
-            if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
-                room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
-            }
-            setRoom(room);//Effectively adding the Room to the roomMap
-            if (cardCheck.equals("Room")) {
-                roomCards.add(card);
-                allCards.add(card);
-            }
-        } else {
-            throw new BadConfigFormatException(cardCheck); //Throw exception if Room card is invalid
+        if (cardCheck.equals("Weapon")) {
+            card = new Card(CardType.WEAPON, name);
+            weaponCards.add(card);
+            allCards.add(card);
         }
     }
 
@@ -445,6 +427,13 @@ public class Board {
         }
     }
 
+    private void shuffle(ArrayList<Card> cards) {
+        int i = 0;
+        while(i < 100) {
+            Collections.shuffle(cards);
+            i++;
+        }
+    }
     //Getters
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
