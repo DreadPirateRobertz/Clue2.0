@@ -78,9 +78,9 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-            System.out.println(Solution.room.getCardName());
-            System.out.println(Solution.person.getCardName());
-            System.out.println(Solution.weapon.getCardName());
+//            System.out.println(Solution.room.getCardName());
+//            System.out.println(Solution.person.getCardName());
+//            System.out.println(Solution.weapon.getCardName());
         }
     }
 
