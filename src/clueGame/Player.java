@@ -5,8 +5,22 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public abstract class Player {
+    public String getName() {
+        return name;
+    }
+
     private String name;
+
+    public Color getColor() {
+        return color;
+    }
+
     private Color color;
+
+    public String getStartLocation() {
+        return startLocation;
+    }
+
     private String startLocation;
     private ArrayList<Card> myCards;
     protected int row, col;

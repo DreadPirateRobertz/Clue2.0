@@ -25,6 +25,66 @@ public class Board {
         return theInstance;
     }
 
+    public int getPlayerCount() {
+        return playerCards.size();
+    }
+    public int getPlayerCardTypeCount(){
+        int count = 0;
+        for(var card : playerCards){
+            if(card.getCardType() == CardType.PERSON){
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getAllCardsSize(){
+        return allCards.size();
+    }
+    public int getTotalCardsDealtToPlayers(){
+        int count = 0;
+        for (var list : playerMap.values()) {
+            for (var card : list) {
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getRoomCardTypeCount(){
+        int count = 0;
+        for(var card : roomCards){
+            if(card.getCardType() == CardType.ROOM){
+                count++;
+            }
+        }
+        return count;
+    }
+    public int getWeaponCardTypeCount(){
+        int count = 0;
+        for(var card : weaponCards){
+            if(card.getCardType() == CardType.WEAPON){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Player getPlayer(String name){
+        for (var player : playerMap.keySet()){
+            if (player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
+    public boolean isValidPlayer(String name){
+        for (var player : playerCards){
+            if (player.getCardName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void initialize() {//Set-up board
         visited = new HashSet<>();
         targets = new HashSet<>();
@@ -94,16 +154,16 @@ public class Board {
         Solution.person = playerCards.get(randy.nextInt(playerCards.size()));
         Solution.room = roomCards.get(randy.nextInt(roomCards.size()));
         Solution.weapon = weaponCards.get(randy.nextInt(weaponCards.size()));
-        playerCards.remove(Solution.person);
-        roomCards.remove(Solution.room);
-        weaponCards.remove(Solution.weapon);
-        allCards.remove(Solution.person);
-        allCards.remove(Solution.room);
-        allCards.remove(Solution.weapon);
-        shuffle(allCards);
 
-        int cardAllotment = allCards.size() / playerMap.keySet().size();
+        ArrayList<Card> workingDeck = new ArrayList<>(allCards);
+        workingDeck.remove(Solution.person);
+        workingDeck.remove(Solution.room);
+        workingDeck.remove(Solution.weapon);
+        shuffle(workingDeck);
+
+        int cardAllotment = workingDeck.size() / playerMap.keySet().size();
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
+
 
         for (var player : playerMap.keySet()) {
 
@@ -112,29 +172,29 @@ public class Board {
             int x = cardAllotment;
 
             if (randy.nextBoolean()) { //50/50 shot of iterating backwards or forwards
-                for (int i = allCards.size() - 1; i >= 0; i--) {
+                for (int i = workingDeck.size() - 1; i >= 0; i--) {
                     if (x > 0) {
-                        cardLoader.add(allCards.get(i));
+                        cardLoader.add(workingDeck.get(i));
                         x--;
                     } else {
                         for (var pick : cardLoader) {
-                            allCards.remove(pick);
+                            workingDeck.remove(pick);
                         }
                         break;
                     }}}
             else {
-                for (var card : allCards) {
+                for (var card : workingDeck) {
                     if (x > 0) {
                         cardLoader.add(card);
                         x--;
                     } else {
                         for (var pick : cardLoader) {
-                            allCards.remove(pick);
+                            workingDeck.remove(pick);
                         }
                         break;
                     }}}
             playerMap.put(randomKey, cardLoader);
-            shuffle(allCards);
+            shuffle(workingDeck);
             keys.remove(randomKey);
         }
 

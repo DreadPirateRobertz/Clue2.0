@@ -5,6 +5,10 @@ public class Card {
         return cardName;
     }
 
+    public CardType getCardType() {
+        return cardType;
+    }
+
     private CardType cardType;
     private String cardName;
 
