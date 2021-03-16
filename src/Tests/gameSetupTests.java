@@ -68,6 +68,7 @@ public class gameSetupTests {
         assertEquals(6, board.getPlayerCardTypeCount());
         assertEquals(9, board.getRoomCardTypeCount());
         assertEquals(6, board.getWeaponCardTypeCount());
+//        assertEquals(board.getPlayerMapValues().contains())
     }
     @Test   //I kept the Solution static because as of right now I don't see the point to creating an instance
     public void testSolution(){
@@ -77,6 +78,9 @@ public class gameSetupTests {
         assertEquals(Card.class, Solution.room.getClass());
         assertEquals(Card.class, Solution.person.getClass());
         assertEquals(Card.class, Solution.weapon.getClass());
+        assertNotEquals(Solution.room, board.getPlayerMapValues().contains(Solution.room));//Checks that solution is not among the cards dealt to Players
+        assertNotEquals(Solution.person, board.getPlayerMapValues().contains(Solution.person));
+        assertNotEquals(Solution.weapon, board.getPlayerMapValues().contains(Solution.weapon));
     }
     @Test
     public void testPlayerDeal(){
@@ -87,14 +91,13 @@ public class gameSetupTests {
         assertEquals(3, board.getPlayer("Mad Scientist Mikey").getMyCards().size());
         assertEquals(3, board.getPlayer("Whipping Boy Todd").getMyCards().size());
         assertEquals(3, board.getPlayer("Prisoner Shifty Eyes").getMyCards().size());
-        assertFalse(board.getPlayer("Prisoner Shifty Eyes").getMyCards().equals(board.getPlayer("Doctor Petunia").getMyCards())); //Testing if any cards dealt twice
-        assertFalse(board.getPlayer("Mad Scientist Mikey").getMyCards().equals(board.getPlayer("Whipping Boy Todd").getMyCards()));
-        assertFalse(board.getPlayer("Prisoner Shifty Eyes").getMyCards().equals(board.getPlayer("Ensign Larry").getMyCards()));
-        assertFalse(board.getPlayer("Ensign Larry").getMyCards().equals(board.getPlayer("Commander Sassafras").getMyCards()));
-        assertFalse(board.getPlayer("Mad Scientist Mikey").getMyCards().equals(board.getPlayer("Commander Sassafras").getMyCards()));
-        assertFalse(board.getPlayer("Ensign Larry").getMyCards().equals(board.getPlayer("Whipping Boy Todd").getMyCards()));
+        assertNotEquals(board.getPlayer("Doctor Petunia").getMyCards(), board.getPlayer("Prisoner Shifty Eyes").getMyCards()); //Testing if any cards dealt twice
+        assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
+        assertNotEquals(board.getPlayer("Ensign Larry").getMyCards(), board.getPlayer("Prisoner Shifty Eyes").getMyCards());
+        assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
+        assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
+        assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
     }
-
     @Test
     public void testRandomDeal() {
         Set<ArrayList<Card>> lottaDeals = new HashSet<>();
@@ -102,6 +105,6 @@ public class gameSetupTests {
             board.deal();
             lottaDeals.add(board.getPlayerMapValues());
         }
-        assertTrue(lottaDeals.size() >= 999);
+        assertTrue(lottaDeals.size() >= 999);//Did a test with the loop at 100k and takes just under 17s
     }
 }

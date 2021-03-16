@@ -1,13 +1,6 @@
 package clueGame;
 
 public class Card {
-    public String getCardName() {
-        return cardName;
-    }
-
-    public CardType getCardType() {
-        return cardType;
-    }
 
     private CardType cardType;
     private String cardName;
@@ -16,6 +9,11 @@ public class Card {
         this.cardType = cardType;
         this.cardName = cardName;
     }
+
+    //Getters
+    public String getCardName() { return cardName; }
+    public CardType getCardType() { return cardType; }
+
 
     public boolean equals(Card target){
         return true; //STUB

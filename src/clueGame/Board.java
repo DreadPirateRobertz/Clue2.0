@@ -3,6 +3,7 @@ package clueGame;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 
@@ -24,7 +25,6 @@ public class Board {
     public static Board getInstance() {
         return theInstance;
     }
-
 
 
     public void initialize() {//Set-up board
@@ -70,6 +70,7 @@ public class Board {
                 } else if (data.contains("Weapon")) {
                     array = data.split(",", 2);
                     setupWeapon(array);
+
                 } else {
                     array = data.split(",", 2);
                     String cardCheck = array[0].trim();//Exception Testing Variable
@@ -80,65 +81,7 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-        }
-    }
-
-    public void deal() {
-
-        Random randy = new Random();
-        shuffle(roomCards); //Performs the shuffle function x100
-        shuffle(playerCards);
-        shuffle(weaponCards);
-
-        Solution.person = playerCards.get(randy.nextInt(playerCards.size()));
-        Solution.room = roomCards.get(randy.nextInt(roomCards.size()));
-        Solution.weapon = weaponCards.get(randy.nextInt(weaponCards.size()));
-
-        ArrayList<Card> workingDeck = new ArrayList<>(allCards);
-        workingDeck.remove(Solution.person);
-        workingDeck.remove(Solution.room);
-        workingDeck.remove(Solution.weapon);
-        shuffle(workingDeck);
-
-        int cardAllotment = workingDeck.size() / playerMap.keySet().size();
-        ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
-
-
-        for (var player : playerMap.keySet()) {
-
-            Player randomKey = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap
-            ArrayList<Card> cardLoader = new ArrayList<>();
-            int x = cardAllotment;
-
-            if (randy.nextBoolean()) { //50/50 shot of iterating backwards or forwards
-                for (int i = workingDeck.size() - 1; i >= 0; i--) {
-                    if (x > 0) {
-                        cardLoader.add(workingDeck.get(i));
-                        x--;
-                    } else {
-                        for (var pick : cardLoader) {
-                            workingDeck.remove(pick);
-                        }
-                        break;
-                    }}}
-            else {
-                for (var card : workingDeck) {
-                    if (x > 0) {
-                        cardLoader.add(card);
-                        x--;
-                    } else {
-                        for (var pick : cardLoader) {
-                            workingDeck.remove(pick);
-                        }
-                        break;
-                    }}}
-            playerMap.put(randomKey, cardLoader);
-            shuffle(workingDeck);
-            keys.remove(randomKey);
-        }
-
-        for(var player : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
-            player.setMyCards(playerMap.get(player));
+            Solution.theAnswer();
         }
     }
 
@@ -192,17 +135,17 @@ public class Board {
             default -> throw new IllegalStateException("Unexpected value: " + dataColor);
         }
 
-            if (playerType.equals("Human")){
-                Human player = new Human(name, color, startLocation);
-                playerMap.put(player, null);
-            }
-            else{
-                Computer player = new Computer(name, color, startLocation);
-                playerMap.put(player, null);
-            }
-            card = new Card(CardType.PERSON, name);
-            playerCards.add(card);
-            allCards.add(card);
+        if (playerType.equals("Human")){
+            Human player = new Human(name, color, startLocation);
+            playerMap.put(player, null);
+        }
+        else{
+            Computer player = new Computer(name, color, startLocation);
+            playerMap.put(player, null);
+        }
+        card = new Card(CardType.PERSON, name);
+        playerCards.add(card);
+        allCards.add(card);
     }
 
     private void setupWeapon(String[] array) {
@@ -214,6 +157,81 @@ public class Board {
             card = new Card(CardType.WEAPON, name);
             weaponCards.add(card);
             allCards.add(card);
+        }
+    }
+
+    public void deal() {
+
+        Random randy = new Random();
+        shuffle(roomCards);//Performs the shuffle function x100
+        shuffle(playerCards);
+        shuffle(weaponCards);
+
+        Solution.person = playerCards.get(randy.nextInt(playerCards.size()));
+        Solution.room = roomCards.get(randy.nextInt(roomCards.size()));
+        Solution.weapon = weaponCards.get(randy.nextInt(weaponCards.size()));
+
+        ArrayList<Card> workingDeck = new ArrayList<>(allCards);
+        workingDeck.remove(Solution.person);
+        workingDeck.remove(Solution.room);
+        workingDeck.remove(Solution.weapon);
+        shuffle(workingDeck);
+
+        int cardAllotment = Math.floorDiv(workingDeck.size(),playerMap.keySet().size());
+        ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
+
+        for (var player : playerMap.keySet()) {
+            Player key = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap
+            ArrayList<Card> cardLoader = new ArrayList<>();
+            int x = cardAllotment;
+
+            if (randy.nextBoolean()) {//50/50 shot of iterating backwards or forwards
+                for (int i = workingDeck.size() - 1; i >= 0; i--) {
+                    if (x > 0) {
+                        cardLoader.add(workingDeck.get(i));
+                        x--;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                for (var pick : cardLoader) {
+                    workingDeck.remove(pick);
+                }
+            }
+            else {
+                for (var card : workingDeck) {
+                    if (x > 0) {
+                        cardLoader.add(card);
+                        x--;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                for (var pick : cardLoader) {
+                    workingDeck.remove(pick);
+                }
+            }
+            playerMap.put(key, cardLoader);
+            shuffle(workingDeck);
+            keys.remove(key);
+        }
+        keys = new ArrayList<>(playerMap.keySet());
+        while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
+            for (var card : workingDeck) {
+                Player key = keys.get(randy.nextInt(keys.size()));
+                ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
+                tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
+                playerMap.put(key, tempList);
+                workingDeck.remove(card);
+                keys.remove(key);
+                shuffle(workingDeck);
+                break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
+            }
+        }
+        for(var player : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
+            player.setMyCards(playerMap.get(player));
         }
     }
 
@@ -269,46 +287,46 @@ public class Board {
     }
 
     private void classify_room_symbology(BoardCell cell, char symbol) throws FileNotFoundException, BadConfigFormatException {
-            Room room;
-            switch (symbol) {
-                case '#' -> {//Setting Label Cell
-                    cell.setLabel();
-                    room = getRoom(cell);
-                    room.setLabelCell(cell);
+        Room room;
+        switch (symbol) {
+            case '#' -> {//Setting Label Cell
+                cell.setLabel();
+                room = getRoom(cell);
+                room.setLabelCell(cell);
+            }
+            case '*' -> {//Setting Center Cell
+                cell.setRoomCenter();
+                room = getRoom(cell);
+                room.setCenterCell(cell);
+            }
+            case '^' -> {
+                cell.setDoorDirection(DoorDirection.UP);
+                cell.setDoorway();
+            }
+            case '<' -> {
+                cell.setDoorDirection(DoorDirection.LEFT);
+                cell.setDoorway();
+            }
+            case '>' -> {
+                cell.setDoorDirection(DoorDirection.RIGHT);
+                cell.setDoorway();
+            }
+            case 'v' -> {
+                cell.setDoorDirection(DoorDirection.DOWN);
+                cell.setDoorway();
+            }
+            default -> {//The last item that will fall to default should be Secret Cells
+                if(isRoom(symbol)) {//If it's gotten to here and fails then this means it's not a Room or any approved symbol
+                    cell.setSecretPassage(symbol);
+                    room = getRoom(cell);//Assigning Secret cell/Room logic
+                    room.setSecretCell(cell);
                 }
-                case '*' -> {//Setting Center Cell
-                    cell.setRoomCenter();
-                    room = getRoom(cell);
-                    room.setCenterCell(cell);
-                }
-                case '^' -> {
-                    cell.setDoorDirection(DoorDirection.UP);
-                    cell.setDoorway();
-                }
-                case '<' -> {
-                    cell.setDoorDirection(DoorDirection.LEFT);
-                    cell.setDoorway();
-                }
-                case '>' -> {
-                    cell.setDoorDirection(DoorDirection.RIGHT);
-                    cell.setDoorway();
-                }
-                case 'v' -> {
-                    cell.setDoorDirection(DoorDirection.DOWN);
-                    cell.setDoorway();
-                }
-                default -> {//The last item that will fall to default should be Secret Cells
-                    if(isRoom(symbol)) {//If it's gotten to here and fails then this means it's not a Room or any approved symbol
-                        cell.setSecretPassage(symbol);
-                        room = getRoom(cell);//Assigning Secret cell/Room logic
-                        room.setSecretCell(cell);
-                    }
-                    else {//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
-                        throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
-                    }
+                else {//We never check the second letter in earlier test for errant roomID's, so my thinking was to throw this exception
+                    throw new BadConfigFormatException(symbol);//just in case there's an errant SECOND character in the layout file
                 }
             }
         }
+    }
 
     private void findAdjacencies() {
         for (int row = 0; row < num_rows; row++)//Sets all the adjacency lists for each cell
@@ -434,6 +452,14 @@ public class Board {
         }
     }
     //Getters
+    public Player getPlayer(String name){
+        for (var player : playerMap.keySet()){
+            if (player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
@@ -441,6 +467,7 @@ public class Board {
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
+
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
@@ -509,14 +536,6 @@ public class Board {
         return count;
     }
 
-    public Player getPlayer(String name){
-        for (var player : playerMap.keySet()){
-            if (player.getName().equals(name)){
-                return player;
-            }
-        }
-        return null;
-    }
     public boolean isValidPlayer(String name){
         for (var player : playerCards){
             if (player.getCardName().equals(name)){

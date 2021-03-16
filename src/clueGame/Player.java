@@ -5,30 +5,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public abstract class Player {
-    public String getName() {
-        return name;
-    }
 
     private String name;
-
-    public Color getColor() {
-        return color;
-    }
-
     private Color color;
-
-    public String getStartLocation() {
-        return startLocation;
-    }
-
     private String startLocation;
-
-    public ArrayList<Card> getMyCards() {
-        return myCards;
-    }
-
     private ArrayList<Card> myCards;
-    protected int row, col;
+//    protected int row, col;
 
     public Player(String name, Color color, String startLocation) {
         this.name = name;
@@ -36,14 +18,27 @@ public abstract class Player {
         this.startLocation = startLocation;
     }
 
+    public void updateHand(Card card){
+        //STUB
+    }
+
+
+    //Setters
     public void setMyCards(ArrayList<Card> myCards) {
         this.myCards = myCards;
     }
-    private void setRowCol(int row, int col){
-
+    //Getters
+    public ArrayList<Card> getMyCards() {
+        return myCards;
     }
-    public void updateHand(Card card){
-        //STUB
+    public String getName() {
+        return name;
+    }
+    public Color getColor() {
+        return color;
+    }
+    public String getStartLocation() {
+        return startLocation;
     }
 
 }
