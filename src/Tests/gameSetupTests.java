@@ -98,7 +98,7 @@ public class gameSetupTests {
         assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
         assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
     }
-    @Test
+    @Test//
     public void testRandomDeal() {
         Set<ArrayList<Card>> lottaDeals = new HashSet<>();
         for (int i = 0; i < 1000; i++) {
