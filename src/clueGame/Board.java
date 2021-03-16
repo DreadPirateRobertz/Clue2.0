@@ -81,7 +81,7 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-            Solution.theAnswer();
+            getTheAnswer();
         }
     }
 
@@ -183,13 +183,13 @@ public class Board {
         for (var player : playerMap.keySet()) {
             Player key = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap
             ArrayList<Card> cardLoader = new ArrayList<>();
-            int x = cardAllotment;
+            int count = cardAllotment;
 
             if (randy.nextBoolean()) {//50/50 shot of iterating backwards or forwards
-                for (int i = workingDeck.size() - 1; i >= 0; i--) {
-                    if (x > 0) {
+                for (int i = workingDeck.size() - 1; i > -1; i--) {
+                    if (count > 0) {
                         cardLoader.add(workingDeck.get(i));
-                        x--;
+                        count--;
                     }
                     else{
                         break;
@@ -201,9 +201,9 @@ public class Board {
             }
             else {
                 for (var card : workingDeck) {
-                    if (x > 0) {
+                    if (count > 0) {
                         cardLoader.add(card);
-                        x--;
+                        count--;
                     }
                     else{
                         break;
@@ -217,7 +217,7 @@ public class Board {
             shuffle(workingDeck);
             keys.remove(key);
         }
-        keys = new ArrayList<>(playerMap.keySet());
+        keys = new ArrayList<>(playerMap.keySet());//Resetting keys which are all the Players
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
             for (var card : workingDeck) {
                 Player key = keys.get(randy.nextInt(keys.size()));
@@ -460,6 +460,7 @@ public class Board {
         }
         return null;
     }
+    //Getters
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
@@ -467,7 +468,7 @@ public class Board {
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
-
+    private void getTheAnswer() { Solution.theAnswer(); }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
