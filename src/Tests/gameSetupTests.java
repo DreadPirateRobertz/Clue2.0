@@ -68,7 +68,6 @@ public class gameSetupTests {
         assertEquals(6, board.getPlayerCardTypeCount());
         assertEquals(9, board.getRoomCardTypeCount());
         assertEquals(6, board.getWeaponCardTypeCount());
-//        assertEquals(board.getPlayerMapValues().contains())
     }
     @Test   //I kept the Solution static because as of right now I don't see the point to creating an instance
     public void testSolution(){
@@ -98,7 +97,7 @@ public class gameSetupTests {
         assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
         assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
     }
-    @Test//
+    @Test
     public void testRandomDeal() {
         Set<ArrayList<Card>> lottaDeals = new HashSet<>();
         for (int i = 0; i < 1000; i++) {

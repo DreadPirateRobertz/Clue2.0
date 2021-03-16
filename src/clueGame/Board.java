@@ -53,28 +53,29 @@ public class Board {
         Scanner inFile = setInFile(setupConfigFile);
         String[] array;
 
+
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            //Split this array into 3 using the comma as the delimiter
+            array = data.split(",", 2);
+            String theCard = array[0].trim();//Exception Testing Variable
+
+
             if (!data.contains("//")) {//Edit out pesky comments :)
 
-                if (data.contains("Room") || data.contains("Space")) {
+                if (theCard.equals("Room") || theCard.equals("Space")) {
                     array = data.split(",", 3);
                     setupRoom(array);//Configures each Room with name and identifier & then sets the room
 
-                } else if (data.contains("Person")) {
+                } else if (theCard.equals("Person")) {
                     array = data.split(",", 5);
                     setupPlayer(array);
 
-                } else if (data.contains("Weapon")) {
-                    array = data.split(",", 2);
+                } else if (theCard.equals("Weapon")) {
                     setupWeapon(array);
 
                 } else {
-                    array = data.split(",", 2);
-                    String cardCheck = array[0].trim();//Exception Testing Variable
-                    throw new BadConfigFormatException(cardCheck);
+                    throw new BadConfigFormatException(theCard);
                 }
             }
         }
@@ -110,8 +111,8 @@ public class Board {
         String dataColor = array[2].trim();
         String playerType = array[3].trim();
         String startLocation = array[4].trim();
+        Card card = new Card(CardType.PERSON, name);
         Color color;
-        Card card;
 
         switch(dataColor){
             case "Orange" ->{
@@ -143,21 +144,16 @@ public class Board {
             Computer player = new Computer(name, color, startLocation);
             playerMap.put(player, null);
         }
-        card = new Card(CardType.PERSON, name);
         playerCards.add(card);
         allCards.add(card);
     }
 
     private void setupWeapon(String[] array) {
-        String cardCheck = array[0].trim();//Exception Testing Variable
         String name = array[1].trim();
-        Card card;
+        Card card = new Card(CardType.WEAPON, name);
 
-        if (cardCheck.equals("Weapon")) {
-            card = new Card(CardType.WEAPON, name);
             weaponCards.add(card);
             allCards.add(card);
-        }
     }
 
     public void deal() {
@@ -177,10 +173,10 @@ public class Board {
         workingDeck.remove(Solution.weapon);
         shuffle(workingDeck);
 
-        int cardAllotment = Math.floorDiv(workingDeck.size(),playerMap.keySet().size());
+        int cardAllotment = Math.floorDiv(workingDeck.size(), playerMap.keySet().size());
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
 
-        for (var player : playerMap.keySet()) {
+        for (Player K : playerMap.keySet()) {//I kept this at K, indicating key because I make a random player key directly below
             Player key = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap
             ArrayList<Card> cardLoader = new ArrayList<>();
             int count = cardAllotment;
@@ -195,12 +191,12 @@ public class Board {
                         break;
                     }
                 }
-                for (var pick : cardLoader) {
+                for (Card pick : cardLoader) {
                     workingDeck.remove(pick);
                 }
             }
             else {
-                for (var card : workingDeck) {
+                for (Card card : workingDeck) {
                     if (count > 0) {
                         cardLoader.add(card);
                         count--;
@@ -209,7 +205,7 @@ public class Board {
                         break;
                     }
                 }
-                for (var pick : cardLoader) {
+                for (Card pick : cardLoader) {
                     workingDeck.remove(pick);
                 }
             }
@@ -219,7 +215,7 @@ public class Board {
         }
         keys = new ArrayList<>(playerMap.keySet());//Resetting keys which are all the Players
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
-            for (var card : workingDeck) {
+            for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
                 Player key = keys.get(randy.nextInt(keys.size()));
                 ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
                 tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
@@ -230,8 +226,8 @@ public class Board {
                 break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
             }
         }
-        for(var player : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
-            player.setMyCards(playerMap.get(player));
+        for(Player playerKey : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
+            playerKey.setMyCards(playerMap.get(playerKey));
         }
     }
 
@@ -451,6 +447,7 @@ public class Board {
             i++;
         }
     }
+
     //Getters
     public Player getPlayer(String name){
         for (var player : playerMap.keySet()){
@@ -460,7 +457,6 @@ public class Board {
         }
         return null;
     }
-    //Getters
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
