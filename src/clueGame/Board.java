@@ -80,7 +80,7 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-          getTheAnswer();
+            getTheAnswer();
         }
     }
 
