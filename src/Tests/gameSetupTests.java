@@ -97,13 +97,13 @@ public class gameSetupTests {
         assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
         assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
     }
-    @Test
+    @Test//Did a test with the loop at 1M and takes ~3m 8s and did a test with 10M and took 34 minutes
     public void testRandomDeal() {
         Set<ArrayList<Card>> lottaDeals = new HashSet<>();
         for (int i = 0; i < 1000; i++) {
             board.deal();
             lottaDeals.add(board.getPlayerMapValues());
         }
-        assertTrue(lottaDeals.size() >= 999);//Did a test with the loop at 100k and takes just under 17s
+        assertEquals(lottaDeals.size(), 1000);
     }
 }
