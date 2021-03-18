@@ -71,15 +71,15 @@ public class gameSetupTests {
     }
     @Test   //I kept the Solution static because as of right now I don't see the point to creating an instance
     public void testSolution(){
-        assertNotNull(Solution.room);
-        assertNotNull(Solution.person);
-        assertNotNull(Solution.weapon);
-        assertEquals(Card.class, Solution.room.getClass());
-        assertEquals(Card.class, Solution.person.getClass());
-        assertEquals(Card.class, Solution.weapon.getClass());
-        assertNotEquals(Solution.room, board.getPlayerMapValues().contains(Solution.room));//Checks that solution is not among the cards dealt to Players
-        assertNotEquals(Solution.person, board.getPlayerMapValues().contains(Solution.person));
-        assertNotEquals(Solution.weapon, board.getPlayerMapValues().contains(Solution.weapon));
+        assertNotNull(Solution.getRoom());
+        assertNotNull(Solution.getPerson());
+        assertNotNull(Solution.getWeapon());
+        assertEquals(Card.class, Solution.getRoom().getClass());
+        assertEquals(Card.class, Solution.getPerson().getClass());
+        assertEquals(Card.class, Solution.getWeapon().getClass());
+        assertNotEquals(Solution.getRoom(), board.getPlayerMapValues().contains(Solution.getRoom()));//Checks that solution is not among the cards dealt to Players
+        assertNotEquals(Solution.getPerson(), board.getPlayerMapValues().contains(Solution.getPerson()));
+        assertNotEquals(Solution.getWeapon(), board.getPlayerMapValues().contains(Solution.getWeapon()));
     }
     @Test
     public void testPlayerDeal(){
@@ -100,10 +100,10 @@ public class gameSetupTests {
     @Test//Did a test with the loop at 1M and takes ~3m 8s and did a test with 10M and took 34 minutes
     public void testRandomDeal() {
         Set<ArrayList<Card>> lottaDeals = new HashSet<>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             board.deal();
             lottaDeals.add(board.getPlayerMapValues());
         }
-        assertEquals(lottaDeals.size(), 1000);
+        assertEquals(lottaDeals.size(), 100);
     }
 }

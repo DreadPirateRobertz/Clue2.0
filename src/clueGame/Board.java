@@ -159,14 +159,14 @@ public class Board {
         shuffle(playerCards);
         shuffle(weaponCards);
 
-        Solution.person = playerCards.get(randy.nextInt(playerCards.size()));
-        Solution.room = roomCards.get(randy.nextInt(roomCards.size()));
-        Solution.weapon = weaponCards.get(randy.nextInt(weaponCards.size()));
+        Solution.setPerson(playerCards.get(randy.nextInt(playerCards.size())));
+        Solution.setRoom(roomCards.get(randy.nextInt(roomCards.size())));
+        Solution.setWeapon(weaponCards.get(randy.nextInt(weaponCards.size())));
 
         ArrayList<Card> workingDeck = new ArrayList<>(allCards);
-        workingDeck.remove(Solution.person);
-        workingDeck.remove(Solution.room);
-        workingDeck.remove(Solution.weapon);
+        workingDeck.remove(Solution.getPerson());
+        workingDeck.remove(Solution.getRoom());
+        workingDeck.remove(Solution.getWeapon());
         shuffle(workingDeck);
 
         int cardAllotment = Math.floorDiv(workingDeck.size(), playerMap.keySet().size());
@@ -462,8 +462,8 @@ public class Board {
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public void setConfigFiles(String layout, String legend) {
-        setupConfigFile = legend;
-        layoutConfigFile = layout;
+        setupConfigFile = "data/" + legend;
+        layoutConfigFile = "data/" + layout;
     }
     private Scanner setInFile(String file) throws FileNotFoundException {
         FileReader reader = new FileReader(file);//So we can read the file
