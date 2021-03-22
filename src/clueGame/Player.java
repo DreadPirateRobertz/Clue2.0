@@ -3,6 +3,8 @@ package clueGame;
 import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public abstract class Player {
 
@@ -20,6 +22,31 @@ public abstract class Player {
 
     public abstract void updateHand(Card card);
 
+    public Card disproveSuggestion(){
+        ArrayList<Card> temp = new ArrayList<>();
+        for(var card : cards){
+            if(card.getCardName().equals(Suggestion.getPerson().getCardName())){
+                temp.add(card);
+                continue;
+            }
+           if(card.getCardName().equals(Suggestion.getRoom().getCardName())){
+                temp.add(card);
+                continue;
+            }
+           if(card.getCardName().equals(Suggestion.getWeapon().getCardName())){
+                temp.add(card);
+            }
+        }
+        if(temp.size() == 1){
+            return temp.get(0);
+        }
+        else if (temp.size() > 1){
+            Random randy = new Random();
+            Collections.shuffle(temp);
+            return temp.get(randy.nextInt(temp.size()));
+        }
+        return null;
+    }
 
     //Setters
     public void setMyCards(ArrayList<Card> cards) {

@@ -48,6 +48,15 @@ public class Board {
             System.out.println(e.getMessage());
         }
     }
+    public Card handleSuggestion() {
+        for (Player player : playerMap.keySet()){
+            Card card = player.disproveSuggestion();
+            if(card != null){
+                return card;
+            }
+        }
+        return null;
+    }
     public boolean checkAccusation(Card person, Card room, Card weapon) {
         if(person.equals(Solution.getPerson()) && room.equals(Solution.getRoom()) && weapon.equals(Solution.getWeapon())){
             return true;
