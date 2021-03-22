@@ -10,6 +10,8 @@ public class BoardCell {
     private boolean roomCenter, roomLabel, doorway, occupied;
     private Set<BoardCell> adjList;
 
+
+
     public BoardCell(int row, int col) {
         this.row = row;
         this.col = col;
@@ -19,6 +21,13 @@ public class BoardCell {
     }
 
     //Getters
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
     public Set<BoardCell> getAdjList() { return adjList; }
     public char getInitial() { return initial; }
     public DoorDirection getDoorDirection() { return doorDirection; }

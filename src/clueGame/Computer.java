@@ -7,4 +7,9 @@ public class Computer extends Player {
     public Computer(String name, Color color, String startLocation) {
         super(name, color, startLocation);
     }
+
+    @Override
+    public void updateHand(Card card) {
+
+    }
 }

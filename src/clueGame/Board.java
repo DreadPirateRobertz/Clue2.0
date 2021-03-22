@@ -48,30 +48,34 @@ public class Board {
             System.out.println(e.getMessage());
         }
     }
-
+    public boolean checkAccusation(Card person, Card room, Card weapon) {
+        if(person.equals(Solution.getPerson()) && room.equals(Solution.getRoom()) && weapon.equals(Solution.getWeapon())){
+            return true;
+        }
+        return false;
+    }
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(setupConfigFile);
-        String[] array;
+        String[] split1, split2, split3;
 
         while (inFile.hasNext())//Go until EOF
         {
             String data = inFile.nextLine();
-            array = data.split(",", 2);
-            String cardCheck = array[0].trim();//Exception Testing Variable
+            split1 = data.split(",", 3);
+            split2 = data.split(",", 5);
+            split3 = data.split(",", 2);
+            String cardCheck = split3[0].trim();//Exception Testing Variable
 
             if (!data.contains("//")) {//Edit out pesky comments :)
-
                 switch (cardCheck) {
                     case "Room", "Space" -> {
-                        array = data.split(",", 3);
-                        setupRoom(array);//Configures each Room with name and identifier & then sets the room
+                        setupRoom(split1);//Configures each Room with name and identifier & then sets the room
                     }
                     case "Person" -> {
-                        array = data.split(",", 5);
-                        setupPlayer(array);
+                        setupPlayer(split2);
                     }
                     case "Weapon" -> {
-                        setupWeapon(array);
+                        setupWeapon(split3);
                     }
                     default -> throw new BadConfigFormatException(cardCheck);
                 }
@@ -104,13 +108,16 @@ public class Board {
         }
     }
 
-    private void setupPlayer(String[] array) {
+    private void setupPlayer(String[] array) throws FileNotFoundException, BadConfigFormatException {
         String name = array[1].trim();
         String dataColor = array[2].trim();
         String playerType = array[3].trim();
-        String startLocation = array[4].trim();
+        String startLoc = array[4].trim();
+        char roomID = startLoc.charAt(0);
         Card card = new Card(CardType.PERSON, name);
         Color color;
+        Player player;
+
 
         switch(dataColor){
             case "Orange" ->{
@@ -131,17 +138,22 @@ public class Board {
             case "Red" ->{
                 color = Color.red;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + dataColor);
+            default -> throw new IllegalStateException("Unexpected Color: " + dataColor);
         }
+        if(!getRoom(roomID).getName().equals(startLoc)){
+            throw new BadConfigFormatException(startLoc);
+        }
+        switch(playerType){
+            case "Human" -> {
+                player = new Human(name, color, startLoc);
+            }
+            case "Computer" -> {
+                player = new Computer(name, color, startLoc);
 
-        if (playerType.equals("Human")){
-            Human player = new Human(name, color, startLocation);
-            playerMap.put(player, null);
+            }
+            default -> throw new IllegalStateException("Unexpected Player Type: " + playerType);
         }
-        else{
-            Computer player = new Computer(name, color, startLocation);
-            playerMap.put(player, null);
-        }
+        playerMap.put(player, null);
         playerCards.add(card);
         allCards.add(card);
     }
@@ -195,6 +207,7 @@ public class Board {
                     else {
                         break;
                     }}}
+            key.setMyCards(cardLoader);
             playerMap.put(key, cardLoader);
             shuffle(workingDeck);
             keys.remove(key);
@@ -210,16 +223,13 @@ public class Board {
                 Player key = keys.get(randy.nextInt(keys.size()));
                 ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
                 tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
-
+                key.setMyCards(tempList);
                 playerMap.put(key, tempList);
                 workingDeck.remove(card);
                 keys.remove(key);
                 shuffle(workingDeck);
                 break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
             }
-        }
-        for(Player playerKey : playerMap.keySet()){//Now each player has an ArrayList of their cards to directly access for updating the hand
-            playerKey.setMyCards(playerMap.get(playerKey));
         }
     }
 

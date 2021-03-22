@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class gameSetupTests {
+public class GameSetupTests {
     // NOTE: I made Board static because I only want to set it up one
     // time (using @BeforeAll), no need to do setup before each test.
     private static Board board;

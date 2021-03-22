@@ -9,8 +9,8 @@ public abstract class Player {
     private String name;
     private Color color;
     private String startLocation;
-    private ArrayList<Card> myCards;
-//    protected int row, col;
+    private ArrayList<Card> cards;
+    protected int row, col; //TODO: Functionality
 
     public Player(String name, Color color, String startLocation) {
         this.name = name;
@@ -18,18 +18,16 @@ public abstract class Player {
         this.startLocation = startLocation;
     }
 
-    public void updateHand(Card card){
-        //STUB
-    }
+    public abstract void updateHand(Card card);
 
 
     //Setters
-    public void setMyCards(ArrayList<Card> myCards) {
-        this.myCards = myCards;
+    public void setMyCards(ArrayList<Card> cards) {
+        this.cards = cards;
     }
     //Getters
     public ArrayList<Card> getMyCards() {
-        return myCards;
+        return cards;
     }
     public String getName() {
         return name;
