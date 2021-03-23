@@ -8,8 +8,5 @@ public class Computer extends Player {
         super(name, color, startLocation);
     }
 
-    @Override
-    public void updateHand(Card card) {
 
-    }
 }

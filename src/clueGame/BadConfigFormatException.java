@@ -13,7 +13,7 @@ public class BadConfigFormatException extends Exception {
          //Please note: log file needs to be deleted or manually cleared upon review in between runs -> not a great way to do in program
          //because it clears it here as it tries to append to log or clears/deleted log if you put logic elsewhere in the program
         //Trying to figure this out in another part of the program but it's always clearing the file and then not writing to it here.....
-         PrintWriter out = new PrintWriter(new FileOutputStream(("logfile.txt"),true));//Create PrintWriter object to output to file
+         PrintWriter out = new PrintWriter(new FileOutputStream(("data/logfile.txt"),true));//Create PrintWriter object to output to file
                                                          //Code snippet from StackOverFLow on how to append properly
 
 

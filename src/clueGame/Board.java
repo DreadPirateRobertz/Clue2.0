@@ -26,13 +26,15 @@ public class Board {
     public static Board getInstance() {
         return theInstance;
     }
+    private static ArrayList<Card> theAnswer;
 
 
     public void initialize() {//Set-up board
+        theAnswer = new ArrayList<>();
         visited = new HashSet<>();
         targets = new HashSet<>();
         roomMap = new HashMap<>();
-        playerMap = new LinkedHashMap();
+        playerMap = new LinkedHashMap<>(); //Did this to preserve insertion order of players
         roomCards = new ArrayList<>();
         playerCards = new ArrayList<>();
         weaponCards = new ArrayList<>();
@@ -49,22 +51,24 @@ public class Board {
             System.out.println(e.getMessage());
         }
     }
-    public Card handleSuggestion(Player accuser) {
+
+    /////WORKING on FUNCTIONS STILL NEED TO ORDER THESE\\\\\\\\
+    public Card handleSuggestion(Player accuser, Suggestion s) {
         for (Player player : playerMap.keySet()){
             if(player.equals(accuser)){
                 continue;
             }
-            Card card = player.disproveSuggestion();
+            Card card = player.disproveSuggestion(s);
             if(card != null){
                 return card;
             }
         }
         return null;
     }
-    public boolean checkAccusation(Card person, Card room, Card weapon) {
-        return person.equals(Solution.getPerson()) && room.equals(Solution.getRoom()) && weapon.equals(Solution.getWeapon());
-
+    public boolean checkAccusation(Suggestion s) {
+        return s.getPerson().equals(getTheAnswer_Person()) && s.getRoom().equals(getTheAnswer_Room()) && s.getWeapon().equals(getTheAnswer_Weapon());
     }
+
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(setupConfigFile);
         String[] split1, split2, split3;
@@ -95,7 +99,6 @@ public class Board {
         inFile.close();
         if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
-            getTheAnswer();
         }
     }
 
@@ -181,15 +184,16 @@ public class Board {
         shuffle(roomCards);//Performs the shuffle function x100
         shuffle(playerCards);
         shuffle(weaponCards);
+        setTheAnswer_Person(playerCards.get(randy.nextInt(playerCards.size())));
+        setTheAnswer_Room(roomCards.get(randy.nextInt(roomCards.size())));
+        setTheAnswer_Weapon(weaponCards.get(randy.nextInt(weaponCards.size())));
 
-        Solution.setPerson(playerCards.get(randy.nextInt(playerCards.size())));
-        Solution.setRoom(roomCards.get(randy.nextInt(roomCards.size())));
-        Solution.setWeapon(weaponCards.get(randy.nextInt(weaponCards.size())));
+
 
         ArrayList<Card> workingDeck = new ArrayList<>(allCards);
-        workingDeck.remove(Solution.getPerson());
-        workingDeck.remove(Solution.getRoom());
-        workingDeck.remove(Solution.getWeapon());
+        workingDeck.remove(theAnswer.get(0));
+        workingDeck.remove(theAnswer.get(1));
+        workingDeck.remove(theAnswer.get(2));
         shuffle(workingDeck);
 
         int cardAllotment = Math.floorDiv(workingDeck.size(), playerMap.keySet().size());
@@ -477,11 +481,17 @@ public class Board {
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
     public Set<BoardCell> getTargets() { return targets; }
-    private void getTheAnswer() { Solution.theAnswer(); }
+    public static ArrayList<Card> getTheWholeAnswer() { return theAnswer; }
+    public static Card getTheAnswer_Person(){ return theAnswer.get(0); }
+    public static Card getTheAnswer_Room(){ return theAnswer.get(1); }
+    public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
+    public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }
+    public static void setTheAnswer_Room(Card card){ theAnswer.add(card); }
+    public static void setTheAnswer_Weapon(Card card){ theAnswer.add(card); }
     public void setConfigFiles(String layout, String legend) {
         setupConfigFile = "data/" + legend;
         layoutConfigFile = "data/" + layout;

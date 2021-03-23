@@ -69,17 +69,18 @@ public class GameSetupTests {
         assertEquals(9, board.getRoomCardTypeCount());
         assertEquals(6, board.getWeaponCardTypeCount());
     }
-    @Test   //I kept the Solution static because as of right now I don't see the point to creating an instance
+    @Test
     public void testSolution(){
-        assertNotNull(Solution.getRoom());
-        assertNotNull(Solution.getPerson());
-        assertNotNull(Solution.getWeapon());
-        assertEquals(Card.class, Solution.getRoom().getClass());
-        assertEquals(Card.class, Solution.getPerson().getClass());
-        assertEquals(Card.class, Solution.getWeapon().getClass());
-        assertNotEquals(Solution.getRoom(), board.getPlayerMapValues().contains(Solution.getRoom()));//Checks that solution is not among the cards dealt to Players
-        assertNotEquals(Solution.getPerson(), board.getPlayerMapValues().contains(Solution.getPerson()));
-        assertNotEquals(Solution.getWeapon(), board.getPlayerMapValues().contains(Solution.getWeapon()));
+        assertNotNull(Board.getTheAnswer_Room());
+        assertNotNull(Board.getTheAnswer_Person());
+        assertNotNull(Board.getTheAnswer_Weapon());
+        assertEquals(Card.class, Board.getTheAnswer_Person().getClass());
+        assertEquals(Card.class, Board.getTheAnswer_Room().getClass());
+        assertEquals(Card.class, Board.getTheAnswer_Room().getClass());
+        
+        assertNotEquals(Board.getTheAnswer_Room(), board.getPlayerMapValues().contains(Board.getTheAnswer_Room()));//Checks that solution is not among the cards dealt to Players
+        assertNotEquals(Board.getTheAnswer_Person(), board.getPlayerMapValues().contains(Board.getTheAnswer_Person()));
+        assertNotEquals(Board.getTheAnswer_Weapon(), board.getPlayerMapValues().contains(Board.getTheAnswer_Weapon()));
     }
     @Test
     public void testPlayerDeal(){

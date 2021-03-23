@@ -20,20 +20,19 @@ public abstract class Player {
         this.startLocation = startLocation;
     }
 
-    public abstract void updateHand(Card card);
 
-    public Card disproveSuggestion(){
+    public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> temp = new ArrayList<>();
         for(var card : cards){
-            if(card.equals(Suggestion.getPerson())) {
+            if(card.equals(s.getPerson())) {
                 temp.add(card);
                 continue;
             }
-           if(card.equals(Suggestion.getRoom())) {
+           if(card.equals(s.getRoom())) {
                 temp.add(card);
                 continue;
             }
-           if(card.equals(Suggestion.getWeapon())) {
+           if(card.equals(s.getWeapon())) {
                 temp.add(card);
             }
         }
