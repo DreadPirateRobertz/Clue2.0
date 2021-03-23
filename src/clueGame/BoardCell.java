@@ -24,7 +24,6 @@ public class BoardCell {
     public int getRow() {
         return row;
     }
-
     public int getCol() {
         return col;
     }

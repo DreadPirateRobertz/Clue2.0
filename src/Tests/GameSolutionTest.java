@@ -114,7 +114,7 @@ public class GameSolutionTest {
         cards.add(mustard);
         player1.setMyCards(cards);
         tempMap.put(player1, player1.getMyCards());
-        ArrayList<Card> temp2 = new ArrayList<>(cards);
+        ArrayList<Card> temp2 = new ArrayList<>(cards);//Deep copies to use the clear function as intended
         temp2.clear();
         temp2.add(bomb);
         temp2.add(karen);

@@ -8,16 +8,11 @@ import java.util.*;
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
-
-
-
     private Map<Player, ArrayList<Card>> playerMap;
     private Set<BoardCell> targets, visited;
     private ArrayList<Card> roomCards, playerCards, weaponCards, allCards;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
-
-
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
     private Board() {
@@ -28,6 +23,9 @@ public class Board {
     }
     private static ArrayList<Card> theAnswer;
 
+    public ArrayList<Card> getAllCards() {
+        return allCards;
+    }
 
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
@@ -60,6 +58,7 @@ public class Board {
             }
             Card card = player.disproveSuggestion(s);
             if(card != null){
+                accuser.updateHand(card);
                 return card;
             }
         }
@@ -180,13 +179,13 @@ public class Board {
     }
 
     public void deal() {
-        Random randy = new Random();
-        shuffle(roomCards);//Performs the shuffle function x100
+        Random randomize = new Random();
+        shuffle(roomCards);//Performs the Collections shuffle function x100
         shuffle(playerCards);
         shuffle(weaponCards);
-        setTheAnswer_Person(playerCards.get(randy.nextInt(playerCards.size())));
-        setTheAnswer_Room(roomCards.get(randy.nextInt(roomCards.size())));
-        setTheAnswer_Weapon(weaponCards.get(randy.nextInt(weaponCards.size())));
+        setTheAnswer_Person(playerCards.get(randomize.nextInt(playerCards.size())));
+        setTheAnswer_Room(roomCards.get(randomize.nextInt(roomCards.size())));
+        setTheAnswer_Weapon(weaponCards.get(randomize.nextInt(weaponCards.size())));
 
 
 
@@ -200,11 +199,11 @@ public class Board {
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
 
         for (Player K : playerMap.keySet()) {//I kept this at K, indicating key because I make a random player key directly below
-            Player key = keys.get(randy.nextInt(keys.size()));//This allows me total random access to my playerMap which is already a HashMap
+            Player key = keys.get(randomize.nextInt(keys.size()));//This allows me total random access to my playerMap which is already a HashMap
             ArrayList<Card> cardLoader = new ArrayList<>();
             int count = cardAllotment;
 
-            if (randy.nextBoolean()) {//50/50 shot of iterating backwards or forwards
+            if (randomize.nextBoolean()) {//50/50 shot of iterating backwards or forwards
                 for (int i = workingDeck.size() - 1; i > -1; i--) {
                     if (count > 0) {
                         cardLoader.add(workingDeck.get(i));
@@ -235,7 +234,7 @@ public class Board {
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
 
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
-                Player key = keys.get(randy.nextInt(keys.size()));
+                Player key = keys.get(randomize.nextInt(keys.size()));
                 ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
                 tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
                 key.setMyCards(tempList);
@@ -273,6 +272,7 @@ public class Board {
         int gridSize = setRowsCols(csvData);
         if (num_cols * num_rows == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file
+            setPlayerStartLocations();//Sets row/col data for all my players since I didn't directly insert row/col data into ClueSetup file
             findAdjacencies();//Let's build the adjacency lists for each of the cells
         } else {
             throw new BadConfigFormatException(gridSize, num_rows, num_cols);//Wrong size....you get a custom exception:)
@@ -473,6 +473,11 @@ public class Board {
             }
         }
         return null;
+    }
+    private void setPlayerStartLocations(){//I liked not inserting row/col directly in setup file so I have to execute this logic after grid is built
+        for(Player playa : playerMap.keySet()){
+            playa.setPlayer_RowCol();
+        }
     }
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }

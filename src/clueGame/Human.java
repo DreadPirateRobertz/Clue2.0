@@ -9,5 +9,15 @@ public class Human extends Player {
         super(name, color, startLocation);
     }
 
+    @Override
+    public Suggestion createSuggestion() {
+        return null;
+    }
+
+    @Override
+    public BoardCell selectTargets() {
+        return null;
+    }
+
 
 }

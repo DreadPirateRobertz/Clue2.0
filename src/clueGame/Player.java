@@ -10,16 +10,23 @@ public abstract class Player {
 
     private String name;
     private Color color;
-    private String startLocation;
-    private ArrayList<Card> cards;
-    protected int row, col; //TODO: Functionality
+    protected String startLocation;
+    protected ArrayList<Card> cards;
+    protected int row, col;
 
     public Player(String name, Color color, String startLocation) {
+        cards = new ArrayList<>();
         this.name = name;
         this.color = color;
         this.startLocation = startLocation;
     }
+    public abstract Suggestion createSuggestion();
+    public abstract BoardCell selectTargets();
 
+    public void setPlayer_RowCol() {
+        row = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getRow();
+        col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
+    }
 
     public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> temp = new ArrayList<>();
@@ -45,6 +52,10 @@ public abstract class Player {
             return temp.get(randy.nextInt(temp.size()));
         }
         return null;
+    }
+
+    public void updateHand(Card card){  //Update Hand with SEEN Cards :)
+        cards.add(card);
     }
 
     //Setters
