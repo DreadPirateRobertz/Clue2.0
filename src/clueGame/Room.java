@@ -7,6 +7,7 @@ public class Room {
     private char ID;
     private BoardCell labelCell, centerCell, secretCell;
     private boolean walkWay;
+    private boolean unUsed;
 
     //Getters
     public BoardCell getCenterCell() {
@@ -18,6 +19,7 @@ public class Room {
     public BoardCell getLabelCell() { return labelCell; }
     //Is'ers
     public boolean isWalkWay() {return walkWay;}
+    public boolean isUnUsed() {return unUsed;}
     //Setters
     public void setID(char ID) {
         this.ID = ID;
@@ -33,5 +35,7 @@ public class Room {
     public void setWalkway(){walkWay = true;}
 
 
-
+    public void setUnused() {
+        unUsed = true;
+    }
 }

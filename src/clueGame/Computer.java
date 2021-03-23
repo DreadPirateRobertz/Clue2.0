@@ -3,6 +3,7 @@ package clueGame;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 public class Computer extends Player {
 
@@ -43,7 +44,39 @@ public class Computer extends Player {
 
     @Override
     public BoardCell selectTargets() {
-        return null;
+        boolean flag = false;
+        Random randy = new Random();
+        ArrayList<BoardCell> possibleMove = new ArrayList<>();
+        int pathLength = randy.nextInt(6) + 1;
+        BoardCell celly = Board.getInstance().getCell(row, col);
+        Board.getInstance().calcTargets(celly, pathLength);
+        ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());
+        for (int i = 0; i < targets.size(); i++){
+            if(targets.get(i).isRoomCenter() ){
+                for(Card card : cards){
+                    char roomID1= targets.get(i).getInitial();
+                    char roomID2 = card.getCardName().charAt(0);
+                    if(roomID1 != roomID2){
+                        flag = true;
+                    }
+                    else{
+                        flag = false;
+                    }
+                }
+                if(flag){
+                    possibleMove.add(targets.get(i));
+                }
+            }
+        }
+        if (possibleMove.size() == 1){
+            return possibleMove.get(0);
+        }
+        else if (possibleMove.size() > 1){
+            return possibleMove.get(randy.nextInt(possibleMove.size()));
+        }
+        else{
+            return targets.get(randy.nextInt(targets.size()));
+        }
     }
 
 

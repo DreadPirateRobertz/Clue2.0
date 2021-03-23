@@ -114,6 +114,9 @@ public class Board {
         if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
             room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
         }
+        else if (name.equals("Unused")){
+            room.setUnused();
+        }
         setRoom(room);//Effectively adding the Room to the roomMap
         if (cardCheck.equals("Room")) {
             roomCards.add(card);
@@ -492,6 +495,7 @@ public class Board {
     public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
+    public boolean isUnused(BoardCell cell){return getRoom(cell).isUnUsed();}
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }
