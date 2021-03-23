@@ -16,7 +16,8 @@ public class Card {
 
 
     public boolean equals(Card target){
-        return true; //STUB
+        return cardType.equals(target.cardType) && cardName.equals(target.getCardName());
+
     }
 
 }

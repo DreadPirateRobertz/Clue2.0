@@ -3,13 +3,14 @@ package clueGame;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.List;
 
 public class Board {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
+
+
+
     private Map<Player, ArrayList<Card>> playerMap;
     private Set<BoardCell> targets, visited;
     private ArrayList<Card> roomCards, playerCards, weaponCards, allCards;
@@ -31,7 +32,7 @@ public class Board {
         visited = new HashSet<>();
         targets = new HashSet<>();
         roomMap = new HashMap<>();
-        playerMap = new HashMap<>();
+        playerMap = new LinkedHashMap();
         roomCards = new ArrayList<>();
         playerCards = new ArrayList<>();
         weaponCards = new ArrayList<>();
@@ -48,8 +49,11 @@ public class Board {
             System.out.println(e.getMessage());
         }
     }
-    public Card handleSuggestion() {
+    public Card handleSuggestion(Player accuser) {
         for (Player player : playerMap.keySet()){
+            if(player.equals(accuser)){
+                continue;
+            }
             Card card = player.disproveSuggestion();
             if(card != null){
                 return card;
@@ -58,10 +62,8 @@ public class Board {
         return null;
     }
     public boolean checkAccusation(Card person, Card room, Card weapon) {
-        if(person.equals(Solution.getPerson()) && room.equals(Solution.getRoom()) && weapon.equals(Solution.getWeapon())){
-            return true;
-        }
-        return false;
+        return person.equals(Solution.getPerson()) && room.equals(Solution.getRoom()) && weapon.equals(Solution.getWeapon());
+
     }
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
         Scanner inFile = setInFile(setupConfigFile);
@@ -558,6 +560,9 @@ public class Board {
             temp.addAll(list);
         }
         return temp;
+    }
+    public Map<Player, ArrayList<Card>> getPlayerMap() {
+        return playerMap;
     }
 }
 
