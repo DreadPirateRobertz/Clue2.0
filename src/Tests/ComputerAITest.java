@@ -166,7 +166,7 @@ public class ComputerAITest {
         player1.updateHand(galley);
         player1.updateHand(airlock);
         BoardCell cell = player1.selectTargets();
-        assertEquals('B', cell.getInitial()); //E: B Actual: L
+        assertEquals('B', cell.getInitial());
         player1.getMyCards().clear();
     }
     @Test
@@ -184,7 +184,7 @@ public class ComputerAITest {
         player3.updateHand(airlock);
         player3.updateHand(brig);
         BoardCell celly = player3.selectTargets();
-        assertEquals('L', celly.getInitial()); //Expected L  Actual T
+        assertEquals('L', celly.getInitial());
     }
     @Test
     public void testComputerTargets3(){ //Random selection on no seen cards
@@ -206,7 +206,7 @@ public class ComputerAITest {
         //^player3 has all room cards in Hand
         Set<BoardCell> setty = new HashSet<>();
         player3.setPlayer_RowCol();
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 1000; i++){
             setty.add(player3.selectTargets());
         }
         BoardCell therapy = board.getRoom('T').getCenterCell();

@@ -69,6 +69,7 @@ public class Computer extends Player {
                     }
                     else{
                         flag = false;
+                        break; //Break here is critical
                     }
                 }
                 if(flag){
