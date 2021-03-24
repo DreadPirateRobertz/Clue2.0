@@ -14,4 +14,4 @@
 .classpath
 .project
 /data/logfile.txt
-#git log --pretty=format:"%s" --graph > mylog.txt
+#git log --pretty=format:"%s" --graph > gitlog.txt

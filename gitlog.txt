@@ -1,0 +1,105 @@
+* C20A-1 --> Final Edits about to ZIP ^
+* C20A-1 --> Quick edited of commentary
+* C20A-1 --> Refactored all new code and added commentary and improved spacing and layout of all functions
+* C20A-1 --> Fixed bug in selectTargets for AI, was missing a critical break point
+* C20A-1 --> Fixed some logic in createSuggestion and selectTargets for AI and there's one bug in my testing I'm currently trying to track down
+* C20A-1 --> Merged with origin/master
+* C20A-1 --> ComputerAITest class fully functional will be merging this branch<<< incoming!
+* C20A-1 --> ComputerAITest working on computer target logic
+* C20A-1 --> ComputerAITest all createSuggestion testing is working as desired and now about to design the test for computer targets!
+* C20A-1 --> Code is looking great did some refactoring and rethinking of various variables and classes from recent implementation
+* C20A-1 --> Merge Complete
+* C20A-1 --> Done with GameSolutionTest all Tests made and Pass.  Will be merging this branch with master incoming
+* C20A-1 --> 2 tests Made and Passed to test Disproving a Suggestion
+* C20A-1 --> Made the testCheckAccusation Test and associated code to pass the test!
+* C18A-1 --> Modded Sol'n Class with getters and setters
+* C18A-1 --> Forgot git log ---> ZIP^
+* C18A-1 --> Everything is Refactored & Preparing to ZIP^
+* C18A-1 --> ALL TESTS PASS
+* C18A-1 --> testPlayerDeal() & testRandomDeal -----> TESTS PASS
+* C18A-1 --> Solution TEST PASS
+* C18A-1 --> CARD TESTS PASS
+* C18A-1 --> (Had this one digit off sorry about that)  ALL PLAYER TESTS PASS
+* C19A-1 --> Added a Test to make sure all deals are random
+* C19A-1 --> Test look good now is time to start implementing failing tests
+* C19A-1 --> ALL TESTS FAIL as expected, I do need to do some thinking on my random test and will implement this functionality soon
+* C19A-1 --> Building up gameSetupTests.java to encompass all edge cases
+* C19A-1 --> Really coming along now :)
+* C19A-1 --> Playing around with some logic deciding on data structures to attack this problem and still in planning phase for all my tests
+* C19A-1 --> Initial setup of various new Card and Player classes and working on logic to begin writing my failing tests class
+* Put logic brackets back in according to code guidelines.  Put all data set initializations to the top of initialize method
+* Refactored setupRoom some more to condense 2 logic statements into 1
+* Refactored setupRoom to read even better.  This code is looking really great!
+* Updated a switch(theWay) variable with theWay:)
+* Fixed and edited commentary
+* Made num_rows and num_cols static
+* Adjusting else-if (cell.isRoomCenter()) in calcAdjacencies method as well as the addSecret method
+* Added Commentary
+* Refactored and made an isRoom method
+* Renamed variable
+* Renamed variables in recently implemented logic for isWalkway in method setupRoom
+* Edited variables in calcAdjacencies and edited associated commentary
+* Added Commentary
+* Edited Spacing
+* Renamed variables and added/edited commentary
+* Added commentary
+* Fine tuned a couple spacing/layout issues
+* added a isWalkway and setWalkway functionality to code so there is no hard coding and it would work with a hallway or breezeway or anything someone desired to use
+* Improved Commentary
+* Refined scope further on classify_room_symbology, refined parameters as well
+* Moved a logic statement to before the function call instead of in the function itself to produce readability & seemed a more efficient
+*  BoardCell cell = grid[row][col]...  Broadened scope (not sure if I like this yet or not) in classify_room_symbology method in Board
+* Further refinement of calcAdjacencies method
+* Renamed door to doorway calcAdjacencies method
+* More fine tuning for readability of calcAdjacencies method
+* Commentary and readability improved on recently redesigned methods
+* Culled the assignDoors method and all its logic and commentary related to it. Improved efficiency of code by not having to cycle thru grid an additional time and now center cell doorways are assigned at the same time as doorways being assigned the center cell adj
+* Tightening up the calcAdjacencies algo logic
+* I was needlessly initializing them when didn't need to be done Room = new Room() -> Room room...
+* Changed scope of temp variables that I was reusing in case blocks for various switch statements in Board.  Now only one declaration for whole scope of switch statement per variable.
+* More fine tuning of exception messaging Part II :)
+* More fine tuning of exception messaging
+* Fixed exception message concerning errant characters to be more general in scope
+* OCD typo fix*
+* Edited commentary; Really fine picking at this point but I'm proud of the code
+* Added commentary:)
+* Added commentary
+* Added throwing a BadConfigFormatException in classify_room_symbology method We never check the second letter in earlier test for errant roomID's, so my thinking was to throw in this exception just in case there's a secret cell with an invalid secret passageway
+* C15A -> Changed name of method addItup to addStandardAdj
+* C15A -> Changed name of method countTheExits to assignDoors
+* C15A -> Deleting erroneous files after ZIP
+*   Merge remote-tracking branch 'origin/master'
+|\  
+| * Create README.md
+* | C15A -> Zipping up
+|/  
+* C15A -> Small refinement upon board renaming variables and refining methods and logic to condense and read easier
+* Integrated setupRoom and setRoom together more intuitively
+* Changed variable name
+* C15A -> modified variable name in addSecret method in board
+* C15A -> Optimized code with a getter I wasn't fully appreciating to grab Rooms instead of reaching the the roomMap
+* C15A -> Renamed method
+* C15A ->Put back row/col data in BoardCell
+* C15A -> Took row/col data away from BoardCell and reordered logic for calcAdjacencies to work with Board's row/col
+* C15A -> Everything looks pretty sweet!  Cleaned up groupings of repetitive variable declarations.
+* C15A -> More refinement on getters/setters
+* C15A -> Grouped getters and setters together across all classes
+* C15A -> changed the variables num_rows and num_cols to non-static
+* C15A -> Improved readability, spacing, and commentary <-- Did that some more also renamed variables and
+* C15A -> Improved readability, spacing, and commentary.  Wow auto test in IntelliJ is so awesome.
+* C15A -> Refactored setting up columns/rows in loadlayoutconfig method
+* C15A -> Refactored setting up to read in a file in loadsetup/layout configurations
+* C15A -> Cleaned up BadConfigFormatException....Trying to delete my log elsewhere in the program but it just keeps clearing it then not allowing me to write to it again.
+* C15A -> Cleaned up Tests and added additional commentary
+* Delete logfile.txt
+* C15A -> Found the error I didn't assert my player correctly back to False in a later test ...Critical in these Tests it seems!
+* C15A -> //I realized if I batch ran the tests this error cropped but then I ran this test by itself and it was resolved.  I'm assuming the batch run may have initiated when I setOccupied to this space later on in this Test class
+* C15A -> Added commentary to the TestOccupied Test I in the previous commit
+* C15A -> Found a small bug where one cell is being set to Occupied...I've done a test to find the culprit but I'm a little baffled to what's going on b/c I tracked it thru 3 build functions and use the search features of the IDE to find if it was errantly set.  Also, verified getter/setter logic itself in BoardCell
+* C15A -> Updated commenting and refactored a few variables.  Also, Prof. Baldwin shared with me the J-Unit 5 files for a couple of the tests and everything runs great!
+* C15A -> Cleaned up all the spacing across all classes and Tests and reordered function layout in Board
+* C15A -> Fixed the .csv file trouble I was having.  I had inadvertently saved it as .csv (UTF-*)
+* C15A -> Cleaned up some formatting on my BoardAdjTargetTest I have ExceptionTests306.java commented out r/n since it is being weird on the expected = ... all of a sudden but it definitely works.  My next plan of attach is refactoring the code
+* C15A -> For some reason my IDE is not liking the ExceptionTests306 test tonight it won't recognize a keyword but I do know it passes because.......need to resubmit C14A-2 with refined BoardAdjTargetTest.........Had I problem rebasing/merging so I had to create another repo and so my gitlog will be harness from there and here :)
+* C15A -> ALLLLL TESTS PASSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+* C15A -> ALLLLL TESTS PASSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
