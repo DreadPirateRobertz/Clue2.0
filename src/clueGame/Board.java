@@ -195,8 +195,8 @@ public class Board {
                     else {
                         break;
                     }}}
-            key.setMyCards(cardLoader);
-            playerMap.put(key, cardLoader);
+            key.setMyCards(cardLoader);//Sets all the cards the Player initially holds (their hand)
+            playerMap.put(key, cardLoader);//Also I found very useful having a map of the Players & Cards for Board itself
             shuffle(workingDeck);
             keys.remove(key);
             for (Card pick : cardLoader) {
@@ -211,8 +211,8 @@ public class Board {
                 Player key = keys.get(randomize.nextInt(keys.size()));
                 ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
                 tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
-                key.setMyCards(tempList);//Sets all the cards the Player initially holds (their hand)
-                playerMap.put(key, tempList);//Also I found very useful having a map of the Players & Cards for Board itself
+                key.setMyCards(tempList);
+                playerMap.put(key, tempList);
                 workingDeck.remove(card);
                 keys.remove(key);
                 shuffle(workingDeck);
