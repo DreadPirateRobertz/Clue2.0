@@ -84,16 +84,18 @@ public class ComputerAITest {
         player1.updateHand(rustyShankCard);
         player1.updateHand(medical);
         player1.updateHand(csCard);
-        player2.updateHand(syringeCard);//
+        player2.updateHand(syringeCard);
         player2.updateHand(therapy);
         player2.updateHand(ordnance);
         player3.updateHand(meatHookCard);
         player3.updateHand(wbtCard);
         player3.updateHand(vr);
+        player1.setPlayer_RowCol();
+        player2.setPlayer_RowCol();
+        player3.setPlayer_RowCol();
     }
     @Test
     public void testCreateSuggestion1(){ //Next 3 tests will ensure that createSuggestion is running properly
-        player1.setPlayer_RowCol();
         s = player1.createSuggestion();
         assertNotEquals(s.getPersonCard(), csCard);
         assertNotEquals(s.getRoomCard(), medical);
@@ -104,8 +106,6 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion2(){
-        new Suggestion();
-        player2.setPlayer_RowCol();
         s = player2.createSuggestion();
         assertNotEquals(s.getRoomCard(), ordnance);
         assertNotEquals(s.getRoomCard(), therapy);
@@ -116,8 +116,6 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion3(){
-        new Suggestion();
-        player3.setPlayer_RowCol();
         s = player3.createSuggestion();
         assertNotEquals(s.getPersonCard(), wbtCard);
         assertNotEquals(s.getRoomCard(), vr);
@@ -128,7 +126,6 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion4(){ //Select Last weapon
-        player1.setPlayer_RowCol();
         player1.getMyCards().clear();
         player1.updateHand(rustyShankCard);
         player1.updateHand(meatHookCard);
@@ -170,9 +167,8 @@ public class ComputerAITest {
     }
     @Test
     public void testComputerTargets1(){ //Select Last Room
-        player1.setPlayer_RowCol();
-        player1.getMyCards().clear();   //Note -> Sometimes this test and the immediate next text get ran so fast that is mixes up the results within the IDE
-        player1.updateHand(vr);        //I've examined the logic sometimes it seems to throw player3/player1 in the wrong test and I'm not sure what causes this to happen every once in a while
+        player1.getMyCards().clear();
+        player1.updateHand(vr);
         player1.updateHand(therapy);
         player1.updateHand(medical);
         player1.updateHand(lab);
@@ -188,7 +184,6 @@ public class ComputerAITest {
     }
     @Test
     public void testComputerTargets2(){ //Last Room Selected
-        player3.setPlayer_RowCol();
         player3.getMyCards().clear();
         player3.updateHand(syringeCard); //Making sure it skips over non-Room Cards
         player3.updateHand(targetedThermoCard);
