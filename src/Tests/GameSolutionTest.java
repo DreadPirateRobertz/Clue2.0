@@ -55,15 +55,15 @@ public class GameSolutionTest {
         Board.setTheAnswer_Room(room);
         Board.setTheAnswer_Weapon(weapon);
         assertTrue(board.checkAccusation(suggestion));
-        suggestion.setPerson(mustard);
+        suggestion.setPersonCard(mustard);
         assertFalse(board.checkAccusation(suggestion));
-        suggestion.setRoom(roomy);
+        suggestion.setRoomCard(roomy);
         assertFalse(board.checkAccusation(suggestion));
-        suggestion.setWeapon(chokey);
+        suggestion.setWeaponCard(chokey);
         assertFalse(board.checkAccusation(suggestion));
-        suggestion.setWeapon(weapon);
-        suggestion.setRoom(room);
-        suggestion.setPerson(person);
+        suggestion.setWeaponCard(weapon);
+        suggestion.setRoomCard(room);
+        suggestion.setPersonCard(person);
 
     }
     @Test
@@ -153,7 +153,7 @@ public class GameSolutionTest {
         temp3.add(mustard);
         player2.setMyCards(temp3);
         tempMap.put(player2, player2.getMyCards());
-        assertEquals(suggestion.getRoom(), board.handleSuggestion(player3, suggestion));
+        assertEquals(suggestion.getRoomCard(), board.handleSuggestion(player3, suggestion));
     }
     @Test
     public void testHandleSuggestion3(){//No one has answer return null

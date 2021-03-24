@@ -31,15 +31,15 @@ public abstract class Player {
     public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> temp = new ArrayList<>();
         for(var card : cards){
-            if(card.equals(s.getPerson())) {
+            if(card.equals(s.getPersonCard())) {
                 temp.add(card);
                 continue;
             }
-           if(card.equals(s.getRoom())) {
+           if(card.equals(s.getRoomCard())) {
                 temp.add(card);
                 continue;
             }
-           if(card.equals(s.getWeapon())) {
+           if(card.equals(s.getWeaponCard())) {
                 temp.add(card);
             }
         }

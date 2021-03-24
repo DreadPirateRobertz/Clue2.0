@@ -65,7 +65,7 @@ public class Board {
         return null;
     }
     public boolean checkAccusation(Suggestion s) {
-        return s.getPerson().equals(getTheAnswer_Person()) && s.getRoom().equals(getTheAnswer_Room()) && s.getWeapon().equals(getTheAnswer_Weapon());
+        return s.getPersonCard().equals(getTheAnswer_Person()) && s.getRoomCard().equals(getTheAnswer_Room()) && s.getWeaponCard().equals(getTheAnswer_Weapon());
     }
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -113,9 +113,6 @@ public class Board {
         room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
         if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
             room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
-        }
-        else if (name.equals("Unused")){
-            room.setUnused();
         }
         setRoom(room);//Effectively adding the Room to the roomMap
         if (cardCheck.equals("Room")) {
@@ -186,11 +183,8 @@ public class Board {
         shuffle(roomCards);//Performs the Collections shuffle function x100
         shuffle(playerCards);
         shuffle(weaponCards);
-        setTheAnswer_Person(playerCards.get(randomize.nextInt(playerCards.size())));
-        setTheAnswer_Room(roomCards.get(randomize.nextInt(roomCards.size())));
-        setTheAnswer_Weapon(weaponCards.get(randomize.nextInt(weaponCards.size())));
 
-
+        theAnswer(randomize);
 
         ArrayList<Card> workingDeck = new ArrayList<>(allCards);
         workingDeck.remove(theAnswer.get(0));
@@ -248,6 +242,12 @@ public class Board {
                 break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
             }
         }
+    }
+//TODO: REORDER FUNCTION LAYOUT
+    private void theAnswer(Random randomize) {
+        setTheAnswer_Person(playerCards.get(randomize.nextInt(playerCards.size())));
+        setTheAnswer_Room(roomCards.get(randomize.nextInt(roomCards.size())));
+        setTheAnswer_Weapon(weaponCards.get(randomize.nextInt(weaponCards.size())));
     }
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -495,7 +495,6 @@ public class Board {
     public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
-    public boolean isUnused(BoardCell cell){return getRoom(cell).isUnUsed();}
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }

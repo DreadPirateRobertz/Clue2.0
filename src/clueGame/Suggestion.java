@@ -12,27 +12,27 @@ public class Suggestion {
 
     }
 
-    public void setPerson(Card person) {
+    public void setPersonCard(Card person) {
         this.person = person;
     }
 
-    public void setRoom(Card room) {
+    public void setRoomCard(Card room) {
         this.room = room;
     }
 
-    public void setWeapon(Card weapon) {
+    public void setWeaponCard(Card weapon) {
         this.weapon = weapon;
     }
 
-    public Card getPerson() {
+    public Card getPersonCard() {
         return person;
     }
 
-    public Card getRoom() {
+    public Card getRoomCard() {
         return room;
     }
 
-    public Card getWeapon() {
+    public Card getWeaponCard() {
         return weapon;
     }
 

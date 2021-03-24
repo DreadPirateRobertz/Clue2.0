@@ -2,6 +2,7 @@ package clueGame;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
 
@@ -18,13 +19,14 @@ public class Computer extends Player {
         ArrayList<Card> cardsCopy = new ArrayList<>(cards); //Deep copy made so as not to effect allCards
         ArrayList<Card> weaponCards = new ArrayList<>();
         ArrayList<Card> personCards = new ArrayList<>();
-        while(!cardsCopy.isEmpty())
-        for(Card cardy : cards){
-            for(Card card : notSeen){
-                if(card.equals(cardy)){
-                    notSeen.remove(card);
-                    cardsCopy.remove(cardy);
-                    break;
+        while(!cardsCopy.isEmpty()) {
+            for (Card cardy : cards) {
+                for (Card card : notSeen) {
+                    if (card.equals(cardy)) {
+                        notSeen.remove(card);
+                        cardsCopy.remove(cardy);
+                        break;
+                    }
                 }
             }
         }
@@ -39,6 +41,8 @@ public class Computer extends Player {
                 weaponCards.add(card);
             }
         }
+        Collections.shuffle(personCards);
+        Collections.shuffle(weaponCards);
         return new Suggestion(personCards.get(randomize.nextInt(personCards.size())), roomCard, weaponCards.get(randomize.nextInt(weaponCards.size())));
     }
 
@@ -50,13 +54,15 @@ public class Computer extends Player {
         int pathLength = randy.nextInt(6) + 1;
         BoardCell celly = Board.getInstance().getCell(row, col);
         Board.getInstance().calcTargets(celly, pathLength);
-
         ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());
 
-        for (int i = 0; i < targets.size(); i++){
-            if(targets.get(i).isRoomCenter() ){
+        for (BoardCell target : targets){
+            if(target.isRoomCenter() ){
                 for(Card card : cards){
-                    char roomID1= targets.get(i).getInitial();
+                    if(!card.getCardType().equals(CardType.ROOM)){
+                        continue;
+                    }
+                    char roomID1= target.getInitial();
                     char roomID2 = card.getCardName().charAt(0);
                     if(roomID1 != roomID2){
                         flag = true;
@@ -66,7 +72,7 @@ public class Computer extends Player {
                     }
                 }
                 if(flag){
-                    possibleMove.add(targets.get(i));
+                    possibleMove.add(target);
                 }
             }
         }
@@ -74,12 +80,12 @@ public class Computer extends Player {
             return possibleMove.get(0);
         }
         else if (possibleMove.size() > 1){
+            Collections.shuffle(possibleMove);
             return possibleMove.get(randy.nextInt(possibleMove.size()));
         }
         else{
+            Collections.shuffle(targets);
             return targets.get(randy.nextInt(targets.size()));
         }
     }
-
-
 }

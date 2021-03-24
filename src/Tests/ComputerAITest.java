@@ -95,10 +95,10 @@ public class ComputerAITest {
         Suggestion s = new Suggestion();
         player1.setPlayer_RowCol();
         s = player1.createSuggestion();
-        assertNotEquals(s.getPerson(), csCard);
-        assertNotEquals(s.getRoom(), medical);
-        assertNotEquals(s.getWeapon(), rustyShankCard);
-        assertEquals(s.getRoom().getCardName(), player1.getStartLocation()); //Chooses the room card it's in
+        assertNotEquals(s.getPersonCard(), csCard);
+        assertNotEquals(s.getRoomCard(), medical);
+        assertNotEquals(s.getWeaponCard(), rustyShankCard);
+        assertEquals(s.getRoomCard().getCardName(), player1.getStartLocation()); //Chooses the room card it's in
         Card card = board.handleSuggestion(player1, s);
         assertTrue(player1.getMyCards().contains(card)); //The card that disproves is added to the "seen" list or my deck of cards
     }
@@ -107,10 +107,10 @@ public class ComputerAITest {
         Suggestion s = new Suggestion();
         player2.setPlayer_RowCol();
         s = player2.createSuggestion();
-        assertNotEquals(s.getRoom(), ordnance);
-        assertNotEquals(s.getRoom(), therapy);
-        assertNotEquals(s.getWeapon(), syringeCard);
-        assertEquals(s.getRoom().getCardName(), player2.getStartLocation());
+        assertNotEquals(s.getRoomCard(), ordnance);
+        assertNotEquals(s.getRoomCard(), therapy);
+        assertNotEquals(s.getWeaponCard(), syringeCard);
+        assertEquals(s.getRoomCard().getCardName(), player2.getStartLocation());
         Card card = board.handleSuggestion(player2, s);
         assertTrue(player2.getMyCards().contains(card));
     }
@@ -119,10 +119,10 @@ public class ComputerAITest {
         Suggestion s = new Suggestion();
         player3.setPlayer_RowCol();
         s = player3.createSuggestion();
-        assertNotEquals(s.getPerson(), wbtCard);
-        assertNotEquals(s.getRoom(), vr);
-        assertNotEquals(s.getWeapon(), meatHookCard);
-        assertEquals(s.getRoom().getCardName(), player3.getStartLocation());
+        assertNotEquals(s.getPersonCard(), wbtCard);
+        assertNotEquals(s.getRoomCard(), vr);
+        assertNotEquals(s.getWeaponCard(), meatHookCard);
+        assertEquals(s.getRoomCard().getCardName(), player3.getStartLocation());
         Card card = board.handleSuggestion(player3, s);
         assertTrue(player3.getMyCards().contains(card));
     }
@@ -137,7 +137,7 @@ public class ComputerAITest {
         player1.updateHand(plasmaRifleCard);
         Suggestion s = new Suggestion();
         s = player1.createSuggestion();
-        assertTrue(s.getWeapon().equals(targetedThermoCard));
+        assertTrue(s.getWeaponCard().equals(targetedThermoCard));
     }
     @Test
     public void testCreateSuggestion5(){ //Select Last Person
@@ -149,28 +149,32 @@ public class ComputerAITest {
         player1.updateHand(pseCard);
         Suggestion s = new Suggestion();
         s = player1.createSuggestion();
-        assertTrue(s.getPerson().equals(msmCard));
+        assertTrue(s.getPersonCard().equals(msmCard));
     }
     @Test
     public void testComputerTargets1(){ //Select Last Room
         player1.setPlayer_RowCol();
-        player1.getMyCards().clear();
-        player1.updateHand(vr);
+        player1.getMyCards().clear();   //Note -> Sometimes this test and the immediate next text get ran so fast that is mixes up the results within the IDE
+        player1.updateHand(vr);        //I've examined the logic sometimes it seems to throw player3/player1 in the wrong test and I'm not sure what causes this to happen every once in a while
         player1.updateHand(therapy);
         player1.updateHand(medical);
         player1.updateHand(lab);
+        player1.updateHand(meatHookCard); //Making sure these get edited out of rotation
+        player1.updateHand(rustyShankCard);
         player1.updateHand(ordnance);
         player1.updateHand(engine);
         player1.updateHand(galley);
         player1.updateHand(airlock);
         BoardCell cell = player1.selectTargets();
-        assertEquals(cell.getInitial(), 'B');
+        assertEquals('B', cell.getInitial()); //E: B Actual: L
         player1.getMyCards().clear();
     }
     @Test
     public void testComputerTargets2(){ //Last Room Selected
         player3.setPlayer_RowCol();
         player3.getMyCards().clear();
+        player3.updateHand(syringeCard); //Making sure it skips over non-Room Cards
+        player3.updateHand(targetedThermoCard);
         player3.updateHand(vr);
         player3.updateHand(therapy);
         player3.updateHand(medical);
@@ -179,15 +183,15 @@ public class ComputerAITest {
         player3.updateHand(galley);
         player3.updateHand(airlock);
         player3.updateHand(brig);
-        BoardCell cell = player3.selectTargets();
-        assertEquals(cell.getInitial(), 'L');
+        BoardCell celly = player3.selectTargets();
+        assertEquals('L', celly.getInitial()); //Expected L  Actual T
     }
     @Test
     public void testComputerTargets3(){ //Random selection on no seen cards
         Set<BoardCell> setty = new HashSet<>();
         player2.setPlayer_RowCol();
         player2.getMyCards().clear();
-        for (int i = 0; i < 500; i++){
+        for (int i = 0; i < 2000; i++){
             setty.add(player2.selectTargets());
         }
         BoardCell brig= board.getRoom('B').getCenterCell(); //These rooms should both be contained in here as well
