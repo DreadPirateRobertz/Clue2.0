@@ -46,6 +46,7 @@ public class ComputerAITest {
     private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
     private static Player player1, player2, player3;
     private static ArrayList<Card> cardLoader;
+    private static Suggestion s;
     @BeforeAll
     public static void setUp(){
         // Board is singleton, get the only instance
@@ -92,7 +93,6 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion1(){ //Next 3 tests will ensure that createSuggestion is running properly
-        Suggestion s = new Suggestion();
         player1.setPlayer_RowCol();
         s = player1.createSuggestion();
         assertNotEquals(s.getPersonCard(), csCard);
@@ -100,11 +100,11 @@ public class ComputerAITest {
         assertNotEquals(s.getWeaponCard(), rustyShankCard);
         assertEquals(s.getRoomCard().getCardName(), player1.getStartLocation()); //Chooses the room card it's in
         Card card = board.handleSuggestion(player1, s);
-        assertTrue(player1.getMyCards().contains(card)); //The card that disproves is added to the "seen" list or my deck of cards
+        assertTrue(player1.getMyCards().contains(card)); //The card that disproves suggestion is added to the "seen" list or my deck of cards
     }
     @Test
     public void testCreateSuggestion2(){
-        Suggestion s = new Suggestion();
+        new Suggestion();
         player2.setPlayer_RowCol();
         s = player2.createSuggestion();
         assertNotEquals(s.getRoomCard(), ordnance);
@@ -116,7 +116,7 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion3(){
-        Suggestion s = new Suggestion();
+        new Suggestion();
         player3.setPlayer_RowCol();
         s = player3.createSuggestion();
         assertNotEquals(s.getPersonCard(), wbtCard);
@@ -135,7 +135,6 @@ public class ComputerAITest {
         player1.updateHand(garroteCard);
         player1.updateHand(syringeCard);
         player1.updateHand(plasmaRifleCard);
-        Suggestion s = new Suggestion();
         s = player1.createSuggestion();
         assertTrue(s.getWeaponCard().equals(targetedThermoCard));
     }
@@ -147,9 +146,27 @@ public class ComputerAITest {
         player1.updateHand(elCard);
         player1.updateHand(dpCard);
         player1.updateHand(pseCard);
-        Suggestion s = new Suggestion();
         s = player1.createSuggestion();
         assertTrue(s.getPersonCard().equals(msmCard));
+    }
+    @Test
+    public void testCreateSuggestion6() { //Testing random selection of weapon and random selection of people
+        Set<Card> weaponsList = new HashSet<>();
+        Set<Card> personList = new HashSet<>();
+        Card card;
+        player1.getMyCards().clear();
+        player1.updateHand(rustyShankCard);
+        player1.updateHand(medical);
+        player1.updateHand(csCard);
+        for(int i = 0; i < 100 ; i++){
+            s = player1.createSuggestion();
+            weaponsList.add(s.getWeaponCard());
+            personList.add(s.getPersonCard());
+        }
+        assertEquals(5, weaponsList.size()); //Should be 5 weapons
+        assertFalse(weaponsList.contains(rustyShankCard)); //Should not have this card
+        assertEquals(5, personList.size());
+        assertFalse(personList.contains(csCard));
     }
     @Test
     public void testComputerTargets1(){ //Select Last Room
