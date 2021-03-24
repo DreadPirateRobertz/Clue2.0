@@ -23,23 +23,16 @@ public abstract class Player {
     public abstract Suggestion createSuggestion();
     public abstract BoardCell selectTargets();
 
-    public void setPlayer_RowCol() {
-        row = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getRow();
-        col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
-    }
-
     public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> temp = new ArrayList<>();
-        for(var card : cards){
+        for(Card card : cards){
             if(card.equals(s.getPersonCard())) {
                 temp.add(card);
-                continue;
             }
-           if(card.equals(s.getRoomCard())) {
+           else if(card.equals(s.getRoomCard())) {
                 temp.add(card);
-                continue;
             }
-           if(card.equals(s.getWeaponCard())) {
+           else if(card.equals(s.getWeaponCard())) {
                 temp.add(card);
             }
         }
@@ -47,9 +40,9 @@ public abstract class Player {
             return temp.get(0);
         }
         else if (temp.size() > 1){
-            Random randy = new Random();
+            Random randomize = new Random();
             Collections.shuffle(temp);
-            return temp.get(randy.nextInt(temp.size()));
+            return temp.get(randomize.nextInt(temp.size())); //Random Card is selected from list
         }
         return null;
     }
@@ -63,6 +56,10 @@ public abstract class Player {
         this.cards = cards;
     }
     //Getters
+    public void setPlayer_RowCol() { //Sets row/col logic for players since I put startLocation in as a String to ClueSetup
+        row = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getRow();
+        col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
+    }
     public ArrayList<Card> getMyCards() {
         return cards;
     }

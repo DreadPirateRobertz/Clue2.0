@@ -23,10 +23,6 @@ public class Board {
     }
     private static ArrayList<Card> theAnswer;
 
-    public ArrayList<Card> getAllCards() {
-        return allCards;
-    }
-
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
         visited = new HashSet<>();
@@ -48,24 +44,6 @@ public class Board {
         } catch (FileNotFoundException | BadConfigFormatException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    /////WORKING on FUNCTIONS STILL NEED TO ORDER THESE\\\\\\\\
-    public Card handleSuggestion(Player accuser, Suggestion s) {
-        for (Player player : playerMap.keySet()){
-            if(player.equals(accuser)){
-                continue;
-            }
-            Card card = player.disproveSuggestion(s);
-            if(card != null){
-                accuser.updateHand(card);
-                return card;
-            }
-        }
-        return null;
-    }
-    public boolean checkAccusation(Suggestion s) {
-        return s.getPersonCard().equals(getTheAnswer_Person()) && s.getRoomCard().equals(getTheAnswer_Room()) && s.getWeaponCard().equals(getTheAnswer_Weapon());
     }
 
     public void loadSetupConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -131,7 +109,6 @@ public class Board {
         Color color;
         Player player;
 
-
         switch(dataColor){
             case "Orange" ->{
                 color = Color.orange;
@@ -158,7 +135,7 @@ public class Board {
         }
         switch(playerType){
             case "Human" -> {
-                player = new Human(name, color, startLoc);
+                player = new Human(name, color, startLoc); //Polymorphism
             }
             case "Computer" -> {
                 player = new Computer(name, color, startLoc);
@@ -186,7 +163,7 @@ public class Board {
 
         theAnswer(randomize);
 
-        ArrayList<Card> workingDeck = new ArrayList<>(allCards);
+        ArrayList<Card> workingDeck = new ArrayList<>(allCards);//Deep copy
         workingDeck.remove(theAnswer.get(0));
         workingDeck.remove(theAnswer.get(1));
         workingDeck.remove(theAnswer.get(2));
@@ -234,20 +211,14 @@ public class Board {
                 Player key = keys.get(randomize.nextInt(keys.size()));
                 ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
                 tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
-                key.setMyCards(tempList);
-                playerMap.put(key, tempList);
+                key.setMyCards(tempList);//Sets all the cards the Player initially holds (their hand)
+                playerMap.put(key, tempList);//Also I found very useful having a map of the Players & Cards for Board itself
                 workingDeck.remove(card);
                 keys.remove(key);
                 shuffle(workingDeck);
                 break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
             }
         }
-    }
-//TODO: REORDER FUNCTION LAYOUT
-    private void theAnswer(Random randomize) {
-        setTheAnswer_Person(playerCards.get(randomize.nextInt(playerCards.size())));
-        setTheAnswer_Room(roomCards.get(randomize.nextInt(roomCards.size())));
-        setTheAnswer_Weapon(weaponCards.get(randomize.nextInt(weaponCards.size())));
     }
 
     public void loadLayoutConfig() throws FileNotFoundException, BadConfigFormatException {
@@ -460,6 +431,30 @@ public class Board {
         }
     }
 
+    public Card handleSuggestion(Player accuser, Suggestion s) { //No real great word for Suggester...
+        for (Player player : playerMap.keySet()){
+            if(player.equals(accuser)){
+                continue;
+            }
+            Card card = player.disproveSuggestion(s);
+            if(card != null){
+                accuser.updateHand(card);
+                return card;
+            }
+        }
+        return null;
+    }
+
+    public boolean checkAccusation(Suggestion s) {
+        return s.getPersonCard().equals(getTheAnswer_Person()) && s.getRoomCard().equals(getTheAnswer_Room()) && s.getWeaponCard().equals(getTheAnswer_Weapon());
+    }
+
+    private void theAnswer(Random randomize) {
+        setTheAnswer_Person(playerCards.get(randomize.nextInt(playerCards.size())));
+        setTheAnswer_Room(roomCards.get(randomize.nextInt(roomCards.size())));
+        setTheAnswer_Weapon(weaponCards.get(randomize.nextInt(weaponCards.size())));
+    }
+
     private void shuffle(ArrayList<Card> cards) {
         int i = 0;
         while(i < 100) {
@@ -469,18 +464,8 @@ public class Board {
     }
 
     //Getters
-    public Player getPlayer(String name){
-        for (Player player : playerMap.keySet()){
-            if (player.getName().equals(name)){
-                return player;
-            }
-        }
-        return null;
-    }
-    private void setPlayerStartLocations(){//I liked not inserting row/col directly in setup file so I have to execute this logic after grid is built
-        for(Player playa : playerMap.keySet()){
-            playa.setPlayer_RowCol();
-        }
+    public ArrayList<Card> getAllCards() {
+        return allCards;
     }
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
@@ -493,6 +478,9 @@ public class Board {
     public static Card getTheAnswer_Person(){ return theAnswer.get(0); }
     public static Card getTheAnswer_Room(){ return theAnswer.get(1); }
     public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
+    public Map<Player, ArrayList<Card>> getPlayerMap() {
+        return playerMap;
+    }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
@@ -515,6 +503,11 @@ public class Board {
         setNumCols(cols);
         setNumRows(rows);
         return size;
+    }
+    private void setPlayerStartLocations(){//I liked not inserting row/col directly in setup file so I have to execute this logic after grid is built
+        for(Player playa : playerMap.keySet()){
+            playa.setPlayer_RowCol();
+        }
     }
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
@@ -572,6 +565,7 @@ public class Board {
         }
         return false;
     }
+
     public ArrayList<Card> getPlayerMapValues() {
         ArrayList<Card> temp = new ArrayList<>();
         for (ArrayList<Card> list : playerMap.values()) {
@@ -579,8 +573,14 @@ public class Board {
         }
         return temp;
     }
-    public Map<Player, ArrayList<Card>> getPlayerMap() {
-        return playerMap;
+
+    public Player getPlayer(String name){
+        for (Player player : playerMap.keySet()){
+            if (player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
     }
 }
 

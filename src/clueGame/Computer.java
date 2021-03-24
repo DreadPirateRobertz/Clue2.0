@@ -13,18 +13,18 @@ public class Computer extends Player {
     }
 
     @Override
-    public Suggestion createSuggestion() {
+    public Suggestion createSuggestion() { //
         Random randomize = new Random();
         ArrayList<Card> notSeen = new ArrayList<>(Board.getInstance().getAllCards()); //Deep copy made so as not to effect allCards
-        ArrayList<Card> cardsCopy = new ArrayList<>(cards); //Deep copy made so as not to effect allCards
+        ArrayList<Card> cardsCopy = new ArrayList<>(cards);
         ArrayList<Card> weaponCards = new ArrayList<>();
         ArrayList<Card> personCards = new ArrayList<>();
         while(!cardsCopy.isEmpty()) {
-            for (Card cardy : cards) {
-                for (Card card : notSeen) {
-                    if (card.equals(cardy)) {
+                for (Card seenCard : cards) {
+                    for (Card card : notSeen) { //Logic deciphers which cards have been seen
+                    if (card.equals(seenCard)) {
                         notSeen.remove(card);
-                        cardsCopy.remove(cardy);
+                        cardsCopy.remove(seenCard);
                         break;
                     }
                 }
@@ -32,8 +32,8 @@ public class Computer extends Player {
         }
         BoardCell celly = Board.getInstance().getCell(row, col);
         Room room = Board.getInstance().getRoom(celly);
-        Card roomCard = new Card(CardType.ROOM, room.getName());
-        for(Card card : notSeen){
+        Card roomCard = new Card(CardType.ROOM, room.getName()); //Producing the roomCard
+        for(Card card : notSeen){//Splitting the notSeen deck into 2 smaller decks of Cards to randomize a suggestion
             if(card.getCardType().equals(CardType.PERSON)){
                 personCards.add(card);
             }
@@ -43,24 +43,28 @@ public class Computer extends Player {
         }
         Collections.shuffle(personCards);
         Collections.shuffle(weaponCards);
-        return new Suggestion(personCards.get(randomize.nextInt(personCards.size())), roomCard, weaponCards.get(randomize.nextInt(weaponCards.size())));
+        Card personCard = personCards.get(randomize.nextInt(personCards.size()));
+        Card weaponCard =  weaponCards.get(randomize.nextInt(weaponCards.size()));
+        return new Suggestion(personCard, roomCard, weaponCard);
     }
 
     @Override
     public BoardCell selectTargets() {
         boolean flag = false;
-        Random randy = new Random();
+        Random randomize = new Random();
         ArrayList<BoardCell> possibleMove = new ArrayList<>();
-        int pathLength = randy.nextInt(6) + 1;
-        BoardCell celly = Board.getInstance().getCell(row, col);
-        Board.getInstance().calcTargets(celly, pathLength);
-        ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());
+        int pathLength = randomize.nextInt(6) + 1;
+        BoardCell thisCell = Board.getInstance().getCell(row, col);
 
+        Board.getInstance().calcTargets(thisCell, pathLength);
+
+        ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());//Deep copy of the set Targets
+                                                                                        //Which I put into an array list to manipulate and later shuffle
         for (BoardCell target : targets){
-            if(target.isRoomCenter() ){
+            if(target.isRoomCenter() ){ //Is it a room?
                 for(Card card : cards){
                     if(!card.getCardType().equals(CardType.ROOM)){
-                        continue;
+                        continue; //If not a room ....Advance the loop
                     }
                     char roomID1= target.getInitial();
                     char roomID2 = card.getCardName().charAt(0);
@@ -76,17 +80,17 @@ public class Computer extends Player {
                     possibleMove.add(target);
                 }
             }
-        }
+        }                                       //Brain Dead AI logic follows to assign the correct move
         if (possibleMove.size() == 1){
             return possibleMove.get(0);
         }
         else if (possibleMove.size() > 1){
             Collections.shuffle(possibleMove);
-            return possibleMove.get(randy.nextInt(possibleMove.size()));
+            return possibleMove.get(randomize.nextInt(possibleMove.size()));
         }
         else{
             Collections.shuffle(targets);
-            return targets.get(randy.nextInt(targets.size()));
+            return targets.get(randomize.nextInt(targets.size()));
         }
     }
 }
