@@ -173,11 +173,11 @@ public class Board {
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
 
         for (Player K : playerMap.keySet()) {//I kept this at K, indicating key because I make a random player key directly below
-            Player key = keys.get(randomize.nextInt(keys.size()));//This allows me total random access to my playerMap which is already a HashMap
+            Player randomKey = keys.get(randomize.nextInt(keys.size()));//This allows me total random access to my playerMap which is already a HashMap
             ArrayList<Card> cardLoader = new ArrayList<>();
             int count = cardAllotment;
 
-            if (randomize.nextBoolean()) {//50/50 shot of iterating backwards or forwards
+            if (randomize.nextBoolean()) {//50/50 shot of iterating backwards or forwards (else below)
                 for (int i = workingDeck.size() - 1; i > -1; i--) {
                     if (count > 0) {
                         cardLoader.add(workingDeck.get(i));
@@ -195,10 +195,10 @@ public class Board {
                     else {
                         break;
                     }}}
-            key.setMyCards(cardLoader);//Sets all the cards the Player initially holds (their hand)
-            playerMap.put(key, cardLoader);//Also I found very useful having a map of the Players & Cards for Board itself
+            randomKey.setMyCards(cardLoader);//Sets all the cards the Player initially holds (their hand)
+            playerMap.put(randomKey, cardLoader);//Also I found very useful having a map of the Players & Cards for Board itself
             shuffle(workingDeck);
-            keys.remove(key);
+            keys.remove(randomKey);
             for (Card pick : cardLoader) {
                 workingDeck.remove(pick);
             }

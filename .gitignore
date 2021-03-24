@@ -11,8 +11,7 @@
 /.idea
 /out
 /.idea/*.ini
-/Tests/Tests/*.ini
-/Tests/*.ini
 .classpath
 .project
 /data/logfile.txt
+#git log --pretty=format:"%s" --graph > mylog.txt
