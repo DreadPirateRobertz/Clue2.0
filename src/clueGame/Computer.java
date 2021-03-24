@@ -50,7 +50,9 @@ public class Computer extends Player {
         int pathLength = randy.nextInt(6) + 1;
         BoardCell celly = Board.getInstance().getCell(row, col);
         Board.getInstance().calcTargets(celly, pathLength);
+
         ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());
+
         for (int i = 0; i < targets.size(); i++){
             if(targets.get(i).isRoomCenter() ){
                 for(Card card : cards){

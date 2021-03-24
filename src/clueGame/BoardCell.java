@@ -10,8 +10,6 @@ public class BoardCell {
     private boolean roomCenter, roomLabel, doorway, occupied;
     private Set<BoardCell> adjList;
 
-
-
     public BoardCell(int row, int col) {
         this.row = row;
         this.col = col;
