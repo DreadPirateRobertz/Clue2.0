@@ -12,6 +12,15 @@ public abstract class Player {
     private Color color;
     protected String startLocation;
     protected ArrayList<Card> cards;
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
     protected int row, col;
 
     public Player(String name, Color color, String startLocation) {
@@ -20,19 +29,19 @@ public abstract class Player {
         this.color = color;
         this.startLocation = startLocation;
     }
-    public abstract Suggestion createSuggestion();
-    public abstract BoardCell selectTargets();
+    public abstract Suggestion createSuggestion(Room room, ArrayList<Card> allCards);
+    public abstract BoardCell selectTargets(ArrayList<BoardCell> targets);
 
-    public Card disproveSuggestion(Suggestion s){
+    public Card disproveSuggestion(Suggestion suggestion){
         ArrayList<Card> temp = new ArrayList<>();
         for(Card card : cards){
-            if(card.equals(s.getPersonCard())) {
+            if(card.equals(suggestion.getPersonCard())) {
                 temp.add(card);
             }
-           else if(card.equals(s.getRoomCard())) {
+           else if(card.equals(suggestion.getRoomCard())) {
                 temp.add(card);
             }
-           else if(card.equals(s.getWeaponCard())) {
+           else if(card.equals(suggestion.getWeaponCard())) {
                 temp.add(card);
             }
         }

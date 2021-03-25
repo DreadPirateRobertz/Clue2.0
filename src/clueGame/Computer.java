@@ -13,31 +13,16 @@ public class Computer extends Player {
     }
 
     @Override
-    public Suggestion createSuggestion() { //
+    public Suggestion createSuggestion(Room room, ArrayList<Card> allCards) { //
         Random randomize = new Random();
-        ArrayList<Card> notSeen = new ArrayList<>(Board.getInstance().getAllCards()); //Deep copy made so as not to effect allCards
-        ArrayList<Card> cardsCopy = new ArrayList<>(cards);
         ArrayList<Card> weaponCards = new ArrayList<>();
         ArrayList<Card> personCards = new ArrayList<>();
-        while(!cardsCopy.isEmpty()) {
-                for (Card seenCard : cards) {
-                    for (Card card : notSeen) { //Logic deciphers which cards have been seen
-                    if (card.equals(seenCard)) {
-                        notSeen.remove(card);
-                        cardsCopy.remove(seenCard);
-                        break;
-                    }
-                }
-            }
-        }
-        BoardCell celly = Board.getInstance().getCell(row, col);
-        Room room = Board.getInstance().getRoom(celly);
         Card roomCard = new Card(CardType.ROOM, room.getName()); //Producing the roomCard
-        for(Card card : notSeen){//Splitting the notSeen deck into 2 smaller decks of Cards to randomize a suggestion
-            if(card.getCardType().equals(CardType.PERSON)){
+        for(Card card : allCards){//Splitting the notSeen deck into 2 smaller decks of Cards to randomize a suggestion
+            if(card.getCardType().equals(CardType.PERSON) && !cards.contains(card)){
                 personCards.add(card);
             }
-            else if (card.getCardType().equals(CardType.WEAPON)){
+            else if (card.getCardType().equals(CardType.WEAPON) && !cards.contains(card)){
                 weaponCards.add(card);
             }
         }
@@ -49,17 +34,11 @@ public class Computer extends Player {
     }
 
     @Override
-    public BoardCell selectTargets() {
+    public BoardCell selectTargets(ArrayList<BoardCell> targets) {
         boolean flag = false;
         Random randomize = new Random();
         ArrayList<BoardCell> possibleMove = new ArrayList<>();
-        int pathLength = randomize.nextInt(6) + 1;
-        BoardCell thisCell = Board.getInstance().getCell(row, col);
 
-        Board.getInstance().calcTargets(thisCell, pathLength);
-
-        ArrayList<BoardCell> targets = new ArrayList<>(Board.getInstance().getTargets());//Deep copy of the set Targets
-                                                                                        //Which I put into an array list to manipulate and later shuffle
         for (BoardCell target : targets){
             if(target.isRoomCenter() ){ //Is it a room?
                 for(Card card : cards){

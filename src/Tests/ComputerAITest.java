@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,56 +48,84 @@ public class ComputerAITest {
     private static Player player1, player2, player3;
     private static ArrayList<Card> cardLoader;
     private static Suggestion s;
+    private static BoardCell celly1, celly2, celly3;
+    private static Room room1, room2, room3;
+    private static ArrayList<BoardCell> targets1, targets2, targets3;
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
         // Board is singleton, get the only instance
         board = Board.getInstance();
         // set the file names to use my config files
         board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
         // Initialize will load BOTH config files
         board.initialize();
-        rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank");
-        targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device");
-        plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle");
-        garroteCard = new Card(CardType.WEAPON, "Garrote");
-        meatHookCard = new Card(CardType.WEAPON, "Meat Hook");
-        syringeCard = new Card(CardType.WEAPON, "Syringe of Eternal Midnight");
-        wbtCard = new Card(CardType.PERSON, "Whipping Boy Todd");
-        csCard = new Card(CardType.PERSON, "Commander Sassafras");
-        elCard = new Card(CardType.PERSON, "Ensign Larry");
-        dpCard = new Card(CardType.PERSON, "Doctor Petunia");
-        msmCard = new Card(CardType.PERSON, "Mad Scientist Mikey");
-        pseCard = new Card(CardType.PERSON, "Prisoner Shifty Eyes");
-        brig = new Card(CardType.ROOM, "Brig");
-        galley = new Card(CardType.ROOM, "Galley");
-        engine = new Card(CardType.ROOM, "Engine");
-        medical = new Card(CardType.ROOM, "Medical");
-        vr = new Card(CardType.ROOM, "ImmersiveVR");
-        lab = new Card(CardType.ROOM, "Laboratory");
-        airlock = new Card(CardType.ROOM, "Airlock");
-        ordnance = new Card(CardType.ROOM, "Ordnance");
-        therapy = new Card(CardType.ROOM, "Therapy");
+
         cardLoader = new ArrayList<>();
+        targets1 = new ArrayList<>();
+        targets2 = new ArrayList<>();
+        targets3 = new ArrayList<>();
+
+        cardLoader.add(rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank"));
+        cardLoader.add(targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device"));
+        cardLoader.add(plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle"));
+        cardLoader.add(garroteCard = new Card(CardType.WEAPON, "Garrote"));
+        cardLoader.add(meatHookCard = new Card(CardType.WEAPON, "Meat Hook"));
+        cardLoader.add(syringeCard = new Card(CardType.WEAPON, "Syringe of Eternal Midnight"));
+        cardLoader.add(wbtCard = new Card(CardType.PERSON, "Whipping Boy Todd"));
+        cardLoader.add(csCard = new Card(CardType.PERSON, "Commander Sassafras"));
+        cardLoader.add(elCard = new Card(CardType.PERSON, "Ensign Larry"));
+        cardLoader.add(dpCard = new Card(CardType.PERSON, "Doctor Petunia"));
+        cardLoader.add(msmCard = new Card(CardType.PERSON, "Mad Scientist Mikey"));
+        cardLoader.add(pseCard = new Card(CardType.PERSON, "Prisoner Shifty Eyes"));
+        cardLoader.add(brig = new Card(CardType.ROOM, "Brig"));
+        cardLoader.add(galley = new Card(CardType.ROOM, "Galley"));
+        cardLoader.add(engine = new Card(CardType.ROOM, "Engine"));
+        cardLoader.add(medical = new Card(CardType.ROOM, "Medical"));
+        cardLoader.add(vr = new Card(CardType.ROOM, "ImmersiveVR"));
+        cardLoader.add(lab = new Card(CardType.ROOM, "Laboratory"));
+        cardLoader.add(airlock = new Card(CardType.ROOM, "Airlock"));
+        cardLoader.add(ordnance = new Card(CardType.ROOM, "Ordnance"));
+        cardLoader.add(therapy = new Card(CardType.ROOM, "Therapy"));
+
         player1 = new Computer("P1", Color.cyan, "Ordnance");
         player2 = new Computer("P2", Color.green, "Airlock");
         player3 = new Computer("P3", Color.pink, "Medical");
 
-        player1.updateHand(rustyShankCard);
-        player1.updateHand(medical);
-        player1.updateHand(csCard);
-        player2.updateHand(syringeCard);
-        player2.updateHand(therapy);
-        player2.updateHand(ordnance);
-        player3.updateHand(meatHookCard);
-        player3.updateHand(wbtCard);
-        player3.updateHand(vr);
         player1.setPlayer_RowCol();
         player2.setPlayer_RowCol();
         player3.setPlayer_RowCol();
+
+        celly1 = Board.getInstance().getCell(player1.getRow(), player1.getCol());
+        room1 = Board.getInstance().getRoom(celly1);
+        celly2 = Board.getInstance().getCell(player2.getRow(), player2.getCol());
+        room2 = Board.getInstance().getRoom(celly2);
+        celly3 = Board.getInstance().getCell(player3.getRow(), player3.getCol());
+        room3 = Board.getInstance().getRoom(celly3);
+        //Player 1 targets
+        targets1.add(Board.getInstance().getCell(26, 10));
+        targets1.add(Board.getInstance().getCell(23, 6));
+        targets1.add(Board.getInstance().getCell(19, 14));
+        targets1.add(Board.getInstance().getCell(27, 10));
+        targets1.add(Board.getInstance().getCell(15, 25));
+        //Player 2 targets
+        targets2.add(Board.getInstance().getCell(15, 25));
+        targets2.add(Board.getInstance().getCell(10, 24));
+        targets2.add(Board.getInstance().getCell(27, 14));
+        targets2.add(Board.getInstance().getCell(15, 22));
+        targets2.add(Board.getInstance().getCell(20, 24));
+        //Player 3 targets
+        targets3.add(Board.getInstance().getCell(23, 5));
+        targets3.add(Board.getInstance().getCell(3, 10));
+        targets3.add(Board.getInstance().getCell(6, 5));
+        targets3.add(Board.getInstance().getCell(3, 18));
+        targets3.add(Board.getInstance().getCell(6, 23));
     }
     @Test
     public void testCreateSuggestion1(){ //Next 3 tests will ensure that createSuggestion is running properly
-        s = player1.createSuggestion();
+        player1.updateHand(rustyShankCard);
+        player1.updateHand(medical);
+        player1.updateHand(csCard);
+        s = player1.createSuggestion(room1, cardLoader);
         assertNotEquals(s.getPersonCard(), csCard);
         assertNotEquals(s.getRoomCard(), medical);
         assertNotEquals(s.getWeaponCard(), rustyShankCard);
@@ -106,7 +135,10 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion2(){
-        s = player2.createSuggestion();
+        player2.updateHand(syringeCard);
+        player2.updateHand(therapy);
+        player2.updateHand(ordnance);
+        s = player2.createSuggestion(room2, cardLoader);
         assertNotEquals(s.getRoomCard(), ordnance);
         assertNotEquals(s.getRoomCard(), therapy);
         assertNotEquals(s.getWeaponCard(), syringeCard);
@@ -116,7 +148,10 @@ public class ComputerAITest {
     }
     @Test
     public void testCreateSuggestion3(){
-        s = player3.createSuggestion();
+        player3.updateHand(meatHookCard);
+        player3.updateHand(wbtCard);
+        player3.updateHand(vr);
+        s = player3.createSuggestion(room3, cardLoader);
         assertNotEquals(s.getPersonCard(), wbtCard);
         assertNotEquals(s.getRoomCard(), vr);
         assertNotEquals(s.getWeaponCard(), meatHookCard);
@@ -132,7 +167,7 @@ public class ComputerAITest {
         player1.updateHand(garroteCard);
         player1.updateHand(syringeCard);
         player1.updateHand(plasmaRifleCard);
-        s = player1.createSuggestion();
+        s = player1.createSuggestion(room1, cardLoader);
         assertTrue(s.getWeaponCard().equals(targetedThermoCard));
     }
     @Test
@@ -143,7 +178,7 @@ public class ComputerAITest {
         player1.updateHand(elCard);
         player1.updateHand(dpCard);
         player1.updateHand(pseCard);
-        s = player1.createSuggestion();
+        s = player1.createSuggestion(room1, cardLoader);
         assertTrue(s.getPersonCard().equals(msmCard));
     }
     @Test
@@ -156,7 +191,7 @@ public class ComputerAITest {
         player1.updateHand(medical);
         player1.updateHand(csCard);
         for(int i = 0; i < 100 ; i++){
-            s = player1.createSuggestion();
+            s = player1.createSuggestion(room1, cardLoader);
             weaponsList.add(s.getWeaponCard());
             personList.add(s.getPersonCard());
         }
@@ -178,7 +213,7 @@ public class ComputerAITest {
         player1.updateHand(engine);
         player1.updateHand(galley);
         player1.updateHand(airlock);
-        BoardCell cell = player1.selectTargets();
+        BoardCell cell = player1.selectTargets(targets1);
         assertEquals('B', cell.getInitial());
         player1.getMyCards().clear();
     }
@@ -195,7 +230,7 @@ public class ComputerAITest {
         player3.updateHand(galley);
         player3.updateHand(airlock);
         player3.updateHand(brig);
-        BoardCell celly = player3.selectTargets();
+        BoardCell celly = player3.selectTargets(targets3);
         assertEquals('L', celly.getInitial());
     }
     @Test
@@ -203,12 +238,12 @@ public class ComputerAITest {
         Set<BoardCell> setty = new HashSet<>();
         player2.setPlayer_RowCol();
         player2.getMyCards().clear();
-        for (int i = 0; i < 2000; i++){
-            setty.add(player2.selectTargets());
+        for (int i = 0; i < 100; i++){
+            setty.add(player2.selectTargets(targets2));
         }
         BoardCell brig= board.getRoom('B').getCenterCell(); //These rooms should both be contained in here as well
         BoardCell ordnance = board.getRoom('O').getCenterCell();
-        assertTrue(setty.size() >= 45);
+        assertTrue(setty.size() == 5);
         assertTrue(setty.contains(brig));
         assertTrue(setty.contains(ordnance));
     }
@@ -218,12 +253,13 @@ public class ComputerAITest {
         //^player3 has all room cards in Hand
         Set<BoardCell> setty = new HashSet<>();
         player3.setPlayer_RowCol();
-        for (int i = 0; i < 1000; i++){
-            setty.add(player3.selectTargets());
+        for (int i = 0; i < 100; i++){
+            setty.add(player3.selectTargets(targets3));
         }
         BoardCell therapy = board.getRoom('T').getCenterCell();
         BoardCell lab = board.getRoom('L').getCenterCell();
         BoardCell galley = board.getRoom('G').getCenterCell();
+        assertEquals(5, setty.size());
         assertTrue(setty.contains(therapy));
         assertTrue(setty.contains(lab));
         assertTrue(setty.contains(galley));

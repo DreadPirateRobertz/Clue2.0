@@ -10,7 +10,11 @@ public class Board {
     private Map<Character, Room> roomMap;
     private Map<Player, ArrayList<Card>> playerMap;
     private Set<BoardCell> targets, visited;
-    private ArrayList<Card> roomCards, playerCards, weaponCards, allCards;
+    private ArrayList<Card> roomCards;
+    private ArrayList<Card> playerCards;
+    private ArrayList<Card> weaponCards;
+
+    private ArrayList<Card> allCards;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
     private static Board theInstance = new Board();
@@ -253,7 +257,7 @@ public class Board {
         }
     }
 
-    private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
+    public void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
         grid = new BoardCell[num_rows][num_cols];//Initialize game grid
         int index = 0;//Using this index variable to cycle through the ArrayList of csvData
 
@@ -315,7 +319,7 @@ public class Board {
         }
     }
 
-    private void findAdjacencies() {
+    public void findAdjacencies() {
         for (int row = 0; row < num_rows; row++)//Sets all the adjacency lists for each cell
             for (int col = 0; col < num_cols; col++)
                 calcAdjacencies(grid[row][col], row, col);
@@ -431,12 +435,12 @@ public class Board {
         }
     }
 
-    public Card handleSuggestion(Player accuser, Suggestion s) { //No real great word for Suggester...
+    public Card handleSuggestion(Player accuser, Suggestion suggestion) { //No real great word for Suggester...
         for (Player player : playerMap.keySet()){
             if(player.equals(accuser)){
                 continue;
             }
-            Card card = player.disproveSuggestion(s);
+            Card card = player.disproveSuggestion(suggestion);
             if(card != null){
                 accuser.updateHand(card);
                 return card;

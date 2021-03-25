@@ -1,6 +1,7 @@
 package clueGame;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Human extends Player {
 
@@ -9,12 +10,14 @@ public class Human extends Player {
     }
 
     @Override
-    public Suggestion createSuggestion() {
+    public Suggestion createSuggestion(Room room, ArrayList<Card> allCards) {
         return null;
     }
 
+
+
     @Override
-    public BoardCell selectTargets() {
+    public BoardCell selectTargets(ArrayList<BoardCell> targets) {
         return null;
     }
 
