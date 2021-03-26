@@ -85,18 +85,18 @@ public class GameSetupTests {
     @Test
     public void testPlayerDeal(){
         assertEquals(18, board.getTotalCardsDealtToPlayers());//Total number of cards held by players after deal
-        assertEquals(3, board.getPlayer("Ensign Larry").getMyCards().size());//Assuring even number of cards dealt
-        assertEquals(3, board.getPlayer("Doctor Petunia").getMyCards().size());
-        assertEquals(3, board.getPlayer("Commander Sassafras").getMyCards().size());
-        assertEquals(3, board.getPlayer("Mad Scientist Mikey").getMyCards().size());
-        assertEquals(3, board.getPlayer("Whipping Boy Todd").getMyCards().size());
-        assertEquals(3, board.getPlayer("Prisoner Shifty Eyes").getMyCards().size());
-        assertNotEquals(board.getPlayer("Doctor Petunia").getMyCards(), board.getPlayer("Prisoner Shifty Eyes").getMyCards()); //Testing if any cards dealt twice
-        assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
-        assertNotEquals(board.getPlayer("Ensign Larry").getMyCards(), board.getPlayer("Prisoner Shifty Eyes").getMyCards());
-        assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
-        assertNotEquals(board.getPlayer("Commander Sassafras").getMyCards(), board.getPlayer("Mad Scientist Mikey").getMyCards());
-        assertNotEquals(board.getPlayer("Whipping Boy Todd").getMyCards(), board.getPlayer("Ensign Larry").getMyCards());
+        assertEquals(3, board.getPlayer("Ensign Larry").getPlayerHand().size());//Assuring even number of cards dealt
+        assertEquals(3, board.getPlayer("Doctor Petunia").getPlayerHand().size());
+        assertEquals(3, board.getPlayer("Commander Sassafras").getPlayerHand().size());
+        assertEquals(3, board.getPlayer("Mad Scientist Mikey").getPlayerHand().size());
+        assertEquals(3, board.getPlayer("Whipping Boy Todd").getPlayerHand().size());
+        assertEquals(3, board.getPlayer("Prisoner Shifty Eyes").getPlayerHand().size());
+        assertNotEquals(board.getPlayer("Doctor Petunia").getPlayerHand(), board.getPlayer("Prisoner Shifty Eyes").getPlayerHand()); //Testing if any cards dealt twice
+        assertNotEquals(board.getPlayer("Whipping Boy Todd").getPlayerHand(), board.getPlayer("Mad Scientist Mikey").getPlayerHand());
+        assertNotEquals(board.getPlayer("Ensign Larry").getPlayerHand(), board.getPlayer("Prisoner Shifty Eyes").getPlayerHand());
+        assertNotEquals(board.getPlayer("Commander Sassafras").getPlayerHand(), board.getPlayer("Ensign Larry").getPlayerHand());
+        assertNotEquals(board.getPlayer("Commander Sassafras").getPlayerHand(), board.getPlayer("Mad Scientist Mikey").getPlayerHand());
+        assertNotEquals(board.getPlayer("Whipping Boy Todd").getPlayerHand(), board.getPlayer("Ensign Larry").getPlayerHand());
     }
     @Test//Did a test with the loop at 1M and takes ~3m 8s and did a test with 10M and took 34 minutes
     public void testRandomDeal() {

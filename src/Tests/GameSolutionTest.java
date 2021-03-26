@@ -72,7 +72,7 @@ public class GameSolutionTest {
         cards.add(weapon);
         cards.add(room);
         cards.add(person);
-        player1.setMyCards(cards);
+        player1.setPlayerHand(cards);
         for (int i = 0; i < 100; i++){  //Testing random cards and that all are eventually chosen
             setty.add(player1.disproveSuggestion(suggestion));
         }
@@ -85,7 +85,7 @@ public class GameSolutionTest {
         cards.add(chokey);
         cards.add(roomy);
         cards.add(person);
-        player1.setMyCards(cards);
+        player1.setPlayerHand(cards);
         assertEquals(person, player1.disproveSuggestion(suggestion));
     }
     @Test
@@ -94,7 +94,7 @@ public class GameSolutionTest {
         cards.add(chokey);
         cards.add(roomy);
         cards.add(mustard);
-        player1.setMyCards(cards);
+        player1.setPlayerHand(cards);
         assertNull(player1.disproveSuggestion(suggestion));
     }
     @Test
@@ -102,7 +102,7 @@ public class GameSolutionTest {
         cards.add(chokey);
         cards.add(room);
         cards.add(mustard);
-        player1.setMyCards(cards);
+        player1.setPlayerHand(cards);
         assertEquals(room, player1.disproveSuggestion(suggestion));
     }
     @Test
@@ -112,22 +112,22 @@ public class GameSolutionTest {
         cards.add(gun);
         cards.add(roomy);
         cards.add(mustard);
-        player1.setMyCards(cards);
-        tempMap.put(player1, player1.getMyCards());
+        player1.setPlayerHand(cards);
+        tempMap.put(player1, player1.getPlayerHand());
         ArrayList<Card> temp2 = new ArrayList<>(cards);//Deep copies to use the clear function as intended
         temp2.clear();
         temp2.add(bomb);
         temp2.add(karen);
         temp2.add(chokey);
-        player3.setMyCards(temp2);
-        tempMap.put(player3, player3.getMyCards());
+        player3.setPlayerHand(temp2);
+        tempMap.put(player3, player3.getPlayerHand());
         ArrayList<Card> temp3 = new ArrayList<>(cards);
         temp3.clear();
         temp3.add(weapon);
         temp3.add(room);
         temp3.add(person);
-        player2.setMyCards(temp3);
-        tempMap.put(player2, player2.getMyCards());
+        player2.setPlayerHand(temp3);
+        tempMap.put(player2, player2.getPlayerHand());
         assertNull(board.handleSuggestion(player2, suggestion));
     }
     @Test
@@ -137,22 +137,22 @@ public class GameSolutionTest {
         cards.add(gun);
         cards.add(roomy);
         cards.add(mustard);
-        player1.setMyCards(cards);
-        tempMap.put(player1, player1.getMyCards());
+        player1.setPlayerHand(cards);
+        tempMap.put(player1, player1.getPlayerHand());
         ArrayList<Card> temp2 = new ArrayList<>(cards);
         temp2.clear();
         temp2.add(bomb);
         temp2.add(karen);
         temp2.add(chokey);
-        player3.setMyCards(temp2);
-        tempMap.put(player3, player3.getMyCards());
+        player3.setPlayerHand(temp2);
+        tempMap.put(player3, player3.getPlayerHand());
         ArrayList<Card> temp3 = new ArrayList<>(cards);
         temp3.clear();
         temp3.add(gun);
         temp3.add(room);
         temp3.add(mustard);
-        player2.setMyCards(temp3);
-        tempMap.put(player2, player2.getMyCards());
+        player2.setPlayerHand(temp3);
+        tempMap.put(player2, player2.getPlayerHand());
         assertEquals(suggestion.getRoomCard(), board.handleSuggestion(player3, suggestion));
     }
     @Test
@@ -162,22 +162,22 @@ public class GameSolutionTest {
         cards.add(gun);
         cards.add(roomy);
         cards.add(mustard);
-        player1.setMyCards(cards);
-        tempMap.put(player1, player1.getMyCards());
+        player1.setPlayerHand(cards);
+        tempMap.put(player1, player1.getPlayerHand());
         ArrayList<Card> temp2 = new ArrayList<>(cards);
         temp2.clear();
         temp2.add(bomb);
         temp2.add(karen);
         temp2.add(chokey);
-        player3.setMyCards(temp2);
-        tempMap.put(player3, player3.getMyCards());
+        player3.setPlayerHand(temp2);
+        tempMap.put(player3, player3.getPlayerHand());
         ArrayList<Card> temp3 = new ArrayList<>(cards);
         temp3.clear();
         temp3.add(gun);
         temp3.add(chokey);
         temp3.add(mustard);
-        player2.setMyCards(temp3);
-        tempMap.put(player2, player2.getMyCards());
+        player2.setPlayerHand(temp3);
+        tempMap.put(player2, player2.getPlayerHand());
         assertNull(board.handleSuggestion(player1, suggestion));
     }
     @Test
@@ -187,22 +187,22 @@ public class GameSolutionTest {
         cards.add(gun);
         cards.add(roomy);
         cards.add(mustard);
-        player1.setMyCards(cards);
-        tempMap.put(player1, player1.getMyCards());
+        player1.setPlayerHand(cards);
+        tempMap.put(player1, player1.getPlayerHand());
         ArrayList<Card> temp2 = new ArrayList<>(cards);
         temp2.clear();
         temp2.add(bomb);
         temp2.add(room);
         temp2.add(chokey);
-        player2.setMyCards(temp2);
-        tempMap.put(player2, player2.getMyCards());
+        player2.setPlayerHand(temp2);
+        tempMap.put(player2, player2.getPlayerHand());
         ArrayList<Card> temp3 = new ArrayList<>(cards);
         temp3.clear();
         temp3.add(gun);
         temp3.add(room);
         temp3.add(mustard);//
-        player3.setMyCards(temp3);
-        tempMap.put(player3, player3.getMyCards());
+        player3.setPlayerHand(temp3);
+        tempMap.put(player3, player3.getPlayerHand());
         ArrayList<Card> cardy = new ArrayList<>(tempMap.get(player2));
         assertEquals(cardy.get(1), board.handleSuggestion(player1, suggestion));
     }

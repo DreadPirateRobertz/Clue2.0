@@ -18,11 +18,11 @@ public class Computer extends Player {
         ArrayList<Card> weaponCards = new ArrayList<>();
         ArrayList<Card> personCards = new ArrayList<>();
         Card roomCard = new Card(CardType.ROOM, room.getName()); //Producing the roomCard
-        for(Card card : allCards){//Splitting the notSeen deck into 2 smaller decks of Cards to randomize a suggestion
-            if(card.getCardType().equals(CardType.PERSON) && !cards.contains(card)){
+        for (Card card : allCards){//Splitting the deck into 2 smaller decks of Cards to randomize a suggestion
+            if (card.getCardType().equals(CardType.PERSON) && !seenList.contains(card) && !playerHand.contains(card)){
                 personCards.add(card);
             }
-            else if (card.getCardType().equals(CardType.WEAPON) && !cards.contains(card)){
+            else if (card.getCardType().equals(CardType.WEAPON) && !seenList.contains(card) && !playerHand.contains(card)){
                 weaponCards.add(card);
             }
         }
@@ -37,12 +37,12 @@ public class Computer extends Player {
     public BoardCell selectTargets(ArrayList<BoardCell> targets) {
         boolean flag = false;
         Random randomize = new Random();
-        ArrayList<BoardCell> possibleMove = new ArrayList<>();
+        ArrayList<BoardCell> roomList = new ArrayList<>();
 
         for (BoardCell target : targets){
-            if(target.isRoomCenter() ){ //Is it a room?
-                for(Card card : cards){
-                    if(!card.getCardType().equals(CardType.ROOM)){
+            if (target.isRoomCenter() ){ //Is it a room?
+                for (Card card : playerHand){
+                    if (!card.getCardType().equals(CardType.ROOM)){
                         continue; //If not a room ....Advance the loop
                     }
                     char roomID1= target.getInitial();
@@ -50,24 +50,24 @@ public class Computer extends Player {
                     if(roomID1 != roomID2){
                         flag = true;
                     }
-                    else{
+                    else {
                         flag = false;
                         break; //Break here is critical
                     }
                 }
-                if(flag){
-                    possibleMove.add(target);
+                if (flag){
+                    roomList.add(target);
                 }
             }
-        }                                       //Brain Dead AI logic follows to assign the correct move
-        if (possibleMove.size() == 1){
-            return possibleMove.get(0);
+        } //Brain Dead AI logic follows to assign the correct move
+        if (roomList.size() == 1){
+            return roomList.get(0);
         }
-        else if (possibleMove.size() > 1){
-            Collections.shuffle(possibleMove);
-            return possibleMove.get(randomize.nextInt(possibleMove.size()));
+        else if (roomList.size() > 1){
+            Collections.shuffle(roomList);
+            return roomList.get(randomize.nextInt(roomList.size()));
         }
-        else{
+        else {
             Collections.shuffle(targets);
             return targets.get(randomize.nextInt(targets.size()));
         }

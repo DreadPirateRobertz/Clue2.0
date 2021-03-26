@@ -176,8 +176,8 @@ public class Board {
         int cardAllotment = Math.floorDiv(workingDeck.size(), playerMap.keySet().size());
         ArrayList<Player> keys = new ArrayList<>(playerMap.keySet());
 
-        for (Player K : playerMap.keySet()) {//I kept this at K, indicating key because I make a random player key directly below
-            Player randomKey = keys.get(randomize.nextInt(keys.size()));//This allows me total random access to my playerMap which is already a HashMap
+        for (Player k : playerMap.keySet()) {//I kept this at k, indicating key because I make a random player key directly below and I don't use k for anything below
+            Player player = keys.get(randomize.nextInt(keys.size()));//This allows me total random access to my playerMap
             ArrayList<Card> cardLoader = new ArrayList<>();
             int count = cardAllotment;
 
@@ -199,10 +199,10 @@ public class Board {
                     else {
                         break;
                     }}}
-            randomKey.setMyCards(cardLoader);//Sets all the cards the Player initially holds (their hand)
-            playerMap.put(randomKey, cardLoader);//Also I found very useful having a map of the Players & Cards for Board itself
+            player.setPlayerHand(cardLoader);//Sets all the cards the Player initially holds (their hand)
+            playerMap.put(player, cardLoader);//Also I found very useful having a map of the Players & Cards for Board itself
             shuffle(workingDeck);
-            keys.remove(randomKey);
+            keys.remove(player);
             for (Card pick : cardLoader) {
                 workingDeck.remove(pick);
             }
@@ -212,13 +212,13 @@ public class Board {
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
 
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
-                Player key = keys.get(randomize.nextInt(keys.size()));
-                ArrayList<Card> tempList = new ArrayList<>(playerMap.get(key));
-                tempList.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
-                key.setMyCards(tempList);
-                playerMap.put(key, tempList);
+                Player player = keys.get(randomize.nextInt(keys.size()));
+                ArrayList<Card> playerCards = new ArrayList<>(playerMap.get(player));
+                playerCards.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
+                player.updateHand(card);
+                playerMap.put(player, playerCards);
                 workingDeck.remove(card);
-                keys.remove(key);
+                keys.remove(player);
                 shuffle(workingDeck);
                 break; //Shuffling....so this break resets the iter on this for loop and the while keeps it going
             }
@@ -257,7 +257,7 @@ public class Board {
         }
     }
 
-    public void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
+    private void buildGameGrid(ArrayList<String> csvData) throws FileNotFoundException, BadConfigFormatException {
         grid = new BoardCell[num_rows][num_cols];//Initialize game grid
         int index = 0;//Using this index variable to cycle through the ArrayList of csvData
 
@@ -437,20 +437,20 @@ public class Board {
 
     public Card handleSuggestion(Player accuser, Suggestion suggestion) { //No real great word for Suggester...
         for (Player player : playerMap.keySet()){
-            if(player.equals(accuser)){
+            if (player.equals(accuser)){
                 continue;
             }
             Card card = player.disproveSuggestion(suggestion);
-            if(card != null){
-                accuser.updateHand(card);
+            if (card != null){
+                accuser.updateSeenList(card);
                 return card;
             }
         }
         return null;
     }
 
-    public boolean checkAccusation(Suggestion s) {
-        return s.getPersonCard().equals(getTheAnswer_Person()) && s.getRoomCard().equals(getTheAnswer_Room()) && s.getWeaponCard().equals(getTheAnswer_Weapon());
+    public boolean checkAccusation(Suggestion suggestion) {
+        return suggestion.getPersonCard().equals(getTheAnswer_Person()) && suggestion.getRoomCard().equals(getTheAnswer_Room()) && suggestion.getWeaponCard().equals(getTheAnswer_Weapon());
     }
 
     private void theAnswer(Random randomize) {
@@ -461,12 +461,11 @@ public class Board {
 
     private void shuffle(ArrayList<Card> cards) {
         int i = 0;
-        while(i < 100) {
+        while (i < 100) {
             Collections.shuffle(cards);
             i++;
         }
     }
-
     //Getters
     public ArrayList<Card> getAllCards() {
         return allCards;
@@ -516,6 +515,7 @@ public class Board {
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) { num_cols = cols; }
+
 
     //Testing
     public int getPlayerCount() {

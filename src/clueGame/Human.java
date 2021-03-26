@@ -14,8 +14,6 @@ public class Human extends Player {
         return null;
     }
 
-
-
     @Override
     public BoardCell selectTargets(ArrayList<BoardCell> targets) {
         return null;
