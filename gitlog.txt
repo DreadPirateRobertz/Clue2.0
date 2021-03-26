@@ -1,3 +1,15 @@
+commit e8930a481f78ee82cc314d4c12da11c57dcbc0d9
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Mar 26 08:31:31 2021 -0600
+
+    C20A-1 --> Another refactoring to a lot of classes.  Renaming variables, commentary, and rearranging code layout
+
+commit 3bbbc8f667c496729074ec739ea1a992a6abad04
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Thu Mar 25 15:25:58 2021 -0600
+
+    C20A-1 --> Added gitlog and readme
+
 commit 60f9e645b604a92dcf402303644f56739a6195f0
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Thu Mar 25 15:23:19 2021 -0600
