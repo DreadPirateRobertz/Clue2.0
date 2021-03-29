@@ -78,22 +78,20 @@ public class Board {
             }
         }
         inFile.close();
-        if(!playerCards.isEmpty() && !weaponCards.isEmpty()) {
+        if (!playerCards.isEmpty() && !weaponCards.isEmpty()) {
             deal();
         }
     }
 
     private void setupRoom(String[] array)  {
-        Room room = new Room();//Create a room
         String cardCheck = array[0].trim();
         String name = array[1].trim();
         String data = array[2].trim();
         char roomID = data.charAt(0);
         Card card = new Card(CardType.ROOM, name);
+        Room room = new Room(name, roomID);
 
-        room.setName(name);
-        room.setID(roomID);//I liked this better as setID than setIdentifier, I believe an exception to the naming rule is acceptable
-        if(cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
+        if (cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
             room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
         }
         setRoom(room);//Effectively adding the Room to the roomMap
@@ -134,10 +132,10 @@ public class Board {
             }
             default -> throw new IllegalStateException("Unexpected Color: " + dataColor);
         }
-        if(!getRoom(roomID).getName().equals(startLoc)){
+        if (!getRoom(roomID).getName().equals(startLoc)){
             throw new BadConfigFormatException(startLoc);
         }
-        switch(playerType){
+        switch (playerType){
             case "Human" -> {
                 player = new Human(name, color, startLoc); //Polymorphism
             }
@@ -213,10 +211,7 @@ public class Board {
 
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
                 Player player = keys.get(randomize.nextInt(keys.size()));
-                ArrayList<Card> playerCards = new ArrayList<>(playerMap.get(player));
-                playerCards.add(card);//Intention was copying all the values and then adding this value to this list and pushing it back to the playerMap
-                player.updateHand(card);
-                playerMap.put(player, playerCards);
+                player.updateHand(card); //Reverse link will also update playerMap appropriately
                 workingDeck.remove(card);
                 keys.remove(player);
                 shuffle(workingDeck);
@@ -307,7 +302,7 @@ public class Board {
                 cell.setDoorway();
             }
             default -> {//The last item that will fall to default should be Secret Cells
-                if(isRoom(symbol)) {//If it's gotten to here and fails then this means it's not a Room or any approved symbol
+                if (isRoom(symbol)) {//If it's gotten to here and fails then this means it's not a Room or any approved symbol
                     cell.setSecretPassage(symbol);
                     room = getRoom(cell);//Assigning Secret cell/Room logic
                     room.setSecretCell(cell);
@@ -508,9 +503,10 @@ public class Board {
         return size;
     }
     private void setPlayerStartLocations(){//I liked not inserting row/col directly in setup file so I have to execute this logic after grid is built
-        for(Player playa : playerMap.keySet()){
+        for (Player playa : playerMap.keySet()){
             playa.setPlayer_RowCol();
         }
+
     }
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }

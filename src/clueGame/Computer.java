@@ -13,7 +13,7 @@ public class Computer extends Player {
     }
 
     @Override
-    public Suggestion createSuggestion(Room room, ArrayList<Card> allCards) { //
+    public Suggestion createSuggestion(Room room, ArrayList<Card> allCards) {
         Random randomize = new Random();
         ArrayList<Card> weaponCards = new ArrayList<>();
         ArrayList<Card> personCards = new ArrayList<>();
@@ -29,7 +29,7 @@ public class Computer extends Player {
         Collections.shuffle(personCards);
         Collections.shuffle(weaponCards);
         Card personCard = personCards.get(randomize.nextInt(personCards.size()));
-        Card weaponCard =  weaponCards.get(randomize.nextInt(weaponCards.size()));
+        Card weaponCard = weaponCards.get(randomize.nextInt(weaponCards.size()));
         return new Suggestion(personCard, roomCard, weaponCard);
     }
 
@@ -47,7 +47,7 @@ public class Computer extends Player {
                     }
                     char roomID1= target.getInitial();
                     char roomID2 = card.getCardName().charAt(0);
-                    if(roomID1 != roomID2){
+                    if (roomID1 != roomID2){
                         flag = true;
                     }
                     else {

@@ -8,6 +8,12 @@ public class Room {
     private BoardCell labelCell, centerCell, secretCell;
     private boolean walkWay;
 
+    public Room(String name, char ID) {
+        this.name = name;
+        this.ID = ID;
+    }
+    public Room(){}
+
     //Getters
     public BoardCell getCenterCell() {
         return centerCell;

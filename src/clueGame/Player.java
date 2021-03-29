@@ -25,25 +25,25 @@ public abstract class Player {
     public abstract BoardCell selectTargets(ArrayList<BoardCell> targets);
 
     public Card disproveSuggestion(Suggestion s){
-        ArrayList<Card> temp = new ArrayList<>();
-        for(Card card : playerHand){
-            if(card.equals(s.getPersonCard())) {
-                temp.add(card);
+        ArrayList<Card> disproveList = new ArrayList<>();
+        for (Card card : playerHand){
+            if (card.equals(s.getPersonCard())) {
+                disproveList.add(card);
             }
-           else if(card.equals(s.getRoomCard())) {
-                temp.add(card);
+           else if (card.equals(s.getRoomCard())) {
+                disproveList.add(card);
             }
-           else if(card.equals(s.getWeaponCard())) {
-                temp.add(card);
+           else if (card.equals(s.getWeaponCard())) {
+                disproveList.add(card);
             }
         }
-        if(temp.size() == 1){
-            return temp.get(0);
+        if (disproveList.size() == 1){
+            return disproveList.get(0);
         }
-        else if (temp.size() > 1){
+        else if (disproveList.size() > 1){
             Random randomize = new Random();
-            Collections.shuffle(temp);
-            return temp.get(randomize.nextInt(temp.size())); //Random Card is selected from list
+            Collections.shuffle(disproveList);
+            return disproveList.get(randomize.nextInt(disproveList.size())); //Random Card is selected from list
         }
         return null;
     }
