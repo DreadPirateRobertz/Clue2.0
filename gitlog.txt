@@ -1,3 +1,27 @@
+commit 9fc0aa9bc0bde03c35af4c97d5444eaeefc42f75
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 12:53:51 2021 -0600
+
+    C21A-1 --> Setters are working as desired and comments have been added to this code
+
+commit 4fe06e6d040f307910cb4aa3ec4104f1a869b8ff
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 12:10:26 2021 -0600
+
+    C21A-1 --> Have the panels displayed correctly (finally:) Now trying to get the setters to work and having issues.
+
+commit 92933e95978232fc932e42e61b8507d8c2d2f46a
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Mar 29 10:33:31 2021 -0600
+
+    General Refactoring before GUI implementation
+
+commit be5f0c653f18287288e944f4767ff30adaa04a76
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Mar 26 08:56:25 2021 -0600
+
+    C20A-1 --> gitlog
+
 commit e8930a481f78ee82cc314d4c12da11c57dcbc0d9
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Fri Mar 26 08:31:31 2021 -0600
