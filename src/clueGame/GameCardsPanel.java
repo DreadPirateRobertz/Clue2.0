@@ -4,9 +4,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
-/*
-
- */
 
 public class GameCardsPanel extends JPanel {
     private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
@@ -49,7 +46,7 @@ public class GameCardsPanel extends JPanel {
         panelReboot();
     }
 
-    private void panelReboot() {
+    private void panelReboot() { //Adds all the panels to the main panel
         JPanel panel = peopleCardsPanel();
         add(panel);
         panel = roomCardsPanel();
@@ -61,7 +58,7 @@ public class GameCardsPanel extends JPanel {
     private JPanel peopleCardsPanel(){
         int x = inHandPersonCards.size() + seenPersonCards.size() + 2;
         JPanel panel = new JPanel();
-        if (inHandPersonCards.size() == 0){
+        if (inHandPersonCards.size() == 0){//Adds room if no cards are detected to preserve cogency of GridLayout
             x++;
         }
         if (seenPersonCards.size() == 0){
@@ -72,7 +69,7 @@ public class GameCardsPanel extends JPanel {
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
         for (Card card : inHandPersonCards){
-            panel.add(new JTextField(card.getCardName()));
+            panel.add(new JTextField(card.getCardName()));//Dynamic Adding of JTextFields
         }
         if (inHandPersonCards.size() == 0){
             panel.add(new JTextField("None"));
@@ -179,8 +176,8 @@ public class GameCardsPanel extends JPanel {
         cardsPanel.seenWeaponCards.add(garroteCard);
         cardsPanel.seenWeaponCards.add(meatHookCard);
         cardsPanel.seenWeaponCards.add(plasmaRifleCard);
-        cardsPanel.updatePanels();
 
+        cardsPanel.updatePanels();
         frame.setVisible(true); // make it visible
     }
 
