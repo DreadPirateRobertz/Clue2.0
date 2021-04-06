@@ -15,57 +15,77 @@ public class GameControlPanel extends JPanel {
         guessField = new JTextField(20);
         guessResultField = new JTextField( 20);
         whoseTurnField = new JTextField(10);
-        dieNumber = new JTextField(5);
-        setLayout(new BorderLayout());
+        dieNumber = new JTextField(3);
+        setLayout(new GridLayout(2, 0));
         createLayout();
     }
 
     private void createLayout(){   //This will add the two inner classes (which consists of nested panels) that were created below to the GameControlPanel
-        playerInfo playerInfo = new playerInfo();
-        add(playerInfo, BorderLayout.NORTH);
-        guessInfo guessInfo = new guessInfo();
-        add(guessInfo, BorderLayout.SOUTH);
+        JPanel upperPanel = new JPanel();
+        upperPanel.setLayout(new GridLayout(0, 4));
+        upperPanel.add(whoseTurnPanel());
+        upperPanel.add(rollBoxPanel());
+        upperPanel.add(accuseButton());
+        upperPanel.add(nextButton());
+        add(upperPanel);
+        JPanel lowerPanel = new JPanel();
+        lowerPanel.setLayout(new GridLayout(0,2));
+        lowerPanel.add(guessPanel());
+        lowerPanel.add(guessResultPanel());
+        add(lowerPanel);
+    }
 
+    private JPanel whoseTurnPanel(){
+        JPanel panel = new JPanel();
+        JLabel whoseTurn = new JLabel("Whose turn?");
+        whoseTurn.setHorizontalAlignment(JLabel.CENTER);
+        panel.setLayout(new GridLayout(2, 0));
+        panel.add(whoseTurn);
+        whoseTurnField.setEditable(false);
+        panel.add(whoseTurnField);
+        whoseTurnField.getText();
+        return panel;
     }
-/* Creating two inner classes to hold all the guess & player information */
-    private class guessInfo extends JPanel {
-        guessInfo() {
-            JPanel guessBox = new JPanel();
-            guessBox.setBorder(new TitledBorder(new EtchedBorder(), "Guess"));
-            guessBox.add(guessField);
-            guessField.getText();
-            setLayout(new BorderLayout());
-            add(guessBox, BorderLayout.WEST);
-            JPanel guessResultBox = new JPanel();
-            guessResultBox.setBorder(new TitledBorder(new EtchedBorder(), "Guess Result"));
-            guessResultBox.add(guessResultField);
-            guessResultField.getText();
-            add(guessResultBox, BorderLayout.CENTER);
-        }
-    }
-    private class playerInfo extends JPanel { //Panels inside panels
-        playerInfo() {      //For the life of me I could not figure out how he centered "Whose Turn?" Still trying figure out GridLayout...
-            JPanel whoseTurnBox = new JPanel();
-            JLabel whoseTurn = new JLabel("Whose turn?");
-            whoseTurn.setHorizontalAlignment(JLabel.CENTER);
 
-            whoseTurnBox.setLayout(new BorderLayout());
-            whoseTurnBox.add(whoseTurn, BorderLayout.NORTH);
-            whoseTurnBox.add(whoseTurnField, BorderLayout.SOUTH);
-            whoseTurnField.getText();
-            setLayout(new GridLayout(1, 4));
-            add(whoseTurnBox);
-            JPanel rollBox = new JPanel();
-            JLabel roll = new JLabel("Roll:");
-            rollBox.add(roll);
-            rollBox.add(dieNumber);
-            add(rollBox, new GridLayout(1, 2));
-            JButton accuseButton = new JButton("J'Accuse");
-            JButton nextButton = new JButton("NEXT");
-            add(accuseButton, new GridLayout(1,3));
-            add(nextButton, new GridLayout(1,4));
-        }
+    private JPanel rollBoxPanel(){
+        JPanel panel = new JPanel();
+        JLabel roll = new JLabel("Roll:");
+        panel.add(roll);
+        dieNumber.setEditable(false);
+        panel.add(dieNumber);
+        return panel;
     }
+
+    private JButton accuseButton(){
+        JButton button = new JButton("J'Accuse");
+        return button;
+    }
+
+    private JButton nextButton(){
+        JButton button = new JButton("NEXT");
+        return button;
+    }
+
+    private JPanel guessPanel(){
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(new EtchedBorder(), "Guess"));
+        panel.setLayout(new GridLayout(1,0));
+        guessField.setEditable(false);
+        panel.add(guessField);
+        guessField.getText();
+        return panel;
+    }
+
+    private JPanel guessResultPanel(){
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(new EtchedBorder(), "Guess Result"));
+        panel.setLayout(new GridLayout(1,0));
+        guessResultField.setEditable(false);
+        panel.add(guessResultField);
+        guessResultField.getText();
+        return panel;
+    }
+
     //Setters for updating all the fields
     public void setWhoseTurn(Player playa){
         whoseTurnField.setText(playa.getName());
@@ -80,7 +100,7 @@ public class GameControlPanel extends JPanel {
         GameControlPanel controlPanel = new GameControlPanel();
         JFrame frame = new JFrame();  // create the frame
         frame.setContentPane(controlPanel); // put the panel in the frame
-        frame.setSize(750, 120);  // size the frame
+        frame.setSize(750, 180);  // size the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
         frame.setVisible(true); // make it visible
 

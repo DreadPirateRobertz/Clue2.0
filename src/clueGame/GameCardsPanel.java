@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class GameCardsPanel extends JPanel {
     private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
-
     ArrayList<Card> inHandPersonCards = new ArrayList<>();
     ArrayList<Card> seenPersonCards = new ArrayList<>();
     ArrayList<Card> inHandRoomCards = new ArrayList<>();
@@ -58,8 +57,8 @@ public class GameCardsPanel extends JPanel {
     private JPanel peopleCardsPanel(){
         int x = inHandPersonCards.size() + seenPersonCards.size() + 2;
         JPanel panel = new JPanel();
-        if (inHandPersonCards.size() == 0){//Adds room if no cards are detected to preserve cogency of GridLayout
-            x++;
+        if (inHandPersonCards.size() == 0){//Adds space if no cards are detected to preserve cogency of GridLayout
+            x++;                            //To put the "None" message into it's own JTextField
         }
         if (seenPersonCards.size() == 0){
             x++;

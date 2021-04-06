@@ -1,5 +1,6 @@
 package clueGame;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,9 @@ public class BoardCell {
         secretPassage = '0'; //Its null setting distracts me in the debugger so I set it to '0'
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
+    }
+    public void draw(int size, int offset, Graphics g){
+
     }
 
     //Getters

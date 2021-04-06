@@ -1,11 +1,12 @@
 package clueGame;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-public class Board {
+public class Board extends JPanel {
     private BoardCell[][] grid;
     private Map<Character, Room> roomMap;
     private Map<Player, ArrayList<Card>> playerMap;
@@ -26,6 +27,19 @@ public class Board {
         return theInstance;
     }
     private static ArrayList<Card> theAnswer;
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        int size = getWidth() * getHeight();
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                grid[row][col].draw(size, 1, g);
+            }
+        }
+
+    }
+
 
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
