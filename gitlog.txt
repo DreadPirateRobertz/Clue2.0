@@ -1,3 +1,21 @@
+commit 4cac570201221a316720dcb1e887c1a0d5473636
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 23:31:28 2021 -0600
+
+    C21A-2 --> Stress test ran with all cards
+
+commit 922691274ac04e94186c926b5254f6eae1f02499
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 23:07:18 2021 -0600
+
+    C21A-2 --> Wow sorry was working on this all night and forgot to commit as I battled my way through
+
+commit 7819d4bb5d95dda98a6ae902cee573e9d15bcda9
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 12:57:54 2021 -0600
+
+    C21A-1 --> Committing gitlog and Zipping^
+
 commit 9fc0aa9bc0bde03c35af4c97d5444eaeefc42f75
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Mon Apr 5 12:53:51 2021 -0600

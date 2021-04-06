@@ -19,6 +19,7 @@ public class GameCardsPanel extends JPanel {
     ArrayList<Card> seenWeaponCards = new ArrayList<>();
 
     public GameCardsPanel() {
+        //Cards for Testing
         rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank");
         targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device");
         plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle");
@@ -118,7 +119,7 @@ public class GameCardsPanel extends JPanel {
     }
 
     private JPanel weaponCardsPanel(){
-        int x = inHandWeaponCards.size() + seenWeaponCards.size() + 2;
+        int x = inHandWeaponCards.size() + seenWeaponCards.size() + 2; //Will determine how many rows in GridLayout
         JPanel panel = new JPanel();
         if (inHandWeaponCards.size() == 0){
             x++;
@@ -179,6 +180,7 @@ public class GameCardsPanel extends JPanel {
         cardsPanel.seenWeaponCards.add(meatHookCard);
         cardsPanel.seenWeaponCards.add(plasmaRifleCard);
         cardsPanel.updatePanels();
+
         frame.setVisible(true); // make it visible
     }
 
