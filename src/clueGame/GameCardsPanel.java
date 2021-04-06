@@ -42,10 +42,10 @@ public class GameCardsPanel extends JPanel {
         titledBorder.setTitleJustification(TitledBorder.CENTER);
         setBorder(titledBorder);
         setLayout(new GridLayout(3,0));
-        panelReboot();
+        createLayout();
     }
 
-    private void panelReboot() { //Adds all the panels to the main panel
+    private void createLayout() { //Adds all the panels to the main panel
         JPanel panel = peopleCardsPanel();
         add(panel);
         panel = roomCardsPanel();
@@ -55,91 +55,58 @@ public class GameCardsPanel extends JPanel {
     }
 
     private JPanel peopleCardsPanel(){
-        int x = inHandPersonCards.size() + seenPersonCards.size() + 2;
         JPanel panel = new JPanel();
-        if (inHandPersonCards.size() == 0){//Adds space if no cards are detected to preserve cogency of GridLayout
-            x++;                            //To put the "None" message into it's own JTextField
-        }
-        if (seenPersonCards.size() == 0){
-            x++;
-        }
-        panel.setLayout(new GridLayout(x, 0));
+        int rows = setRows(inHandPersonCards, seenPersonCards);
+        rows = emptyDecksCheck(rows, inHandPersonCards, seenPersonCards);
+        panel.setLayout(new GridLayout(rows, 0));
         panel.setBorder(new TitledBorder(new EtchedBorder(), "People"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setField(panel, inHandPersonCards);
+        setFields(panel, inHandPersonCards);
         setNone(panel, inHandPersonCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setField(panel, seenPersonCards);
+        setFields(panel, seenPersonCards);
         setNone(panel, seenPersonCards);
         return panel;
     }
 
     private JPanel roomCardsPanel(){
-        int x = inHandRoomCards.size() + seenRoomCards.size() + 2;
+
         JPanel panel = new JPanel();
-        if (inHandRoomCards.size() == 0){
-            x++;
-        }
-        if (seenRoomCards.size() == 0){
-            x++;
-        }
-        panel.setLayout(new GridLayout(x, 0));
+        int rows = setRows(inHandRoomCards, seenRoomCards);
+        rows = emptyDecksCheck(rows, inHandRoomCards, seenRoomCards);
+        panel.setLayout(new GridLayout(rows, 0));
         panel.setBorder(new TitledBorder(new EtchedBorder(), "Rooms"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setField(panel, inHandRoomCards);
+        setFields(panel, inHandRoomCards);
         setNone(panel, inHandRoomCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setField(panel, seenRoomCards);
+        setFields(panel, seenRoomCards);
         setNone(panel, seenRoomCards);
         return panel;
     }
 
-    private void setNone(JPanel panel, ArrayList<Card> seenRoomCards) {
-        if (seenRoomCards.size() == 0) {
-            JTextField field = new JTextField("None");
-            field.setEditable(false);
-            panel.add(field);
-        }
-    }
+
 
     private JPanel weaponCardsPanel(){
-        int x = inHandWeaponCards.size() + seenWeaponCards.size() + 2; //Will determine how many rows in GridLayout
         JPanel panel = new JPanel();
-        if (inHandWeaponCards.size() == 0){
-            x++;
-        }
-        if (seenWeaponCards.size() == 0){
-            x++;
-        }
-        panel.setLayout(new GridLayout(x, 0));
+        int rows = setRows(inHandWeaponCards, seenWeaponCards); //Will determine how many rows in GridLayout
+        rows = emptyDecksCheck(rows, inHandWeaponCards, seenWeaponCards);
+        panel.setLayout(new GridLayout(rows, 0));
         panel.setBorder(new TitledBorder(new EtchedBorder(), "Weapons"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setField(panel, inHandWeaponCards);
-        if (inHandWeaponCards.size() == 0){
-            panel.add(new JTextField("None"));
-        }
+        setFields(panel, inHandWeaponCards);
+        setNone(panel, inHandWeaponCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setField(panel, seenWeaponCards);
-        if (seenWeaponCards.size() == 0){
-            panel.add(new JTextField("None"));
-        }
+        setFields(panel, seenWeaponCards);
+        setNone(panel, seenWeaponCards);
         return panel;
     }
-
-    private void setField(JPanel panel, ArrayList<Card> seenWeaponCards) {
-        for (Card card : seenWeaponCards) {
-            JTextField field = new JTextField(card.getCardName());
-            field.setEditable(false);
-            panel.add(field);
-        }
-    }
-
 
     //Main\\
     public static void main(String[] args) {
@@ -178,6 +145,36 @@ public class GameCardsPanel extends JPanel {
 
     public void updatePanels(){
         removeAll();
-        panelReboot();
+        createLayout();
     }
+    //Setters
+    private void setFields(JPanel panel, ArrayList<Card> seen) {
+        for (Card card : seen) {
+            JTextField field = new JTextField(card.getCardName());
+            field.setEditable(false);
+            panel.add(field);
+        }
+    }
+
+    private void setNone(JPanel panel, ArrayList<Card> seen) {
+        if (seen.size() == 0) {
+            JTextField field = new JTextField("None");
+            field.setEditable(false);
+            panel.add(field);
+        }
+    }
+    private int emptyDecksCheck(int rows, ArrayList<Card> inHand, ArrayList<Card> seen) {
+        if (inHand.size() == 0) {
+            rows++;
+        }
+        if (seen.size() == 0) {
+            rows++;
+        }
+        return rows;
+    }
+
+    private int setRows(ArrayList<Card> inHand, ArrayList<Card> seen){
+        return inHand.size() + seen.size() + 2;
+    }
+
 }
