@@ -40,28 +40,30 @@ public class GameControlPanel extends JPanel {
             guessResultBox.setBorder(new TitledBorder(new EtchedBorder(), "Guess Result"));
             guessResultBox.add(guessResultField);
             guessResultField.getText();
-            add(guessResultBox);
+            add(guessResultBox, BorderLayout.CENTER);
         }
     }
     private class playerInfo extends JPanel { //Panels inside panels
         playerInfo() {      //For the life of me I could not figure out how he centered "Whose Turn?" Still trying figure out GridLayout...
             JPanel whoseTurnBox = new JPanel();
             JLabel whoseTurn = new JLabel("Whose turn?");
+            whoseTurn.setHorizontalAlignment(JLabel.CENTER);
+
             whoseTurnBox.setLayout(new BorderLayout());
             whoseTurnBox.add(whoseTurn, BorderLayout.NORTH);
             whoseTurnBox.add(whoseTurnField, BorderLayout.SOUTH);
             whoseTurnField.getText();
-            setLayout(new GridLayout());
-            add(whoseTurnBox, new GridLayout(0,1));
+            setLayout(new GridLayout(1, 4));
+            add(whoseTurnBox);
             JPanel rollBox = new JPanel();
             JLabel roll = new JLabel("Roll:");
             rollBox.add(roll);
             rollBox.add(dieNumber);
-            add(rollBox, new GridLayout(0, 2));
+            add(rollBox, new GridLayout(1, 2));
             JButton accuseButton = new JButton("J'Accuse");
             JButton nextButton = new JButton("NEXT");
-            add(accuseButton, new GridLayout(0,3));
-            add(nextButton, new GridLayout(0,4));
+            add(accuseButton, new GridLayout(1,3));
+            add(nextButton, new GridLayout(1,4));
         }
     }
     //Setters for updating all the fields
