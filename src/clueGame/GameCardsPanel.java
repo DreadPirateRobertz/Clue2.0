@@ -46,12 +46,9 @@ public class GameCardsPanel extends JPanel {
     }
 
     private void createLayout() { //Adds all the panels to the main panel
-        JPanel panel = peopleCardsPanel();
-        add(panel);
-        panel = roomCardsPanel();
-        add(panel);
-        panel = weaponCardsPanel();
-        add(panel);
+        add(peopleCardsPanel());
+        add(roomCardsPanel());
+        add(weaponCardsPanel());
     }
 
     private JPanel peopleCardsPanel(){
@@ -72,7 +69,6 @@ public class GameCardsPanel extends JPanel {
     }
 
     private JPanel roomCardsPanel(){
-
         JPanel panel = new JPanel();
         int rows = setRows(inHandRoomCards, seenRoomCards);
         rows = emptyDecksCheck(rows, inHandRoomCards, seenRoomCards);
@@ -88,8 +84,6 @@ public class GameCardsPanel extends JPanel {
         setNone(panel, seenRoomCards);
         return panel;
     }
-
-
 
     private JPanel weaponCardsPanel(){
         JPanel panel = new JPanel();
@@ -107,7 +101,6 @@ public class GameCardsPanel extends JPanel {
         setNone(panel, seenWeaponCards);
         return panel;
     }
-
     //Main\\
     public static void main(String[] args) {
         GameCardsPanel cardsPanel = new GameCardsPanel();

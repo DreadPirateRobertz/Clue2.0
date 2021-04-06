@@ -20,7 +20,7 @@ public class GameControlPanel extends JPanel {
         createLayout();
     }
 
-    private void createLayout(){   //This will add the two inner classes (which consists of nested panels) that were created below to the GameControlPanel
+    private void createLayout(){
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new GridLayout(0, 4));
         upperPanel.add(whoseTurnPanel());
