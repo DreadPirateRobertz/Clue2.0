@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameCardsPanel extends JPanel {
@@ -14,35 +15,38 @@ public class GameCardsPanel extends JPanel {
     ArrayList<Card> inHandWeaponCards = new ArrayList<>();
     ArrayList<Card> seenWeaponCards = new ArrayList<>();
 
-    public GameCardsPanel() {
-        //Cards for Testing
-        rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank");
-        targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device");
-        plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle");
-        garroteCard = new Card(CardType.WEAPON, "Garrote");
-        meatHookCard = new Card(CardType.WEAPON, "Meat Hook");
-        syringeCard = new Card(CardType.WEAPON, "Syringe of Eternal Midnight");
-        wbtCard = new Card(CardType.PERSON, "Whipping Boy Todd");
-        csCard = new Card(CardType.PERSON, "Commander Sassafras");
-        elCard = new Card(CardType.PERSON, "Ensign Larry");
-        dpCard = new Card(CardType.PERSON, "Doctor Petunia");
-        msmCard = new Card(CardType.PERSON, "Mad Scientist Mikey");
-        pseCard = new Card(CardType.PERSON, "Prisoner Shifty Eyes");
-        brig = new Card(CardType.ROOM, "Brig");
-        galley = new Card(CardType.ROOM, "Galley");
-        engine = new Card(CardType.ROOM, "Engine");
-        medical = new Card(CardType.ROOM, "Medical");
-        vr = new Card(CardType.ROOM, "ImmersiveVR");
-        lab = new Card(CardType.ROOM, "Laboratory");
-        airlock = new Card(CardType.ROOM, "Airlock");
-        ordnance = new Card(CardType.ROOM, "Ordnance");
-        therapy = new Card(CardType.ROOM, "Therapy");
-
+    public GameCardsPanel(ArrayList<Card> inHand, ArrayList<Card> seen) {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Known Cards");
         titledBorder.setTitleJustification(TitledBorder.CENTER);
         setBorder(titledBorder);
         setLayout(new GridLayout(3,0));
+        sortCards(inHand, seen);
         createLayout();
+    }
+
+    private void sortCards(ArrayList<Card> inHand, ArrayList<Card> seen) {
+        for (Card card : inHand){
+            if (card.getCardType().equals(CardType.PERSON)){
+                inHandPersonCards.add(card);
+            }
+            else if (card.getCardType().equals(CardType.ROOM)){
+                inHandRoomCards.add(card);
+            }
+            else{
+                inHandWeaponCards.add(card);
+            }
+        }
+        for (Card card : seen){
+            if (card.getCardType().equals(CardType.PERSON)){
+                seenPersonCards.add(card);
+            }
+            else if (card.getCardType().equals(CardType.ROOM)){
+                seenRoomCards.add(card);
+            }
+            else{
+                seenWeaponCards.add(card);
+            }
+        }
     }
 
     private void createLayout() { //Adds all the panels to the main panel
@@ -50,6 +54,7 @@ public class GameCardsPanel extends JPanel {
         add(roomCardsPanel());
         add(weaponCardsPanel());
     }
+
 
     private JPanel peopleCardsPanel(){
         JPanel panel = new JPanel();
@@ -103,34 +108,62 @@ public class GameCardsPanel extends JPanel {
     }
     //Main\\
     public static void main(String[] args) {
-        GameCardsPanel cardsPanel = new GameCardsPanel();
+        ArrayList<Card> inHand = new ArrayList<>();
+        ArrayList<Card> seen = new ArrayList<>();
+        //Cards for Testing
+        rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank");
+        targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device");
+        plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle");
+        garroteCard = new Card(CardType.WEAPON, "Garrote");
+        meatHookCard = new Card(CardType.WEAPON, "Meat Hook");
+        syringeCard = new Card(CardType.WEAPON, "Syringe of Eternal Midnight");
+        wbtCard = new Card(CardType.PERSON, "Whipping Boy Todd");
+        csCard = new Card(CardType.PERSON, "Commander Sassafras");
+        elCard = new Card(CardType.PERSON, "Ensign Larry");
+        dpCard = new Card(CardType.PERSON, "Doctor Petunia");
+        msmCard = new Card(CardType.PERSON, "Mad Scientist Mikey");
+        pseCard = new Card(CardType.PERSON, "Prisoner Shifty Eyes");
+        brig = new Card(CardType.ROOM, "Brig");
+        galley = new Card(CardType.ROOM, "Galley");
+        engine = new Card(CardType.ROOM, "Engine");
+        medical = new Card(CardType.ROOM, "Medical");
+        vr = new Card(CardType.ROOM, "ImmersiveVR");
+        lab = new Card(CardType.ROOM, "Laboratory");
+        airlock = new Card(CardType.ROOM, "Airlock");
+        ordnance = new Card(CardType.ROOM, "Ordnance");
+        therapy = new Card(CardType.ROOM, "Therapy");
+        //Stress Test
+        inHand.add(airlock);
+        seen.add(vr);
+        seen.add(brig);
+        seen.add(medical);
+        seen.add(lab);
+        seen.add(engine);
+        seen.add(ordnance);
+        seen.add(therapy);
+        seen.add(galley);
+        seen.add(elCard);
+        seen.add(csCard);
+        seen.add(pseCard);
+        seen.add(dpCard);
+        seen.add(msmCard);
+        seen.add(wbtCard);
+        inHand.add(rustyShankCard);
+        seen.add(targetedThermoCard);
+        seen.add(syringeCard);
+        seen.add(garroteCard);
+        seen.add(meatHookCard);
+        seen.add(plasmaRifleCard);
+
+
+        GameCardsPanel cardsPanel = new GameCardsPanel(inHand, seen);
         JFrame frame = new JFrame();  // create the frame
         frame.setContentPane(cardsPanel); // put the panel in the frame
         frame.setSize(230, 900);  // size the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
 
-        //Stress Test
-        cardsPanel.inHandRoomCards.add(airlock);
-        cardsPanel.seenRoomCards.add(vr);
-        cardsPanel.seenRoomCards.add(brig);
-        cardsPanel.seenRoomCards.add(medical);
-        cardsPanel.seenRoomCards.add(lab);
-        cardsPanel.seenRoomCards.add(engine);
-        cardsPanel.seenRoomCards.add(ordnance);
-        cardsPanel.seenRoomCards.add(therapy);
-        cardsPanel.seenRoomCards.add(galley);
-        cardsPanel.seenPersonCards.add(elCard);
-        cardsPanel.seenPersonCards.add(csCard);
-        cardsPanel.seenPersonCards.add(pseCard);
-        cardsPanel.seenPersonCards.add(dpCard);
-        cardsPanel.seenPersonCards.add(msmCard);
-        cardsPanel.seenPersonCards.add(wbtCard);
-        cardsPanel.inHandWeaponCards.add(rustyShankCard);
-        cardsPanel.seenWeaponCards.add(targetedThermoCard);
-        cardsPanel.seenWeaponCards.add(syringeCard);
-        cardsPanel.seenWeaponCards.add(garroteCard);
-        cardsPanel.seenWeaponCards.add(meatHookCard);
-        cardsPanel.seenWeaponCards.add(plasmaRifleCard);
+
+
 
         cardsPanel.updatePanels();
         frame.setVisible(true); // make it visible

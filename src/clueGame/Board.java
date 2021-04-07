@@ -14,8 +14,8 @@ public class Board extends JPanel {
     private ArrayList<Card> roomCards;
     private ArrayList<Card> playerCards;
     private ArrayList<Card> weaponCards;
-
     private ArrayList<Card> allCards;
+    private int gridSize;
     private static int num_rows, num_cols;
     private String setupConfigFile, layoutConfigFile;
     private static Board theInstance = new Board();
@@ -31,10 +31,14 @@ public class Board extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int size = getWidth() * getHeight();
+        int size = getWidth() * getHeight() / gridSize;
+
+
+        int offset = 3;
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                grid[row][col].draw(size, 1, g);
+                grid[row][col].draw(size, offset, g);
+
             }
         }
 
@@ -256,7 +260,7 @@ public class Board extends JPanel {
             }
         }
         inFile.close();
-        int gridSize = setRowsCols(csvData);
+        gridSize = setRowsCols(csvData);
         if (num_cols * num_rows == gridSize) {
             buildGameGrid(csvData);//Builds the game grid from ClueLayout.csv file
             setPlayerStartLocations();//Sets row/col data for all my players since I didn't directly insert row/col data into ClueSetup file

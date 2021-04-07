@@ -19,7 +19,7 @@ public class BoardCell {
         doorDirection = DoorDirection.NONE;
     }
     public void draw(int size, int offset, Graphics g){
-
+        g.drawRect(offset, 0, size/2, size/2);
     }
 
     //Getters

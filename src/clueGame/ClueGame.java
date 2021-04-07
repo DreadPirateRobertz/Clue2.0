@@ -2,6 +2,8 @@ package clueGame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ClueGame extends JFrame {
     @Override
@@ -28,10 +30,32 @@ public class ClueGame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1500, 1000);
         setTitle("ClueGame");
-        setVisible(true);
+
     }
 
     public static void main(String[] args) {
         ClueGame clueGame = new ClueGame();
+
+        ArrayList<Card> inHand = null;
+        ArrayList<Card> seen = null;
+
+        Board.getInstance().setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
+        Board.getInstance().initialize();
+        Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap(); //This is a LinkedHashMap and should preserve insertion order of Players
+
+        for (Player player : playerMap.keySet()){//Find the Human
+            if (player.getClass().equals(Human.class)){
+                inHand = player.getPlayerHand();
+                seen = player.getSeenList();
+                break;
+            }
+        }
+        GameControlPanel gameControlPanel = new GameControlPanel();
+        GameCardsPanel gameCardsPanel = new GameCardsPanel(inHand, seen);
+
+        clueGame.add(Board.getInstance(), BorderLayout.CENTER);
+        clueGame.add(gameControlPanel, BorderLayout.SOUTH);
+        clueGame.add(gameCardsPanel, BorderLayout.EAST);
+        clueGame.setVisible(true);
     }
 }
