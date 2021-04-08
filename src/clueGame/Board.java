@@ -31,6 +31,7 @@ public class Board extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Random randomize = new Random();
         g.setColor(Color.BLACK);
         g.fillRect(0,0,getWidth(),getHeight());
         int size;
@@ -39,6 +40,17 @@ public class Board extends JPanel {
         }
         else{
             size = getWidth() / num_rows;
+        }
+        ArrayList<Point> pointy = new ArrayList<>();
+
+        for (int i = 0; i < size*5; i++){
+            Point p = new Point();
+            p.setLocation(randomize.nextInt(size), randomize.nextInt(size));
+            pointy.add(p);
+        }
+        for (Point point : pointy){ //Cool Random Stars for my SpaceShip Theme
+            g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
+            g.drawRect((int)point.getX()*80, (int)point.getY()*50, 1, 1);
         }
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
