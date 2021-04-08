@@ -30,7 +30,6 @@ public class ClueGame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1500, 1000);
         setTitle("ClueGame");
-
     }
 
     public static void main(String[] args) {
@@ -40,8 +39,8 @@ public class ClueGame extends JFrame {
         ArrayList<Card> seen = null;
 
         Board.getInstance().setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
-        Board.getInstance().initialize();
-        Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap(); //This is a LinkedHashMap and should preserve insertion order of Players
+        Board.getInstance().initialize();//This is a LinkedHashMap and should preserve insertion order of Players
+        Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap();
 
         for (Player player : playerMap.keySet()){//Find the Human
             if (player.getClass().equals(Human.class)){
@@ -53,9 +52,10 @@ public class ClueGame extends JFrame {
         GameControlPanel gameControlPanel = new GameControlPanel();
         GameCardsPanel gameCardsPanel = new GameCardsPanel(inHand, seen);
 
-        clueGame.add(Board.getInstance(), BorderLayout.CENTER);
+
         clueGame.add(gameControlPanel, BorderLayout.SOUTH);
         clueGame.add(gameCardsPanel, BorderLayout.EAST);
+        clueGame.add(Board.getInstance(), BorderLayout.CENTER);
         clueGame.setVisible(true);
     }
 }

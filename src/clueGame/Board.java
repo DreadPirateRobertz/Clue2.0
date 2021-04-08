@@ -31,19 +31,33 @@ public class Board extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int size = getWidth() * getHeight() / gridSize;
-
-
-        int offset = 3;
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0,getWidth(),getHeight());
+        int size;
+        if (getHeight() < getWidth()){
+            size = getHeight() / num_cols;
+        }
+        else{
+            size = getWidth() / num_rows;
+        }
+        int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
+        int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                grid[row][col].draw(size, offset, g);
-
+                grid[row][col].drawCell(size, xOffset, yOffset, (Graphics2D) g);
+                if (grid[row][col].isRoomLabel()){
+                    grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
+                }
             }
         }
-
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                if (grid[row][col].isDoorway()) {
+                    grid[row][col].drawDoorWays((Graphics2D) g, size, xOffset, yOffset);
+                }
+            }
+        }
     }
-
 
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
@@ -111,6 +125,9 @@ public class Board extends JPanel {
 
         if (cardCheck.equals("Space") && !name.equals("Unused")) {//if space equals anything but Unused...then setWalkway...No more hardcoding
             room.setWalkway();//Also this would cover a hallway, breezeway, freeway... or whatever someone desired to implement for usable Space
+        }
+        else if (cardCheck.equals("Space") && name.equals("Unused")){
+            room.setUnused();
         }
         setRoom(room);//Effectively adding the Room to the roomMap
         if (cardCheck.equals("Room")) {
@@ -279,8 +296,13 @@ public class Board extends JPanel {
                 grid[row][col] = new BoardCell(row, col);
                 String csv = csvData.get(index);//Grabbing the string from the ArrayList with the index
                 char roomID = csv.charAt(0);//Storing the first index of csv into roomID
-
                 grid[row][col].setInitial(roomID);//Setting cell initial which is the roomID
+                if(isUnUsed(grid[row][col])){
+                    grid[row][col].setUnUsed();
+                }
+                if(isWalkway(grid[row][col])){
+                    grid[row][col].setWalkWay();
+                }
                 if (csv.length() > 1) {//If string has special characters contained after the initial let's sort them out!
                     char symbol = csv.charAt(1);
                     classify_room_symbology(grid[row][col], symbol);
@@ -456,6 +478,7 @@ public class Board extends JPanel {
             Card card = player.disproveSuggestion(suggestion);
             if (card != null){
                 accuser.updateSeenList(card);
+                card.setColor(player.getColor());
                 return card;
             }
         }
@@ -499,6 +522,7 @@ public class Board extends JPanel {
     }
     //Is'ers
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
+    public boolean isUnUsed(BoardCell cell){return getRoom(cell).isUnUsed(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     //Setters
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }

@@ -5,6 +5,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GameCardsPanel extends JPanel {
     private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
@@ -64,11 +65,11 @@ public class GameCardsPanel extends JPanel {
         panel.setBorder(new TitledBorder(new EtchedBorder(), "People"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setFields(panel, inHandPersonCards);
+        setFieldsInHand(panel, inHandPersonCards);
         setNone(panel, inHandPersonCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setFields(panel, seenPersonCards);
+        setFieldsSeen(panel, seenPersonCards);
         setNone(panel, seenPersonCards);
         return panel;
     }
@@ -81,11 +82,11 @@ public class GameCardsPanel extends JPanel {
         panel.setBorder(new TitledBorder(new EtchedBorder(), "Rooms"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setFields(panel, inHandRoomCards);
+        setFieldsInHand(panel, inHandRoomCards);
         setNone(panel, inHandRoomCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setFields(panel, seenRoomCards);
+        setFieldsSeen(panel, seenRoomCards);
         setNone(panel, seenRoomCards);
         return panel;
     }
@@ -98,11 +99,11 @@ public class GameCardsPanel extends JPanel {
         panel.setBorder(new TitledBorder(new EtchedBorder(), "Weapons"));
         JLabel inHandLabel = new JLabel("In Hand:");
         panel.add(inHandLabel);
-        setFields(panel, inHandWeaponCards);
+        setFieldsInHand(panel, inHandWeaponCards);
         setNone(panel, inHandWeaponCards);
         JLabel seenLabel = new JLabel("Seen:");
         panel.add(seenLabel);
-        setFields(panel, seenWeaponCards);
+        setFieldsSeen(panel, seenWeaponCards);
         setNone(panel, seenWeaponCards);
         return panel;
     }
@@ -155,15 +156,13 @@ public class GameCardsPanel extends JPanel {
         seen.add(meatHookCard);
         seen.add(plasmaRifleCard);
 
-
+        Board.getInstance().setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
+        Board.getInstance().initialize();//This is a LinkedHashMap and should preserve insertion order of Players
         GameCardsPanel cardsPanel = new GameCardsPanel(inHand, seen);
         JFrame frame = new JFrame();  // create the frame
         frame.setContentPane(cardsPanel); // put the panel in the frame
         frame.setSize(230, 900);  // size the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
-
-
-
 
         cardsPanel.updatePanels();
         frame.setVisible(true); // make it visible
@@ -174,9 +173,28 @@ public class GameCardsPanel extends JPanel {
         createLayout();
     }
     //Setters
-    private void setFields(JPanel panel, ArrayList<Card> seen) {
+    private void setFieldsSeen(JPanel panel, ArrayList<Card> seen) {
         for (Card card : seen) {
             JTextField field = new JTextField(card.getCardName());
+            field.setBackground(card.getColor());//This will be set in handleSuggestion() method of Board
+            field.setHorizontalAlignment(JTextField.CENTER);
+            field.setForeground(Color.WHITE);
+            field.setEditable(false);
+            panel.add(field);
+        }
+    }
+    private void setFieldsInHand(JPanel panel, ArrayList<Card> inHand) {
+        for (Card card : inHand) {
+            JTextField field = new JTextField(card.getCardName());
+            Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap();
+            for (Player player : playerMap.keySet()){
+                if(player.getClass().equals(Human.class)){
+                    field.setBackground(player.getColor());
+                    break;//This way it's not hard coded in and can be dynamic if a new ClueSetup is implemented
+                }
+            }
+            field.setForeground(Color.MAGENTA);
+            field.setHorizontalAlignment(JTextField.CENTER);
             field.setEditable(false);
             panel.add(field);
         }
@@ -185,6 +203,9 @@ public class GameCardsPanel extends JPanel {
     private void setNone(JPanel panel, ArrayList<Card> seen) {
         if (seen.size() == 0) {
             JTextField field = new JTextField("None");
+            field.setForeground(Color.WHITE);
+            field.setHorizontalAlignment(JTextField.CENTER);
+            field.setBackground(Color.BLACK);
             field.setEditable(false);
             panel.add(field);
         }

@@ -2,13 +2,14 @@ package clueGame;
 
 import java.awt.*;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public class BoardCell {
     private int row, col;
     private char initial, secretPassage;
     private DoorDirection doorDirection;
-    private boolean roomCenter, roomLabel, doorway, occupied;
+    private boolean roomCenter, roomLabel, doorway, occupied, unUsed, walkWay;
     private Set<BoardCell> adjList;
 
     public BoardCell(int row, int col) {
@@ -18,11 +19,64 @@ public class BoardCell {
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }
-    public void draw(int size, int offset, Graphics g){
-        g.drawRect(offset, 0, size/2, size/2);
-    }
+    public void drawCell(int size, int xOffset, int yOffset, Graphics2D g){
+        int x = (col * size) + xOffset;
+        int y = (row * size) + yOffset;
 
-    //Getters
+        if (this.unUsed){
+            g.setColor(Color.BLACK);
+            g.fillRect(x,y,size, size);
+        }
+        else if (this.walkWay){
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(x,y,size,size);
+            g.setColor(Color.BLACK);
+            g.drawRect(x,y,size-1,size-1);
+        }
+        else{
+            g.setColor(Color.BLUE);
+            g.fillRect(x,y,size,size);
+        }
+
+    }
+    public void drawRoomName(Graphics2D g, int size, int xOffset, int yOffset) {
+        int x = (col * size) + xOffset;
+        int y = (row * size) + yOffset;
+        String roomName = Board.getInstance().getRoom(this.getInitial()).getName();
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        g.drawString(roomName.toUpperCase(Locale.ROOT), x, y);
+    }
+    public void drawDoorWays(Graphics2D g, int size, int xOffset, int yOffset){
+        int x = (col * size) + xOffset;
+        int y = (row * size) + yOffset;
+        DoorDirection whichWay = this.getDoorDirection();
+        g.setColor(Color.MAGENTA);
+        switch (whichWay){
+            case DOWN -> {
+                g.fillRect(x, y+size, size, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x, y+size, size-1, size/6 -1);
+            }
+            case UP -> {
+                g.fillRect(x, y-size/6, size, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x, y-size/6, size, size/6);
+            }
+            case RIGHT -> {
+                g.fillRect(x+size, y, size/6, size);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+size, y, size/6, size);
+            }
+            case LEFT -> {
+                g.fillRect(x-4, y, size/6, size);
+                g.setColor(Color.BLACK);
+                g.drawRect(x-4, y, size/6, size);
+            }
+                }
+        }
+
+        //Getters
     public int getRow() {
         return row;
     }
@@ -34,10 +88,16 @@ public class BoardCell {
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }
     public boolean getOccupied() { return occupied; }
+
+
+
     //Is'ers
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() { return roomLabel; }
     public boolean isRoomCenter() { return roomCenter; }
+    public boolean isRoomLabel() {
+        return roomLabel;
+    }
     //Setters
     public void addAdjacency(BoardCell cell) { adjList.add(cell); }
     public void setInitial(char initial) { this.initial = initial; }
@@ -47,4 +107,14 @@ public class BoardCell {
     public void setRoomCenter() { roomCenter = true; }
     public void setSecretPassage(char secretPassage) { this.secretPassage = secretPassage; }
     public void setOccupied(boolean b) { occupied = b; }
+
+    public void setUnUsed() {
+        unUsed = true;
+    }
+
+    public void setWalkWay() {
+        walkWay= true;
+    }
+
+
 }
