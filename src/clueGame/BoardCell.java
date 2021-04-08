@@ -114,16 +114,34 @@ public class BoardCell {
         int y = (row * size) + yOffset;
         char roomID = Board.getInstance().getRoom(this).getIdentifier();
         if (roomID == 'B' || roomID == 'O') {
-            g.setColor(Color.ORANGE);
+            g.setColor(Color.BLACK);
             g.fillRoundRect(x, y, size / 2 +5, size-5 , size, size);
+            g.setColor(Color.WHITE);
+            g.drawRoundRect(x, y, size / 2 +4, size-6 , size-1, size-1);
+            g.setColor(Color.MAGENTA);
+            g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
+            if (roomID == 'B'){
+                g.drawString("O", x+5, y+17);
+            }
+            else{
+                g.drawString("B", x+6, y+17);
+            }
         }
         else {
-            g.setColor(Color.RED);
+            g.setColor(Color.BLACK);
             g.fillRoundRect(x, y, size / 2 +5, size-5 , size, size);
+            g.setColor(Color.WHITE);
+            g.drawRoundRect(x, y, size / 2 +4, size-4 , size-1, size-1);
+            g.setColor(Color.MAGENTA);
+            g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
+            if (roomID == 'M'){
+                g.drawString("L", x+7, y+17);
+            }
+            else{
+                g.drawString("M", x+4, y+18);
+            }
         }
-        g.setColor(Color.MAGENTA);
-        g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
-        g.drawString("S", x+6, y+18);
+
     }
         //Getters
     public int getRow() {

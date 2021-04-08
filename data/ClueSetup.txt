@@ -13,7 +13,7 @@ Space, Unused, X
 Space, Walkway, W
 //People
 Person, Whipping Boy Todd, Orange, Computer, Galley
-Person, Commander Sassafras, Blue, Computer, Engine
+Person, Commander Sassafras, Pink, Computer, Engine
 Person, Ensign Larry, Red, Computer, ImmersiveVR
 Person, Doctor Petunia, Green, Computer, Medical
 Person, Mad Scientist Mikey, Magenta, Computer, Laboratory

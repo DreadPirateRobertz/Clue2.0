@@ -28,8 +28,17 @@ public class Board extends JPanel {
     }
     private static ArrayList<Card> theAnswer;
 
+    private Color setRandomColor(){
+        Random randomize = new Random();
+        int red = randomize.nextInt(255);
+        int green = randomize.nextInt(255);
+        int blue = randomize.nextInt(255);
+        return new Color(red,green, blue);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
+
         super.paintComponent(g);
         Random randomize = new Random();
         g.setColor(Color.BLACK);
@@ -42,14 +51,18 @@ public class Board extends JPanel {
             size = getWidth() / num_rows;
         }
         ArrayList<Point> pointy = new ArrayList<>();
-
         for (int i = 0; i < size*5; i++){
             Point p = new Point();
             p.setLocation(randomize.nextInt(size), randomize.nextInt(size));
             pointy.add(p);
         }
         for (Point point : pointy){ //Cool Random Stars for my SpaceShip Theme
-            g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
+            if(randomize.nextInt(5) == 1){
+                g.setColor(setRandomColor());
+            }
+            else {
+                g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
+            }
             g.drawRect((int)point.getX()*80, (int)point.getY()*50, 1, 1);
         }
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
@@ -69,9 +82,15 @@ public class Board extends JPanel {
                 }
                 if (grid[row][col].getSecretPassage() != '0'){
                     grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
-
                 }
             }
+        }
+        for (Player player : playerMap.keySet()){
+            BoardCell startingCell = this.getRoom(player.getStartLocation().charAt(0)).getCenterCell();
+            g.setColor(player.getColor());
+            g.fillRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size, size, size, size);
+            g.setColor(Color.WHITE);
+            g.drawRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size-1, size-1, size-1, size-1);
         }
     }
 
@@ -169,8 +188,8 @@ public class Board extends JPanel {
             case "Magenta" ->{
                 color = Color.magenta;
             }
-            case "Blue" ->{
-                color = Color.blue;
+            case "Pink" ->{
+                color = Color.pink;
             }
             case "Cyan" ->{
                 color = Color.cyan;
