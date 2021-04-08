@@ -48,6 +48,14 @@ public abstract class Player {
         return null;
     }
 
+    public void draw(Graphics2D g, int size, int xOffset, int yOffset){
+        BoardCell startingCell = Board.getInstance().getRoom(this.getStartLocation().charAt(0)).getCenterCell();
+        g.setColor(this.getColor());
+        g.fillRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size, size, size, size);
+        g.setColor(Color.WHITE);
+        g.drawRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size-1, size-1, size-1, size-1);
+    }
+
 
     //Setters
     public void updateHand(Card card){ playerHand.add(card); }

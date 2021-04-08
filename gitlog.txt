@@ -1,3 +1,69 @@
+commit 6a4df6ccdd63bbe2eecd03f9b3f66018b5db02cb
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Thu Apr 8 00:03:42 2021 -0600
+
+    C22A --> Editing secretPassageways color and location
+
+commit 3147ab79355a3b181dc723e18d9589586583acfa
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 7 23:02:06 2021 -0600
+
+    C22A --> Added some random white points for stars it looks pretty cool!
+
+commit 340aabacc952462d00e292f835938f769acf89f5
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 7 22:38:28 2021 -0600
+
+    C22A --> Wow really coming together just implemented some really cool doorWays and did a secret Passage indicator as well!
+
+commit 30d18252109b3eff4c8735ffe70bff423b9737f3
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 7 19:24:14 2021 -0600
+
+    C22A --> Lot of work done on drawing the Board in Board and BoardCell!
+
+commit e87aff2658cddcf019ea7993479a94c639ce9ede
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 7 10:34:35 2021 -0600
+
+    C22A --> Refactored GameCardsPanel and ClueGame to allow to find the Human Player and pass their cards appropriately to display.  Still pondering how to draw these cells but streamlined all the panels once I really understood how it worked.
+
+commit 278f598c83717657afdb01e0db0bf8a8bae0969a
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 6 17:35:19 2021 -0600
+
+    C22A --> Refactored GameCardsPanel and am starting to work on the ClueBoard GUI
+
+commit 28968327a41a6069b449b98987ac8cdd862fff45
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 6 14:54:56 2021 -0600
+
+    GameCardsPanel further refinement
+
+commit 9b846440e0af5f000d883d1be54c0fe9cd44cfd6
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 6 14:32:09 2021 -0600
+
+    GameCardsPanel was made over to set all fields to not editable and refactored some repetitive code
+
+commit 3aa66aeadb9518bbec60836720b8a28ce718b745
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 6 14:17:13 2021 -0600
+
+    GameControlPanel had a huge makeover once I understood JPanels and GridLayouts and how everything interconnected better.  It looks great.
+
+commit 32297043432128e1b6cc1232817110af227f85c6
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 23:36:55 2021 -0600
+
+    C21A-2 --> Final Edits
+
+commit 6104e9e2652021919ba0598fb72ad5b93842c740
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 5 23:33:39 2021 -0600
+
+    C21A-2 --> Final Commentary and Zipping UP
+
 commit 4cac570201221a316720dcb1e887c1a0d5473636
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Mon Apr 5 23:31:28 2021 -0600

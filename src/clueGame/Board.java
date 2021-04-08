@@ -28,71 +28,7 @@ public class Board extends JPanel {
     }
     private static ArrayList<Card> theAnswer;
 
-    private Color setRandomColor(){
-        Random randomize = new Random();
-        int red = randomize.nextInt(255);
-        int green = randomize.nextInt(255);
-        int blue = randomize.nextInt(255);
-        return new Color(red,green, blue);
-    }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
-        Random randomize = new Random();
-        g.setColor(Color.BLACK);
-        g.fillRect(0,0,getWidth(),getHeight());
-        int size;
-        if (getHeight() < getWidth()){
-            size = getHeight() / num_cols;
-        }
-        else{
-            size = getWidth() / num_rows;
-        }
-        ArrayList<Point> pointy = new ArrayList<>();
-        for (int i = 0; i < size*5; i++){
-            Point p = new Point();
-            p.setLocation(randomize.nextInt(size), randomize.nextInt(size));
-            pointy.add(p);
-        }
-        for (Point point : pointy){ //Cool Random Stars for my SpaceShip Theme
-            if(randomize.nextInt(5) == 1){
-                g.setColor(setRandomColor());
-            }
-            else {
-                g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
-            }
-            g.drawRect((int)point.getX()*80, (int)point.getY()*50, 1, 1);
-        }
-        int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
-        int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
-        for (int row = 0; row < num_rows; row++) {
-            for (int col = 0; col < num_cols; col++) {
-                grid[row][col].drawCell(size, xOffset, yOffset, (Graphics2D) g);
-            }
-        }
-        for (int row = 0; row < num_rows; row++) {
-            for (int col = 0; col < num_cols; col++) {
-                if (grid[row][col].isDoorway()) {
-                    grid[row][col].drawDoorWays((Graphics2D) g, size, xOffset, yOffset);
-                }
-                if (grid[row][col].isRoomLabel()) {
-                    grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
-                }
-                if (grid[row][col].getSecretPassage() != '0'){
-                    grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
-                }
-            }
-        }
-        for (Player player : playerMap.keySet()){
-            BoardCell startingCell = this.getRoom(player.getStartLocation().charAt(0)).getCenterCell();
-            g.setColor(player.getColor());
-            g.fillRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size, size, size, size);
-            g.setColor(Color.WHITE);
-            g.drawRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size-1, size-1, size-1, size-1);
-        }
-    }
 
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
@@ -537,6 +473,68 @@ public class Board extends JPanel {
             i++;
         }
     }
+    private Color setRandomColor(){
+        Random randomize = new Random();
+        int red = randomize.nextInt(255);
+        int green = randomize.nextInt(255);
+        int blue = randomize.nextInt(255);
+        return new Color(red,green, blue);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+
+        super.paintComponent(g);
+        Random randomize = new Random();
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0,getWidth(),getHeight());
+        int size;
+        if (getHeight() < getWidth()){
+            size = getHeight() / num_cols;
+        }
+        else{
+            size = getWidth() / num_rows;
+        }
+        ArrayList<Point> pointy = new ArrayList<>();
+        for (int i = 0; i < size*5; i++){
+            Point p = new Point();
+            p.setLocation(randomize.nextInt(size), randomize.nextInt(size));
+            pointy.add(p);
+        }
+        for (Point point : pointy){ //Cool Random Stars for my SpaceShip Theme
+            if(randomize.nextInt(5) == 1){
+                g.setColor(setRandomColor());
+            }
+            else {
+                g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
+            }
+            g.drawRect((int)point.getX()*80, (int)point.getY()*50, 1, 1);
+        }
+        int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
+        int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                grid[row][col].drawCell(size, xOffset, yOffset, (Graphics2D) g);
+            }
+        }
+        for (int row = 0; row < num_rows; row++) {
+            for (int col = 0; col < num_cols; col++) {
+                if (grid[row][col].isDoorway()) {
+                    grid[row][col].drawDoorWay((Graphics2D) g, size, xOffset, yOffset);
+                }
+                if (grid[row][col].isRoomLabel()) {
+                    grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
+                }
+                if (grid[row][col].getSecretPassage() != '0'){
+                    grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
+                }
+            }
+        }
+        for (Player player : playerMap.keySet()){
+            player.draw((Graphics2D) g, size, xOffset, yOffset);
+        }
+    }
+
     //Getters
     public ArrayList<Card> getAllCards() {
         return allCards;

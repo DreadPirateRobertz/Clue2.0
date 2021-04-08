@@ -1,11 +1,12 @@
 package clueGame;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-public class BoardCell {
+public class BoardCell extends Component {
     private int row, col;
     private char initial, secretPassage;
     private DoorDirection doorDirection;
@@ -26,8 +27,6 @@ public class BoardCell {
         if (this.unUsed){
             g.setColor(Color.BLACK);
             g.fillRect(x,y,size, size);
-//            g.setColor(Color.GREEN);
-//            g.drawRect(x,y,size-2, size-2);
         }
         else if (this.walkWay){
             g.setColor(Color.LIGHT_GRAY);
@@ -49,7 +48,7 @@ public class BoardCell {
         g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
         g.drawString(roomName.toUpperCase(Locale.ROOT), x, y);
     }
-    public void drawDoorWays(Graphics2D g, int size, int xOffset, int yOffset){
+    public void drawDoorWay(Graphics2D g, int size, int xOffset, int yOffset){
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;
         DoorDirection whichWay = this.getDoorDirection();
