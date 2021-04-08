@@ -1,5 +1,6 @@
 package clueGame;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Room {
@@ -38,9 +39,8 @@ public class Room {
     }
     public void setCenterCell(BoardCell cell){ centerCell = cell; }
     public void setWalkway(){walkWay = true;}
-
-
     public void setUnused() {
         unUsed = true;
     }
+
 }

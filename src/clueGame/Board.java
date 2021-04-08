@@ -45,15 +45,19 @@ public class Board extends JPanel {
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col].drawCell(size, xOffset, yOffset, (Graphics2D) g);
-                if (grid[row][col].isRoomLabel()){
-                    grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
-                }
             }
         }
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 if (grid[row][col].isDoorway()) {
                     grid[row][col].drawDoorWays((Graphics2D) g, size, xOffset, yOffset);
+                }
+                if (grid[row][col].isRoomLabel()) {
+                    grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
+                }
+                if (grid[row][col].getSecretPassage() != '0'){
+                    grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
+
                 }
             }
         }

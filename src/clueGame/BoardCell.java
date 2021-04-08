@@ -26,6 +26,8 @@ public class BoardCell {
         if (this.unUsed){
             g.setColor(Color.BLACK);
             g.fillRect(x,y,size, size);
+//            g.setColor(Color.GREEN);
+//            g.drawRect(x,y,size-2, size-2);
         }
         else if (this.walkWay){
             g.setColor(Color.LIGHT_GRAY);
@@ -42,40 +44,87 @@ public class BoardCell {
     public void drawRoomName(Graphics2D g, int size, int xOffset, int yOffset) {
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;
-        String roomName = Board.getInstance().getRoom(this.getInitial()).getName();
+        String roomName = Board.getInstance().getRoom(this).getName();
         g.setColor(Color.WHITE);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
         g.drawString(roomName.toUpperCase(Locale.ROOT), x, y);
     }
     public void drawDoorWays(Graphics2D g, int size, int xOffset, int yOffset){
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;
         DoorDirection whichWay = this.getDoorDirection();
-        g.setColor(Color.MAGENTA);
+        g.setColor(Color.GREEN);
         switch (whichWay){
             case DOWN -> {
                 g.fillRect(x, y+size, size, size/6);
                 g.setColor(Color.BLACK);
-                g.drawRect(x, y+size, size-1, size/6 -1);
+                g.drawRect(x, y+size, size - 1, size/6 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+7, y+size+5, size/2, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+7, y+size+5, size/2 - 1, size/6 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+11, y+size+10, size/5, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+11, y+size+10, size/5 - 1, size/6 - 1);
             }
             case UP -> {
                 g.fillRect(x, y-size/6, size, size/6);
                 g.setColor(Color.BLACK);
-                g.drawRect(x, y-size/6, size, size/6);
+                g.drawRect(x, y-size/6, size - 1, size/6 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+7, y-size/6-5, size/2, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+7, y-size/6-5, size/2 - 1, size/6 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+11, y-size/6-10, size/5, size/6);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+11, y-size/6-10, size/5 - 1, size/6 - 1);
             }
             case RIGHT -> {
                 g.fillRect(x+size, y, size/6, size);
                 g.setColor(Color.BLACK);
-                g.drawRect(x+size, y, size/6, size);
+                g.drawRect(x+size, y, size/6 - 1, size - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+size+5, y+6, size/6, size/2);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+size+5, y+6, size/6 - 1, size/2 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x+size+10, y+10, size/6, size/4);
+                g.setColor(Color.BLACK);
+                g.drawRect(x+size+10, y+10, size/6 - 1, size/4 - 1);
             }
             case LEFT -> {
-                g.fillRect(x-4, y, size/6, size);
+                g.fillRect(x-5, y, size/6, size);
                 g.setColor(Color.BLACK);
-                g.drawRect(x-4, y, size/6, size);
+                g.drawRect(x-5, y, size/6 - 1, size - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x-10, y+7, size/6, size/2);
+                g.setColor(Color.BLACK);
+                g.drawRect(x-10, y+7, size/6 - 1, size/2 - 1);
+                g.setColor(Color.GREEN);
+                g.fillRect(x-15, y+11, size/6, size/4);
+                g.setColor(Color.BLACK);
+                g.drawRect(x-15, y+11, size/6 - 1, size/4 - 1);
             }
                 }
         }
-
+    public void drawSecretPassage(Graphics2D g, int size, int xOffset, int yOffset) {
+        int x = (col * size) + xOffset;
+        int y = (row * size) + yOffset;
+        char roomID = Board.getInstance().getRoom(this).getIdentifier();
+        if (roomID == 'B' || roomID == 'O') {
+            g.setColor(Color.ORANGE);
+            g.fillRoundRect(x, y, size / 2 +5, size-5 , size, size);
+        }
+        else {
+            g.setColor(Color.RED);
+            g.fillRoundRect(x, y, size / 2 +5, size-5 , size, size);
+        }
+        g.setColor(Color.MAGENTA);
+        g.setFont(new Font("Copperplate Gothic Bold", Font.BOLD, 12));
+        g.drawString("S", x+6, y+18);
+    }
         //Getters
     public int getRow() {
         return row;
@@ -115,6 +164,7 @@ public class BoardCell {
     public void setWalkWay() {
         walkWay= true;
     }
+
 
 
 }
