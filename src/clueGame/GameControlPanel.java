@@ -74,23 +74,31 @@ public class GameControlPanel extends JPanel {
     private JButton nextButton(){
         JButton button = new JButton("NEXT");
         button.addActionListener(e -> {
-            ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
-            Player playa = null;
+            int row, col;
+            Player playa;
             Object[] options = {"I'll never do this again..."};
             if(!flag){
                 JOptionPane.showOptionDialog(null, "You Haven't Taken Your Own Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, options, options[0]);
             }
             else{
-                int row, col;
                 setWhoseTurn();
                 roll = setDie();
-                row = players.get(index).getRow();
-                col = players.get(index).getCol();
+                if (index != 0) {
+                    row = players.get(index-1).getRow();
+                    col = players.get(index-1).getCol();
+                    playa = players.get(index-1);
+                }
+                else{
+                    playa = players.get(players.size()-1);
+                    row = players.get(players.size()-1).getRow();
+                    col = players.get(players.size()-1).getCol();
+                }
                 board.calcTargets(board.getCell(row, col), getRoll());
             }
 
                 updateDisplay();
+                board.updatePanel();
 
         });
         return button;

@@ -533,19 +533,22 @@ public class Board extends JPanel {
         }
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
+
+        for (Player player : players) {
+            if(player.getClass().equals(Human.class)) {
+                for (BoardCell target : targets) {
+                    target.setTarget(true);
+                }
+                break;
+            }
+        }
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col].drawCell((Graphics2D) g, size, xOffset, yOffset);
-                for (Player player : players){
-                    if(player.getClass().equals(Human.class)){
-                        for (BoardCell target : targets){
-                            target.setTarget(true);
-                            target.drawCell((Graphics2D) g, size, xOffset, yOffset);
-                        }
-                    }
-                }
-
             }
+        }
+        for (BoardCell target : targets){
+            target.setTarget(false);
         }
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
@@ -565,12 +568,10 @@ public class Board extends JPanel {
         for (Player player : players){
             player.draw((Graphics2D) g, size, xOffset, yOffset);
             }
-        }
-
-    public void makeTargetsFalse(){
-        for(BoardCell target : targets){
-            target.setTarget(false);
-        }
+    }
+    public void updatePanel(){
+        removeAll();;
+        repaint();
     }
 
     //Getters

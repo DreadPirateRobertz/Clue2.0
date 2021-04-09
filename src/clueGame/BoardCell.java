@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-public class BoardCell extends Component {
+public class BoardCell  {
     private int row, col;
     private char initial, secretPassage;
     private DoorDirection doorDirection;
     private boolean roomCenter, roomLabel, doorway, occupied, unUsed, walkWay, room, target;
     private Set<BoardCell> adjList;
+
 
     public BoardCell(int row, int col) {
         this.row = row;
@@ -40,11 +41,11 @@ public class BoardCell extends Component {
             g.fillRect(x,y,size,size);
         }
        if (target && !room){
-            g.setColor(Color.GREEN);
+            g.setColor(new Color(0,255,127));
             g.fillRect(x, y, size-2, size-2);
         }
         else if (room && board.getRoom(this).getCenterCell().isTarget()){
-            g.setColor(Color.GREEN);
+            g.setColor(new Color(0,255,127));
             g.fillRect(x,y,size,size);
         }
     }
