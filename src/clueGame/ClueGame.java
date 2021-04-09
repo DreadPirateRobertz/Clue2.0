@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class ClueGame extends JFrame {
+    private static final int PLAYERS = 6;
+    private static int playerCount = 0;
     @Override
     public void setSize(int width, int height) {
         super.setSize(width, height);
@@ -34,38 +36,26 @@ public class ClueGame extends JFrame {
 
     public static void main(String[] args) {
         ClueGame clueGame = new ClueGame();
-
+        Board board = Board.getInstance();
         ArrayList<Card> inHand = null;
         ArrayList<Card> seen = null;
 
-        Board.getInstance().setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
-        Board.getInstance().initialize();//This is a LinkedHashMap and should preserve insertion order of Players
-        Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap();
+        board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
+        board.initialize();
+        ArrayList<Player> players = board.getPlayers();
+        Player human = players.get(0);
 
-        for (Player player : playerMap.keySet()){//Find the Human
-            if (player.getClass().equals(Human.class)){
-                inHand = player.getPlayerHand();
-                seen = player.getSeenList();
-                break;
-            }
-        }
         GameControlPanel gameControlPanel = new GameControlPanel();
-        GameCardsPanel gameCardsPanel = new GameCardsPanel(inHand, seen);
-        /*Object[] options = {"Yes, please",
-                "No way!"};
-int n = JOptionPane.showOptionDialog(frame,
-"Would you like green eggs and ham?",
-"A Silly Question",
-JOptionPane.YES_NO_OPTION,
-JOptionPane.QUESTION_MESSAGE,
-null,     //do not use a custom Icon
-options,  //the titles of buttons
-options[0]); //default button title/*
+        GameCardsPanel gameCardsPanel = new GameCardsPanel(human.getPlayerHand(), human.getSeenList());
+        int x = gameControlPanel.getRoll(); //Testing
+        board.calcTargets(board.getCell(human.getRow(), human.getCol()), gameControlPanel.getRoll());
 
-         */
-//        Object[] options = {"Hell Yeah!"};
-//        JOptionPane.showOptionDialog(clueGame, "You are Prisoner Shifty eyes.  Can you find the solution before the Computer players?",
-//                "Welcome to Clue", JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
+        JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
+                "Welcome to Clue", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+
+
 
         clueGame.add(gameControlPanel, BorderLayout.SOUTH);
         clueGame.add(gameCardsPanel, BorderLayout.EAST);

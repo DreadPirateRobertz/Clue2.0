@@ -4,12 +4,20 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class GameControlPanel extends JPanel {
-    JTextField guessField;
-    JTextField guessResultField;
-    JTextField whoseTurnField;
-    JTextField dieNumber;
+    private JTextField guessField;
+    private JTextField guessResultField;
+    private JTextField whoseTurnField;
+    private JTextField dieNumber;
+    private boolean flag = true;
+    private static int index = 0;
+    private static ArrayList<Player> players = Board.getPlayers();
+    private static int roll = 0;
+    Board board = Board.getInstance();
+
 
     public GameControlPanel()  {
         guessField = new JTextField(20);
@@ -17,6 +25,9 @@ public class GameControlPanel extends JPanel {
         whoseTurnField = new JTextField(10);
         dieNumber = new JTextField(3);
         setLayout(new GridLayout(2, 0));
+        roll = setDie();
+        setWhoseTurn();
+        updateDisplay();
         createLayout();
     }
 
@@ -43,7 +54,6 @@ public class GameControlPanel extends JPanel {
         panel.add(whoseTurn);
         whoseTurnField.setEditable(false);
         panel.add(whoseTurnField);
-        whoseTurnField.getText();
         return panel;
     }
 
@@ -63,6 +73,26 @@ public class GameControlPanel extends JPanel {
 
     private JButton nextButton(){
         JButton button = new JButton("NEXT");
+        button.addActionListener(e -> {
+            ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
+            Player playa = null;
+            Object[] options = {"I'll never do this again..."};
+            if(!flag){
+                JOptionPane.showOptionDialog(null, "You Haven't Taken Your Own Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
+                        JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+            }
+            else{
+                int row, col;
+                setWhoseTurn();
+                roll = setDie();
+                row = players.get(index).getRow();
+                col = players.get(index).getCol();
+                board.calcTargets(board.getCell(row, col), getRoll());
+            }
+
+                updateDisplay();
+
+        });
         return button;
     }
 
@@ -72,7 +102,6 @@ public class GameControlPanel extends JPanel {
         panel.setLayout(new GridLayout(1,0));
         guessField.setEditable(false);
         panel.add(guessField);
-        guessField.getText();
         return panel;
     }
 
@@ -82,18 +111,41 @@ public class GameControlPanel extends JPanel {
         panel.setLayout(new GridLayout(1,0));
         guessResultField.setEditable(false);
         panel.add(guessResultField);
-        guessResultField.getText();
         return panel;
+    }
+    public void updateDisplay(){
+        whoseTurnField.getText();
+        guessField.getText();
+        guessResultField.getText();
     }
 
     //Setters for updating all the fields
-    public void setWhoseTurn(Player playa){
-        whoseTurnField.setText(playa.getName());
-        whoseTurnField.setBackground(playa.getColor());
+    public void setWhoseTurn(){
+        whoseTurnField.setText(players.get(index).getName());
+        whoseTurnField.setBackground(players.get(index).getColor());
+        if(index == players.size()-1){
+            index = 0; //Reset Index to First Player
+        }
+        else{
+            index++;
+        }
+
     }
+    //Getters
+
+    public int getRoll() {
+        return roll;
+    }
+
+    //Setters
     public void setGuess(String guess){ guessField.setText(guess); }
     public void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
-    public void setDie(int roll){ dieNumber.setText(String.valueOf(roll)); }
+    public int setDie(){
+        Random randomize = new Random();
+        int random = randomize.nextInt(6)+1;
+        dieNumber.setText(String.valueOf(random));
+        return random;
+    }
 
     //Main\\
     public static void main(String[] args) {
@@ -105,10 +157,9 @@ public class GameControlPanel extends JPanel {
         frame.setVisible(true); // make it visible
 
         // test filling in the data
-        controlPanel.setWhoseTurn(new Computer("Larry", Color.green, "Galley"));
+//        controlPanel.setWhoseTurn(new Computer("Larry", Color.green, "Galley"));
         controlPanel.setGuess( ":)");
         controlPanel.setGuessResult( ":):):)");
-        controlPanel.setDie(3);
     }
 }
 

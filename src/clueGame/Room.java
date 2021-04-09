@@ -7,7 +7,7 @@ public class Room {
     private String name;
     private char ID;
     private BoardCell labelCell, centerCell, secretCell;
-    private boolean walkWay, unUsed;
+    private boolean walkWay, unUsed, room;
 
     public Room(String name, char ID) {
         this.name = name;
@@ -26,6 +26,7 @@ public class Room {
     //Is'ers
     public boolean isWalkWay() {return walkWay;}
     public boolean isUnUsed() { return unUsed;}
+    public boolean isRoom() { return room; }
     //Setters
     public void setID(char ID) {
         this.ID = ID;
@@ -42,5 +43,7 @@ public class Room {
     public void setUnused() {
         unUsed = true;
     }
+    public void setRoom() {room = true; }
+
 
 }

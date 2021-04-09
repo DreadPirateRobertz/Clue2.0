@@ -22,6 +22,7 @@ public class GameCardsPanel extends JPanel {
         setBorder(titledBorder);
         setLayout(new GridLayout(3,0));
         sortCards(inHand, seen);
+        updatePanels();
         createLayout();
     }
 
@@ -164,13 +165,12 @@ public class GameCardsPanel extends JPanel {
         frame.setSize(230, 900);  // size the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
 
-        cardsPanel.updatePanels();
+
         frame.setVisible(true); // make it visible
     }
 
     public void updatePanels(){
         removeAll();
-        createLayout();
     }
     //Setters
     private void setFieldsSeen(JPanel panel, ArrayList<Card> seen) {

@@ -10,7 +10,7 @@ public class BoardCell extends Component {
     private int row, col;
     private char initial, secretPassage;
     private DoorDirection doorDirection;
-    private boolean roomCenter, roomLabel, doorway, occupied, unUsed, walkWay;
+    private boolean roomCenter, roomLabel, doorway, occupied, unUsed, walkWay, room, target;
     private Set<BoardCell> adjList;
 
     public BoardCell(int row, int col) {
@@ -20,9 +20,10 @@ public class BoardCell extends Component {
         adjList = new HashSet<>(); //Initialize adjacency list
         doorDirection = DoorDirection.NONE;
     }
-    public void drawCell(int size, int xOffset, int yOffset, Graphics2D g){
+    public void drawCell(Graphics2D g, int size, int xOffset, int yOffset){
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;
+        Board board = Board.getInstance();
 
         if (this.unUsed){
             g.setColor(Color.BLACK);
@@ -34,12 +35,20 @@ public class BoardCell extends Component {
             g.setColor(Color.BLACK);
             g.drawRect(x,y,size-1,size-1);
         }
-        else{
+        else if (this.room){
             g.setColor(Color.BLUE);
             g.fillRect(x,y,size,size);
         }
-
+       if (target && !room){
+            g.setColor(Color.GREEN);
+            g.fillRect(x, y, size-2, size-2);
+        }
+        else if (room && board.getRoom(this).getCenterCell().isTarget()){
+            g.setColor(Color.GREEN);
+            g.fillRect(x,y,size,size);
+        }
     }
+
     public void drawRoomName(Graphics2D g, int size, int xOffset, int yOffset) {
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;
@@ -158,6 +167,7 @@ public class BoardCell extends Component {
 
 
     //Is'ers
+    public boolean isTarget() { return target;}
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() { return roomLabel; }
     public boolean isRoomCenter() { return roomCenter; }
@@ -174,6 +184,12 @@ public class BoardCell extends Component {
     public void setSecretPassage(char secretPassage) { this.secretPassage = secretPassage; }
     public void setOccupied(boolean b) { occupied = b; }
 
+    public void setTarget(boolean b) {
+        target = b;
+    }
+    public void setRoom(){
+        room = true;
+    }
     public void setUnUsed() {
         unUsed = true;
     }

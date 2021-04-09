@@ -20,15 +20,16 @@ public class Board extends JPanel {
     private String setupConfigFile, layoutConfigFile;
     private static Board theInstance = new Board();
     //Private constructor to ensure only one -> Singleton Pattern
-    private Board() {
-        super();
-    }
+    private Board() { super(); }
     public static Board getInstance() {
         return theInstance;
     }
     private static ArrayList<Card> theAnswer;
+    private static ArrayList<Player> players;
 
-
+    public static ArrayList<Player> getPlayers() {
+        return players;
+    }
 
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
@@ -99,6 +100,9 @@ public class Board extends JPanel {
         }
         else if (cardCheck.equals("Space") && name.equals("Unused")){
             room.setUnused();
+        }
+        else{
+            room.setRoom();
         }
         setRoom(room);//Effectively adding the Room to the roomMap
         if (cardCheck.equals("Room")) {
@@ -213,8 +217,23 @@ public class Board extends JPanel {
         }
 
         keys = new ArrayList<>(playerMap.keySet());//Resetting keys which are all the Players
+        players = new ArrayList<>(keys);
+        int index = 0;
+        for(Player player: players){ //Putting the Human first as I make this list for cycling thru the players to play Clue
+            if (player.getClass().equals(Human.class)){
+                if(index == 0){
+                    break;
+                }
+                else{
+                    Player playa = players.get(0);
+                    players.set(0, player);
+                    players.set(index, playa);
+                    break;
+                }
+            }
+            index++;
+        }
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
-
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
                 Player player = keys.get(randomize.nextInt(keys.size()));
                 player.updateHand(card); //Reverse link will also update playerMap appropriately
@@ -273,6 +292,9 @@ public class Board extends JPanel {
                 }
                 if(isWalkway(grid[row][col])){
                     grid[row][col].setWalkWay();
+                }
+                if(isRoom(grid[row][col])){
+                    grid[row][col].setRoom();
                 }
                 if (csv.length() > 1) {//If string has special characters contained after the initial let's sort them out!
                     char symbol = csv.charAt(1);
@@ -483,7 +505,6 @@ public class Board extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-
         super.paintComponent(g);
         Random randomize = new Random();
         g.setColor(Color.BLACK);
@@ -514,7 +535,16 @@ public class Board extends JPanel {
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
-                grid[row][col].drawCell(size, xOffset, yOffset, (Graphics2D) g);
+                grid[row][col].drawCell((Graphics2D) g, size, xOffset, yOffset);
+                for (Player player : players){
+                    if(player.getClass().equals(Human.class)){
+                        for (BoardCell target : targets){
+                            target.setTarget(true);
+                            target.drawCell((Graphics2D) g, size, xOffset, yOffset);
+                        }
+                    }
+                }
+
             }
         }
         for (int row = 0; row < num_rows; row++) {
@@ -528,10 +558,18 @@ public class Board extends JPanel {
                 if (grid[row][col].getSecretPassage() != '0'){
                     grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
                 }
+
+            }
+
+        }
+        for (Player player : players){
+            player.draw((Graphics2D) g, size, xOffset, yOffset);
             }
         }
-        for (Player player : playerMap.keySet()){
-            player.draw((Graphics2D) g, size, xOffset, yOffset);
+
+    public void makeTargetsFalse(){
+        for(BoardCell target : targets){
+            target.setTarget(false);
         }
     }
 
@@ -557,6 +595,7 @@ public class Board extends JPanel {
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isUnUsed(BoardCell cell){return getRoom(cell).isUnUsed(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
+    public boolean isRoom(BoardCell cell){return getRoom(cell).isRoom(); }
     //Setters
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }
     public static void setTheAnswer_Room(Card card){ theAnswer.add(card); }
