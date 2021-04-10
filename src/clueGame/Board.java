@@ -498,18 +498,19 @@ public class Board extends JPanel {
     }
     private Color setRandomColor(){
         Random randomize = new Random();
-        int red = randomize.nextInt(255);
-        int green = randomize.nextInt(255);
-        int blue = randomize.nextInt(255);
+        int red = randomize.nextInt(256);
+        int green = randomize.nextInt(256);
+        int blue = randomize.nextInt(256);
         return new Color(red,green, blue);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
         Random randomize = new Random();
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
         int size;
         if (getHeight() < getWidth()) {
             size = getHeight() / num_cols;
@@ -524,11 +525,11 @@ public class Board extends JPanel {
         }
         for (Point point : pointy) { //Cool Random Stars for my SpaceShip Theme
             if (randomize.nextInt(5) == 1) {
-                g.setColor(setRandomColor());
+                g2.setColor(setRandomColor());
             } else {
-                g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
+                g2.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
             }
-            g.drawRect((int) point.getX() * 80, (int) point.getY() * 50, 1, 1);
+            g2.drawRect((int) point.getX() * 80, (int) point.getY() * 50, 1, 1);
         }
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
@@ -554,23 +555,22 @@ public class Board extends JPanel {
             }
 
         }
-        Map<Room, ArrayList<Player>> isRoomOccupied = new HashMap<>();
+        Map<Room, ArrayList<Player>> roomOccupancyMap = new HashMap<>();
         for (Player player : players) {
             if (getCell(player).isRoomCenter()) {
                 ArrayList<Player> playas = new ArrayList<>();
                 Room room = getRoom(getCell(player));
-                if (!isRoomOccupied.containsKey(room)) {
+                if (!roomOccupancyMap.containsKey(room)) {
                     playas.add(player);
-                    isRoomOccupied.put(getRoom(getCell(player)), playas);
                 } else {
-                    playas = isRoomOccupied.get(room);
+                    playas = roomOccupancyMap.get(room);
                     playas.add(player);
-                    isRoomOccupied.put(room, playas);
                 }
+                roomOccupancyMap.put(room, playas);
             }
         }
         for (Player player : players) {
-            player.draw((Graphics2D) g, size, xOffset, yOffset, isRoomOccupied);
+            player.draw((Graphics2D) g, size, xOffset, yOffset, roomOccupancyMap);
         }
     }
 

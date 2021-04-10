@@ -48,15 +48,15 @@ public abstract class Player {
         return null;
     }
 
-    public void draw(Graphics2D g, int size, int xOffset, int yOffset, Map<Room, ArrayList<Player>> isRoomOccupied) {
+    public void draw(Graphics2D g, int size, int xOffset, int yOffset, Map<Room, ArrayList<Player>> roomOccupancyMap) {
         Board board = Board.getInstance();
         g.setColor(this.getColor());
         board.getCell(this).setOccupied(true); //TODO: FIGURE OUT WHERE TO SET FALSE for HUMANS, Computer is being taken care of in GameControlPanel
         if(board.getCell(this).isRoomCenter()) {
             Room room = board.getRoom(board.getCell(this));
-            if (board.getCell(this).isRoomCenter() && isRoomOccupied.get(room).size() > 1) {
+            if (board.getCell(this).isRoomCenter() && roomOccupancyMap.get(room).size() > 1) {
                 int addedOffset = size / 2;
-                for (Player player : isRoomOccupied.get(room)) {
+                for (Player player : roomOccupancyMap.get(room)) {
                     g.setColor(player.getColor());
                     g.fillRoundRect(player.getCol() * size + xOffset + addedOffset, player.getRow() * size + yOffset, size, size, size, size);
                     g.setColor(Color.WHITE);
@@ -75,7 +75,6 @@ public abstract class Player {
             g.setColor(Color.WHITE);
             g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
         }
-//        isRoomOccupied.clear();
     }
 
 

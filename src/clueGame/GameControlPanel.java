@@ -78,7 +78,7 @@ public class GameControlPanel extends JPanel {
             Player playa = null;
             Object[] options = {"I'll never do this again..."};
             if(!flag){
-                JOptionPane.showOptionDialog(null, "You Haven't Taken Your Own Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
+                JOptionPane.showOptionDialog(null, "You Haven't Taken Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, options, options[0]);
             }
             else{
@@ -108,11 +108,16 @@ public class GameControlPanel extends JPanel {
                     board.updatePanel();
                 }
                 else{
+                    ArrayList allCards = board.getAllCards();
                     playa.doAccusation();
                     BoardCell target = playa.selectTargets(targets);
                     board.getCell(playa).setOccupied(false);
                     playa.setRow(target.getRow());
                     playa.setCol(target.getCol());
+                    //TODO: DO SOMETHING WITH THIS SUGGESTION
+                    if(board.getCell(playa).isRoomCenter()) {
+                        Suggestion s = playa.createSuggestion(board.getRoom(board.getCell(playa)), allCards);
+                    }
                     board.updatePanel();
                 }
             }
@@ -157,7 +162,6 @@ public class GameControlPanel extends JPanel {
 
     }
     //Getters
-
     public int getRoll() {
         return roll;
     }
