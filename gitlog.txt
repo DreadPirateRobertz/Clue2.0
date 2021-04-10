@@ -1,3 +1,57 @@
+commit 0bc91a337fa9aa3ec8c29173b790eb4596cb15f3
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 17:17:26 2021 -0600
+
+    C23A --> Did a bunch of refactoring and reodering of code segments for readability
+
+commit f3115bc1ed0492a9ea11bd5cf163575d810b315e
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 16:42:38 2021 -0600
+
+    C23A --> Hell yes it looks great I have targeting all worked out and now Player can click anywhere in a Room and they move right to the center of the room...:)!
+
+commit 5b9dcc70f1c84ba7d5fdcc2f4512d2b06670f291
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 15:02:01 2021 -0600
+
+    C23A --> Okay have target display going pretty well now trying to figure out how to advance to the next player when I'm inside Board
+
+commit 294567056422e579946349b1d5884ba794138bfe
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Apr 9 23:14:14 2021 -0600
+
+    C23A --> Tightening up of all the code for this NEXT button and will be working on the Board being clicked on manana!
+
+commit dfb878ab3405fea21724916b6970ff72a48dc97a
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Apr 9 22:35:58 2021 -0600
+
+    C23A --> Okay now multiple players can be in the same room and it shows them all lines up prettily in there
+
+commit 4d18b02ef3f5369b4167dd2f75c2ac4ff86f8223
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Apr 9 21:25:25 2021 -0600
+
+    C23A --> Okay wow finally got the targeting working how I want!
+
+commit 695dd15035239869ce8eec0e400ed73caf390c4b
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Apr 9 09:51:29 2021 -0600
+
+    C23A --> Having more success with coloring targets and updating panels appropriately.  Still working on it and pondering different design decisions
+
+commit ff40e33a3aa73dabf1cdf25239032044824ff403
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Fri Apr 9 00:10:09 2021 -0600
+
+    C23A --> Wow so many design decisions!  This is fun but wow!  I am trying to figure out where to streamline what and for the life of me having the targets disappear is my current headache:)
+
+commit 29de591b2a6b47a4059d8ef51895e5dd63513c17
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Thu Apr 8 14:01:52 2021 -0600
+
+    C22A --> Zipping Up Looks Great!
+
 commit 6a4df6ccdd63bbe2eecd03f9b3f66018b5db02cb
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Thu Apr 8 00:03:42 2021 -0600
