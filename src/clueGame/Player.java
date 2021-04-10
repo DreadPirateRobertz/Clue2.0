@@ -3,6 +3,7 @@ package clueGame;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class Player {
@@ -47,32 +48,36 @@ public abstract class Player {
         return null;
     }
 
-    public void draw(Graphics2D g, int size, int xOffset, int yOffset){
+    public void draw(Graphics2D g, int size, int xOffset, int yOffset, Map<Room, ArrayList<Player>> isRoomOccupied) {
         Board board = Board.getInstance();
         g.setColor(this.getColor());
-//        boolean flag = board.getCell(this.getRow(),this.getCol()).isOccupied();
-//        if(flag){
-//            g.fillRoundRect(this.getCol()*size + xOffset+(size/2), this.getRow()*size + yOffset+(size/2), size, size, size, size);
-//            g.setColor(Color.WHITE);
-//            g.drawRoundRect(this.getCol()*size + xOffset+(size/2), this.getRow()*size + yOffset+(size/2), size-1, size-1, size-1, size-1);
-//        }
-//        else {
-//        if(this.getClass().equals(Human.class)){
-//            ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
-//            for (BoardCell target : targets){
-//                target.setTarget(true);
-//                target.drawCell(g, size, xOffset, yOffset);
-//            }
-//            for (BoardCell target : targets){
-//                target.setTarget(false);
-//            }
-//        }
-            board.getCell(this.getRow(), this.getCol()).setOccupied(true);
+        board.getCell(this).setOccupied(true); //TODO: FIGURE OUT WHERE TO SET FALSE for HUMANS, Computer is being taken care of in GameControlPanel
+        if(board.getCell(this).isRoomCenter()) {
+            Room room = board.getRoom(board.getCell(this));
+            if (board.getCell(this).isRoomCenter() && isRoomOccupied.get(room).size() > 1) {
+                int addedOffset = size / 2;
+                for (Player player : isRoomOccupied.get(room)) {
+                    g.setColor(player.getColor());
+                    g.fillRoundRect(player.getCol() * size + xOffset + addedOffset, player.getRow() * size + yOffset, size, size, size, size);
+                    g.setColor(Color.WHITE);
+                    g.drawRoundRect(player.getCol() * size + xOffset + addedOffset, player.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
+                    addedOffset +=10;
+                }
+            }
+            else{
+                g.fillRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size, size, size, size);
+                g.setColor(Color.WHITE);
+                g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
+            }
+        }
+        else {
             g.fillRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size, size, size, size);
             g.setColor(Color.WHITE);
             g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
         }
-//    }
+//        isRoomOccupied.clear();
+    }
+
 
 
     //Setters

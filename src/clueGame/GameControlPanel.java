@@ -110,7 +110,7 @@ public class GameControlPanel extends JPanel {
                 else{
                     playa.doAccusation();
                     BoardCell target = playa.selectTargets(targets);
-                    board.getCell(playa.getRow(), playa.getCol()).setOccupied(false);
+                    board.getCell(playa).setOccupied(false);
                     playa.setRow(target.getRow());
                     playa.setCol(target.getCol());
                     board.updatePanel();

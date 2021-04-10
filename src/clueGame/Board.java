@@ -509,28 +509,26 @@ public class Board extends JPanel {
         super.paintComponent(g);
         Random randomize = new Random();
         g.setColor(Color.BLACK);
-        g.fillRect(0,0,getWidth(),getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
         int size;
-        if (getHeight() < getWidth()){
+        if (getHeight() < getWidth()) {
             size = getHeight() / num_cols;
-        }
-        else{
+        } else {
             size = getWidth() / num_rows;
         }
         ArrayList<Point> pointy = new ArrayList<>();
-        for (int i = 0; i < size*5; i++){
+        for (int i = 0; i < size * 5; i++) {
             Point p = new Point();
             p.setLocation(randomize.nextInt(size), randomize.nextInt(size));
             pointy.add(p);
         }
-        for (Point point : pointy){ //Cool Random Stars for my SpaceShip Theme
-            if(randomize.nextInt(5) == 1){
+        for (Point point : pointy) { //Cool Random Stars for my SpaceShip Theme
+            if (randomize.nextInt(5) == 1) {
                 g.setColor(setRandomColor());
-            }
-            else {
+            } else {
                 g.setColor(Color.WHITE); //Resizing the window has cool effect of traveling thru space :)
             }
-            g.drawRect((int)point.getX()*80, (int)point.getY()*50, 1, 1);
+            g.drawRect((int) point.getX() * 80, (int) point.getY() * 50, 1, 1);
         }
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
@@ -549,17 +547,33 @@ public class Board extends JPanel {
                 if (grid[row][col].isRoomLabel()) {
                     grid[row][col].drawRoomName((Graphics2D) g, size, xOffset, yOffset);
                 }
-                if (grid[row][col].getSecretPassage() != '0'){
+                if (grid[row][col].getSecretPassage() != '0') {
                     grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
                 }
 
             }
 
         }
-        for (Player player : players){
-            player.draw((Graphics2D) g, size, xOffset, yOffset);
+        Map<Room, ArrayList<Player>> isRoomOccupied = new HashMap<>();
+        for (Player player : players) {
+            if (getCell(player).isRoomCenter()) {
+                ArrayList<Player> playas = new ArrayList<>();
+                Room room = getRoom(getCell(player));
+                if (!isRoomOccupied.containsKey(room)) {
+                    playas.add(player);
+                    isRoomOccupied.put(getRoom(getCell(player)), playas);
+                } else {
+                    playas = isRoomOccupied.get(room);
+                    playas.add(player);
+                    isRoomOccupied.put(room, playas);
+                }
             }
+        }
+        for (Player player : players) {
+            player.draw((Graphics2D) g, size, xOffset, yOffset, isRoomOccupied);
+        }
     }
+
     public void updatePanel(){
         removeAll();;
         repaint();
@@ -575,6 +589,7 @@ public class Board extends JPanel {
     public int getNumRows() { return num_rows; }
     public int getNumColumns() { return num_cols; }
     public BoardCell getCell(int row, int col) { return grid[row][col]; }
+    public BoardCell getCell(Player player) { return getCell(player.getRow(), player.getCol());}
     public Set<BoardCell> getTargets() { return targets; }
     public static ArrayList<Card> getTheWholeAnswer() { return theAnswer; }
     public static Card getTheAnswer_Person(){ return theAnswer.get(0); }
