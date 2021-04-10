@@ -29,6 +29,7 @@ public class Board extends JPanel {
     private static ArrayList<Card> theAnswer;
     private static ArrayList<Player> players;
     private int index = 0;
+    private boolean playerFlag = false;
 
 
 
@@ -562,6 +563,10 @@ public class Board extends JPanel {
         }
         Map<Room, ArrayList<Player>> roomOccupancyMap = new HashMap<>();
         for (Player player : players) {
+            if(getCell(player).isRoom()){ //This is setting up so you can click anywhere in a room...Made the whole Room a target and then player will draw itself in the center
+                player.setRow(this.getRoom(this.getCell(player)).getCenterCell().getRow());
+                player.setCol(this.getRoom(this.getCell(player)).getCenterCell().getCol());
+            }
             if (getCell(player).isRoomCenter()) {
                 ArrayList<Player> playas = new ArrayList<>();
                 Room room = getRoom(getCell(player));
@@ -607,7 +612,13 @@ public class Board extends JPanel {
                     for (BoardCell target : targets){
                         target.setTarget(false);
                     }
-
+                    if(whichTarget.isRoomCenter()){
+                        playa.createSuggestion(getRoom(whichTarget), allCards); //TODO: STUB
+                    }
+                    else{
+//                        setWhoseTurn();
+                    }
+                    playerFlag = true;
                     repaint();
                 } else {
                     Object[] theresOnlyOneAnswer = {"My Bad"};
@@ -647,6 +658,14 @@ public class Board extends JPanel {
     public void updatePanel(){
         removeAll();;
         repaint();
+    }
+
+    public boolean isPlayerFlag() {
+        return playerFlag;
+    }
+
+    public void setPlayerFlag(boolean playerFlag) {
+        this.playerFlag = playerFlag;
     }
 
     //Getters

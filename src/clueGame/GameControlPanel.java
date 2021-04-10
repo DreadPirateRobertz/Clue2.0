@@ -12,12 +12,10 @@ public class GameControlPanel extends JPanel {
     private JTextField guessResultField;
     private JTextField whoseTurnField;
     private JTextField dieNumber;
-    private boolean flag = true;//TODO: Change back to false
     private static int index = 0;
     private ArrayList<Player> players = Board.getPlayers();
     private static int roll = 0;
     private Board board = Board.getInstance();
-    private Player whoseTurn = null;
 
 
     public GameControlPanel()  {
@@ -78,7 +76,7 @@ public class GameControlPanel extends JPanel {
             int row, col;
             Player playa = null;
             Object[] options = {"I'll never do this again..."};
-            if(!flag){
+            if(!board.isPlayerFlag()){
                 JOptionPane.showOptionDialog(null, "You Haven't Taken Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, options, options[0]);
             }
@@ -89,24 +87,20 @@ public class GameControlPanel extends JPanel {
                 for (BoardCell target : targets){
                     target.setTarget(false);
                 }
-                if (index != 0) {
-                    row = players.get(index-1).getRow();
-                    col = players.get(index-1).getCol();
-                    playa = players.get(index-1);
-                }
-                else{
-                    playa = players.get(players.size()-1);
-                    row = players.get(players.size()-1).getRow();
-                    col = players.get(players.size()-1).getCol();
-                }
+
+                    row = board.getWhoseTurn().getRow();
+                    col = board.getWhoseTurn().getCol();
+                    playa = board.getWhoseTurn();
+
+
                 board.calcTargets(board.getCell(row, col), getRoll());
                 targets = new ArrayList<>(board.getTargets());
                 if(playa.getClass().equals(Human.class)) {
-                    flag = false;
+                    board.setPlayerFlag(false);
                     for (BoardCell target : targets){
                         target.setTarget(true);
                     }
-                    board.updatePanel();
+                    board.repaint();
                 }
                 else{
                     ArrayList allCards = board.getAllCards();

@@ -45,7 +45,7 @@ public class BoardCell  {
             g.fillRect(x, y, size-2, size-2);
         }
        if (room && board.getRoom(this).getCenterCell().isTarget()){
-            board.getTargets().add(this); //Now the whole room can be clicked on and will be a target
+            board.getTargets().add(this); //Now the whole room can be clicked on and will be a target --> Issue when Player is not exactly in center messes up targeting
             g.setColor(new Color(0,255,127));
             g.fillRect(x,y,size,size);
         }
@@ -179,14 +179,13 @@ public class BoardCell  {
 
 
     //Is'ers
+    public boolean isRoom(){ return room;}
     public boolean isOccupied() { return occupied; }
     public boolean isTarget() { return target;}
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() { return roomLabel; }
     public boolean isRoomCenter() { return roomCenter; }
-    public boolean isRoomLabel() {
-        return roomLabel;
-    }
+    public boolean isRoomLabel() { return roomLabel; }
     //Setters
     public void addAdjacency(BoardCell cell) { adjList.add(cell); }
     public void setInitial(char initial) { this.initial = initial; }
