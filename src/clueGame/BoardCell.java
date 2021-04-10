@@ -45,10 +45,21 @@ public class BoardCell  {
             g.fillRect(x, y, size-2, size-2);
         }
        if (room && board.getRoom(this).getCenterCell().isTarget()){
+            board.getTargets().add(this); //Now the whole room can be clicked on and will be a target
             g.setColor(new Color(0,255,127));
             g.fillRect(x,y,size,size);
         }
     }
+    public boolean containsClick(int mouseX, int mouseY, int xOffset, int yOffset, int size){
+        int x = (col * size) + xOffset;
+        int y = (row * size) + yOffset;
+        Rectangle rect = new Rectangle(x,y,size,size);
+        if (rect.contains(new Point(mouseX, mouseY))){
+            return true;
+        }
+        return false;
+    }
+
 
     public void drawRoomName(Graphics2D g, int size, int xOffset, int yOffset) {
         int x = (col * size) + xOffset;

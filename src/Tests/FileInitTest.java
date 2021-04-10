@@ -116,7 +116,7 @@ public class FileInitTest {
         Assertions.assertFalse( cell.isDoorway()) ;
 
         // this is a label cell to test
-        cell = board.getCell(14, 13);
+        cell = board.getCell(15, 14);
         room = board.getRoom( cell ) ;
         Assertions.assertNotNull(room);
         Assertions.assertEquals( room.getName(), "Engine" ) ;
@@ -124,7 +124,7 @@ public class FileInitTest {
         Assertions.assertSame(room.getLabelCell(), cell);
 
         // this is a room center cell to test
-        cell = board.getCell(2, 14);
+        cell = board.getCell(2, 13);
         room = board.getRoom( cell ) ;
         Assertions.assertNotNull(room);
         Assertions.assertEquals( room.getName(), "Medical" ) ;
@@ -141,7 +141,7 @@ public class FileInitTest {
         Assertions.assertSame(room.getCenterCell(), cell);
 
         // this is a secret passage test
-        cell = board.getCell(29, 17);
+        cell = board.getCell(25, 14);
         room = board.getRoom( cell ) ;
         Assertions.assertNotNull(room);
         Assertions.assertEquals( room.getName(), "Ordnance" ) ;
@@ -149,7 +149,7 @@ public class FileInitTest {
         Assertions.assertSame(room.getSecretCell(), cell); //Added this to default testing so room knows of the secret passage as well
 
         // this is a secret passage test
-        cell = board.getCell(27, 6);
+        cell = board.getCell(27, 7);
         room = board.getRoom( cell ) ;
         Assertions.assertNotNull(room);
         Assertions.assertEquals( room.getName(), "Laboratory" ) ;

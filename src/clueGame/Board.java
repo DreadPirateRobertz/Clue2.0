@@ -2,6 +2,8 @@ package clueGame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -26,6 +28,8 @@ public class Board extends JPanel {
     }
     private static ArrayList<Card> theAnswer;
     private static ArrayList<Player> players;
+    private int index = 0;
+
 
 
     public static ArrayList<Player> getPlayers() {
@@ -42,6 +46,7 @@ public class Board extends JPanel {
         playerCards = new ArrayList<>();
         weaponCards = new ArrayList<>();
         allCards = new ArrayList<>();
+        addMouseListener(new whichTargetListener());
 
         try {
             loadSetupConfig();
@@ -572,6 +577,71 @@ public class Board extends JPanel {
         for (Player player : players) {
             player.draw((Graphics2D) g, size, xOffset, yOffset, roomOccupancyMap);
         }
+    }
+    private class whichTargetListener implements MouseListener{
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if(getWhoseTurn().getClass().equals(Human.class)) {
+                int size;
+                if (getHeight() < getWidth()) {
+                    size = getHeight() / num_cols;
+                } else {
+                    size = getWidth() / num_rows;
+                }
+                int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
+                int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
+                BoardCell whichTarget = null;
+                ArrayList<BoardCell> targets = new ArrayList<>(getTargets());
+                for (int i = 0; i < targets.size(); i++) {
+                    if (targets.get(i).containsClick(e.getX(), e.getY(), xOffset, yOffset, size)) {
+                        whichTarget = targets.get(i);
+                        break;
+                    }
+                }
+                if (whichTarget != null) {
+                    Player playa = getWhoseTurn();
+                    getCell(playa).setOccupied(false);
+                    playa.setRow(whichTarget.getRow());
+                    playa.setCol(whichTarget.getCol());
+                    for (BoardCell target : targets){
+                        target.setTarget(false);
+                    }
+
+                    repaint();
+                } else {
+                    Object[] theresOnlyOneAnswer = {"My Bad"};
+                    JOptionPane.showOptionDialog(null, "Invalid Target Selection",
+                            "This is Not the Way", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+                }
+            }
+        }
+        @Override
+        public void mousePressed(MouseEvent e) { }
+        @Override
+        public void mouseReleased(MouseEvent e) { }
+        @Override
+        public void mouseEntered(MouseEvent e) { }
+        @Override
+        public void mouseExited(MouseEvent e) { }
+    }
+
+    public Player setWhoseTurn(){
+        Player playa = players.get(index);
+        if(index == players.size() -1){
+            index = 0;
+        }
+        else{
+            index++;
+        }
+        return playa;
+    }
+
+    public Player getWhoseTurn(){
+        if(index == 0){
+            return players.get(players.size()-1);
+        }
+        return players.get(index-1);
     }
 
     public void updatePanel(){

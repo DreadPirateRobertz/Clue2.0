@@ -62,6 +62,7 @@ public class ClueGame extends JFrame {
         clueGame.add(gameControlPanel, BorderLayout.SOUTH);//Add the panels to the frame
         clueGame.add(gameCardsPanel, BorderLayout.EAST);
         clueGame.add(board, BorderLayout.CENTER);
+
         clueGame.setVisible(true);
     }
 }

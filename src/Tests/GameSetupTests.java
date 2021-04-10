@@ -40,7 +40,7 @@ public class GameSetupTests {
         assertEquals(Color.cyan, board.getPlayer("Prisoner Shifty Eyes").getColor());//Test for colors
         assertEquals(Color.green, board.getPlayer("Doctor Petunia").getColor());
         assertEquals(Color.red, board.getPlayer("Ensign Larry").getColor());
-        assertEquals(Color.blue, board.getPlayer("Commander Sassafras").getColor());
+        assertEquals(Color.pink, board.getPlayer("Commander Sassafras").getColor());
         assertEquals(Color.orange, board.getPlayer("Whipping Boy Todd").getColor());
         assertEquals(Color.magenta, board.getPlayer("Mad Scientist Mikey").getColor());
     }

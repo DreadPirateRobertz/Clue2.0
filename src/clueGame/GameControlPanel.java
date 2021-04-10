@@ -16,7 +16,8 @@ public class GameControlPanel extends JPanel {
     private static int index = 0;
     private ArrayList<Player> players = Board.getPlayers();
     private static int roll = 0;
-    Board board = Board.getInstance();
+    private Board board = Board.getInstance();
+    private Player whoseTurn = null;
 
 
     public GameControlPanel()  {
@@ -151,8 +152,9 @@ public class GameControlPanel extends JPanel {
 
     //Setters for updating all the fields
     public void setWhoseTurn(){
-        whoseTurnField.setText(players.get(index).getName());
-        whoseTurnField.setBackground(players.get(index).getColor());
+        Player playa = board.setWhoseTurn();
+        whoseTurnField.setText(playa.getName());
+        whoseTurnField.setBackground(playa.getColor());
         if(index == players.size()-1){
             index = 0; //Reset Index to First Player
         }
@@ -165,6 +167,10 @@ public class GameControlPanel extends JPanel {
     public int getRoll() {
         return roll;
     }
+//    public Player getWhoseTurn(){
+//        whoseTurn = players.get(index);
+//        return whoseTurn;
+//    }
 
     //Setters
     public void setGuess(String guess){ guessField.setText(guess); }
