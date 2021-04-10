@@ -76,24 +76,12 @@ public abstract class Player {
             g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
         }
     }
-
-
-
     //Setters
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
-    }
-
+    public void setRow(int row) { this.row = row; }
+    public void setCol(int col) { this.col = col; }
     public void updateHand(Card card){ playerHand.add(card); }
     public void updateSeenList(Card card){ seenList.add(card); }
-    public void setPlayerHand(ArrayList<Card> cards) {
-        this.playerHand = cards;
-    }
+    public void setPlayerHand(ArrayList<Card> cards) { this.playerHand = cards; }
     public void setPlayer_RowCol() { //Sets row/col logic for players since I put startLocation in as a String to ClueSetup
         row = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getRow();
         col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
@@ -102,22 +90,9 @@ public abstract class Player {
     public int getRow() { return row; }
     public int getCol() { return col; }
     public ArrayList<Card> getSeenList() { return seenList; }
-    public ArrayList<Card> getPlayerHand() {
-        return playerHand;
-    }
-    public String getName() {
-        return name;
-    }
-    public Color getColor() {
-        return color;
-    }
-    public String getStartLocation() {
-        return startLocation;
-    }
-
+    public ArrayList<Card> getPlayerHand() { return playerHand; }
+    public String getName() { return name; }
+    public Color getColor() { return color; }
+    public String getStartLocation() { return startLocation; }
     public abstract void doAccusation();
-
-
-
-
 }

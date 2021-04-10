@@ -557,13 +557,11 @@ public class Board extends JPanel {
                 if (grid[row][col].getSecretPassage() != '0') {
                     grid[row][col].drawSecretPassage((Graphics2D) g, size, xOffset, yOffset);
                 }
-
             }
-
         }
         Map<Room, ArrayList<Player>> roomOccupancyMap = new HashMap<>();
         for (Player player : players) {
-            if(getCell(player).isRoom()){ //This is setting up so you can click anywhere in a room...Made the whole Room a target and then player will draw itself in the center
+            if(getCell(player).isRoom()){ //This is setting up so you can click anywhere in a room...Made the whole Room a target and then Player will draw itself in the center
                 player.setRow(this.getRoom(this.getCell(player)).getCenterCell().getRow());
                 player.setCol(this.getRoom(this.getCell(player)).getCenterCell().getCol());
             }
@@ -584,7 +582,6 @@ public class Board extends JPanel {
         }
     }
     private class whichTargetListener implements MouseListener{
-
         @Override
         public void mouseClicked(MouseEvent e) {
             if(getWhoseTurn().getClass().equals(Human.class)) {
@@ -615,12 +612,10 @@ public class Board extends JPanel {
                     if(whichTarget.isRoomCenter()){
                         playa.createSuggestion(getRoom(whichTarget), allCards); //TODO: STUB
                     }
-                    else{
-//                        setWhoseTurn();
-                    }
                     playerFlag = true;
                     repaint();
-                } else {
+                }
+                else {
                     Object[] theresOnlyOneAnswer = {"My Bad"};
                     JOptionPane.showOptionDialog(null, "Invalid Target Selection",
                             "This is Not the Way", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
@@ -636,39 +631,13 @@ public class Board extends JPanel {
         @Override
         public void mouseExited(MouseEvent e) { }
     }
-
-    public Player setWhoseTurn(){
-        Player playa = players.get(index);
-        if(index == players.size() -1){
-            index = 0;
-        }
-        else{
-            index++;
-        }
-        return playa;
-    }
-
+    //Getters
     public Player getWhoseTurn(){
         if(index == 0){
             return players.get(players.size()-1);
         }
         return players.get(index-1);
     }
-
-    public void updatePanel(){
-        removeAll();;
-        repaint();
-    }
-
-    public boolean isPlayerFlag() {
-        return playerFlag;
-    }
-
-    public void setPlayerFlag(boolean playerFlag) {
-        this.playerFlag = playerFlag;
-    }
-
-    //Getters
     public ArrayList<Card> getAllCards() {
         return allCards;
     }
@@ -688,6 +657,7 @@ public class Board extends JPanel {
         return playerMap;
     }
     //Is'ers
+    public boolean isPlayerFlag() { return playerFlag; }
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
     public boolean isUnUsed(BoardCell cell){return getRoom(cell).isUnUsed(); }
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
@@ -716,8 +686,18 @@ public class Board extends JPanel {
         for (Player playa : playerMap.keySet()){
             playa.setPlayer_RowCol();
         }
-
     }
+    public Player setWhoseTurn(){
+        Player playa = players.get(index);
+        if(index == players.size() -1){
+            index = 0;
+        }
+        else{
+            index++;
+        }
+        return playa;
+    }
+    public void setPlayerFlag(boolean playerFlag) { this.playerFlag = playerFlag; }
     private void setRoom(Room room) { roomMap.put(room.getIdentifier(), room);}
     private void setNumRows(int rows) { num_rows = rows; }
     private void setNumCols(int cols) { num_cols = cols; }

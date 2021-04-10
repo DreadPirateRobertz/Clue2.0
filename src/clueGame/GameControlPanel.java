@@ -87,12 +87,9 @@ public class GameControlPanel extends JPanel {
                 for (BoardCell target : targets){
                     target.setTarget(false);
                 }
-
-                    row = board.getWhoseTurn().getRow();
-                    col = board.getWhoseTurn().getCol();
-                    playa = board.getWhoseTurn();
-
-
+                row = board.getWhoseTurn().getRow();
+                col = board.getWhoseTurn().getCol();
+                playa = board.getWhoseTurn();
                 board.calcTargets(board.getCell(row, col), getRoll());
                 targets = new ArrayList<>(board.getTargets());
                 if(playa.getClass().equals(Human.class)) {
@@ -113,7 +110,7 @@ public class GameControlPanel extends JPanel {
                     if(board.getCell(playa).isRoomCenter()) {
                         Suggestion s = playa.createSuggestion(board.getRoom(board.getCell(playa)), allCards);
                     }
-                    board.updatePanel();
+                    board.repaint();
                 }
             }
             updateDisplay();
@@ -144,7 +141,9 @@ public class GameControlPanel extends JPanel {
         guessResultField.getText();
     }
 
-    //Setters for updating all the fields
+    //Getters
+    public int getRoll() { return roll; }
+    //Setters
     public void setWhoseTurn(){
         Player playa = board.setWhoseTurn();
         whoseTurnField.setText(playa.getName());
@@ -155,18 +154,7 @@ public class GameControlPanel extends JPanel {
         else{
             index++;
         }
-
     }
-    //Getters
-    public int getRoll() {
-        return roll;
-    }
-//    public Player getWhoseTurn(){
-//        whoseTurn = players.get(index);
-//        return whoseTurn;
-//    }
-
-    //Setters
     public void setGuess(String guess){ guessField.setText(guess); }
     public void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
     public int setDie(){
