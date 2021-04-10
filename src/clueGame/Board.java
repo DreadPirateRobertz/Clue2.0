@@ -27,6 +27,7 @@ public class Board extends JPanel {
     private static ArrayList<Card> theAnswer;
     private static ArrayList<Player> players;
 
+
     public static ArrayList<Player> getPlayers() {
         return players;
     }
@@ -446,7 +447,7 @@ public class Board extends JPanel {
         Set<BoardCell> adjacentCells = thisCell.getAdjList();
 
         for (BoardCell adjCell : adjacentCells) {
-            if (visited.contains(adjCell) || (adjCell.getOccupied() && !adjCell.isRoomCenter())) {
+            if (visited.contains(adjCell) || (adjCell.isOccupied() && !adjCell.isRoomCenter())) {
                 continue;//Critical to not do a break right here since you want it to keep cycling through the adjacencies
             }
             visited.add(adjCell);//Add to visited list
@@ -534,22 +535,12 @@ public class Board extends JPanel {
         int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
         int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
 
-        for (Player player : players) {
-            if(player.getClass().equals(Human.class)) {
-                for (BoardCell target : targets) {
-                    target.setTarget(true);
-                }
-                break;
-            }
-        }
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 grid[row][col].drawCell((Graphics2D) g, size, xOffset, yOffset);
             }
         }
-        for (BoardCell target : targets){
-            target.setTarget(false);
-        }
+
         for (int row = 0; row < num_rows; row++) {
             for (int col = 0; col < num_cols; col++) {
                 if (grid[row][col].isDoorway()) {

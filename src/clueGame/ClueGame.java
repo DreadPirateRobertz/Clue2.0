@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 public class ClueGame extends JFrame {
     private static final int PLAYERS = 6;
@@ -44,22 +45,23 @@ public class ClueGame extends JFrame {
         board.initialize();
         ArrayList<Player> players = board.getPlayers();
         Player human = players.get(0);
-
         GameControlPanel gameControlPanel = new GameControlPanel();
         GameCardsPanel gameCardsPanel = new GameCardsPanel(human.getPlayerHand(), human.getSeenList());
-        int x = gameControlPanel.getRoll(); //Testing
-        board.calcTargets(board.getCell(human.getRow(), human.getCol()), gameControlPanel.getRoll());
-
-
+        board.calcTargets(board.getCell(human.getRow(), human.getCol()), gameControlPanel.getRoll()); //Calculating Targets for the Human Player
+        Set<BoardCell> targets = board.getTargets();
         Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
         JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
                 "Welcome to Clue", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+        for (BoardCell target : targets){
+            target.setTarget(true);
+        }
+
 
 
 
         clueGame.add(gameControlPanel, BorderLayout.SOUTH);
         clueGame.add(gameCardsPanel, BorderLayout.EAST);
-        clueGame.add(Board.getInstance(), BorderLayout.CENTER);
+        clueGame.add(board, BorderLayout.CENTER);
         clueGame.setVisible(true);
     }
 }

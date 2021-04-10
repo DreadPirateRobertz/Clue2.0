@@ -12,9 +12,9 @@ public class GameControlPanel extends JPanel {
     private JTextField guessResultField;
     private JTextField whoseTurnField;
     private JTextField dieNumber;
-    private boolean flag = true;
+    private boolean flag = true;//TODO: Change back to false
     private static int index = 0;
-    private static ArrayList<Player> players = Board.getPlayers();
+    private ArrayList<Player> players = Board.getPlayers();
     private static int roll = 0;
     Board board = Board.getInstance();
 
@@ -75,15 +75,19 @@ public class GameControlPanel extends JPanel {
         JButton button = new JButton("NEXT");
         button.addActionListener(e -> {
             int row, col;
-            Player playa;
+            Player playa = null;
             Object[] options = {"I'll never do this again..."};
             if(!flag){
                 JOptionPane.showOptionDialog(null, "You Haven't Taken Your Own Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, options, options[0]);
             }
             else{
+                ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
                 setWhoseTurn();
                 roll = setDie();
+                for (BoardCell target : targets){
+                    target.setTarget(false);
+                }
                 if (index != 0) {
                     row = players.get(index-1).getRow();
                     col = players.get(index-1).getCol();
@@ -95,11 +99,24 @@ public class GameControlPanel extends JPanel {
                     col = players.get(players.size()-1).getCol();
                 }
                 board.calcTargets(board.getCell(row, col), getRoll());
+                targets = new ArrayList<>(board.getTargets());
+                if(playa.getClass().equals(Human.class)) {
+                    flag = false;
+                    for (BoardCell target : targets){
+                        target.setTarget(true);
+                    }
+                    board.updatePanel();
+                }
+                else{
+                    playa.doAccusation();
+                    BoardCell target = playa.selectTargets(targets);
+                    board.getCell(playa.getRow(), playa.getCol()).setOccupied(false);
+                    playa.setRow(target.getRow());
+                    playa.setCol(target.getCol());
+                    board.updatePanel();
+                }
             }
-
-                updateDisplay();
-                board.updatePanel();
-
+            updateDisplay();
         });
         return button;
     }

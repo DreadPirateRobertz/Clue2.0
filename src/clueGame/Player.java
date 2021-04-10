@@ -1,7 +1,6 @@
 package clueGame;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -49,15 +48,43 @@ public abstract class Player {
     }
 
     public void draw(Graphics2D g, int size, int xOffset, int yOffset){
-        BoardCell startingCell = Board.getInstance().getRoom(this.getStartLocation().charAt(0)).getCenterCell();
+        Board board = Board.getInstance();
         g.setColor(this.getColor());
-        g.fillRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size, size, size, size);
-        g.setColor(Color.WHITE);
-        g.drawRoundRect(startingCell.getCol()*size + xOffset, startingCell.getRow()*size + yOffset, size-1, size-1, size-1, size-1);
-    }
+//        boolean flag = board.getCell(this.getRow(),this.getCol()).isOccupied();
+//        if(flag){
+//            g.fillRoundRect(this.getCol()*size + xOffset+(size/2), this.getRow()*size + yOffset+(size/2), size, size, size, size);
+//            g.setColor(Color.WHITE);
+//            g.drawRoundRect(this.getCol()*size + xOffset+(size/2), this.getRow()*size + yOffset+(size/2), size-1, size-1, size-1, size-1);
+//        }
+//        else {
+//        if(this.getClass().equals(Human.class)){
+//            ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
+//            for (BoardCell target : targets){
+//                target.setTarget(true);
+//                target.drawCell(g, size, xOffset, yOffset);
+//            }
+//            for (BoardCell target : targets){
+//                target.setTarget(false);
+//            }
+//        }
+            board.getCell(this.getRow(), this.getCol()).setOccupied(true);
+            g.fillRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size, size, size, size);
+            g.setColor(Color.WHITE);
+            g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
+        }
+//    }
 
 
     //Setters
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+
     public void updateHand(Card card){ playerHand.add(card); }
     public void updateSeenList(Card card){ seenList.add(card); }
     public void setPlayerHand(ArrayList<Card> cards) {
@@ -83,5 +110,10 @@ public abstract class Player {
     public String getStartLocation() {
         return startLocation;
     }
+
+    public abstract void doAccusation();
+
+
+
 
 }

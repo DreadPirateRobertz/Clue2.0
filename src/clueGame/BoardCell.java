@@ -31,20 +31,20 @@ public class BoardCell  {
             g.fillRect(x,y,size, size);
         }
         else if (this.walkWay){
-            g.setColor(Color.LIGHT_GRAY);
+            g.setColor(new Color(220,220,220));
             g.fillRect(x,y,size,size);
             g.setColor(Color.BLACK);
             g.drawRect(x,y,size-1,size-1);
         }
         else if (this.room){
-            g.setColor(Color.BLUE);
+            g.setColor(new Color(25,25,112));
             g.fillRect(x,y,size,size);
         }
        if (target && !room){
             g.setColor(new Color(0,255,127));
             g.fillRect(x, y, size-2, size-2);
         }
-        else if (room && board.getRoom(this).getCenterCell().isTarget()){
+       if (room && board.getRoom(this).getCenterCell().isTarget()){
             g.setColor(new Color(0,255,127));
             g.fillRect(x,y,size,size);
         }
@@ -163,11 +163,12 @@ public class BoardCell  {
     public char getInitial() { return initial; }
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }
-    public boolean getOccupied() { return occupied; }
+
 
 
 
     //Is'ers
+    public boolean isOccupied() { return occupied; }
     public boolean isTarget() { return target;}
     public boolean isDoorway() { return doorway; }
     public boolean isLabel() { return roomLabel; }

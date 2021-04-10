@@ -72,4 +72,12 @@ public class Computer extends Player {
             return targets.get(randomize.nextInt(targets.size()));
         }
     }
+
+    @Override
+    public void doAccusation() {
+
+    }
+
+
+
 }

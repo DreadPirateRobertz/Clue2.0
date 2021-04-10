@@ -306,7 +306,7 @@ public class BoardAdjTargetTest {
         for (int row = 0; row < board.getNumRows(); row++)
             for (int col = 0; col < board.getNumColumns(); col++) {
                 BoardCell cell = board.getCell(row, col);
-                if (cell.getOccupied()) {
+                if (cell.isOccupied()) {
                     player++;
                     players.add(cell);
                 }
