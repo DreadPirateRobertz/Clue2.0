@@ -30,6 +30,8 @@ public class Board extends JPanel {
     private static ArrayList<Player> players;
     private int index = 0;
     private boolean playerFlag = false;
+    private Color accuserColor;
+    private String accuserPlayer;
 
 
 
@@ -243,6 +245,7 @@ public class Board extends JPanel {
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
                 Player player = keys.get(randomize.nextInt(keys.size()));
+//                card.setColor(player.getColor());
                 player.updateHand(card); //Reverse link will also update playerMap appropriately
                 workingDeck.remove(card);
                 keys.remove(player);
@@ -477,11 +480,16 @@ public class Board extends JPanel {
             }
             Card card = player.disproveSuggestion(suggestion);
             if (card != null){
+                accuserColor = player.getColor();
+                accuserPlayer = player.getName();
                 accuser.updateSeenList(card);
-                card.setColor(player.getColor());
+                if(accuser.getClass().equals(Human.class)) {//I want this to only start displaying colors in guess fields when Human already knows color or who it's from
+                    card.setColor(player.getColor());
+                }
                 return card;
             }
         }
+        accuser.setAccusationFlag();
         return null;
     }
 
@@ -653,9 +661,9 @@ public class Board extends JPanel {
     public static Card getTheAnswer_Person(){ return theAnswer.get(0); }
     public static Card getTheAnswer_Room(){ return theAnswer.get(1); }
     public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
-    public Map<Player, ArrayList<Card>> getPlayerMap() {
-        return playerMap;
-    }
+    public Map<Player, ArrayList<Card>> getPlayerMap() { return playerMap; }
+    public Color getAccuserColor(){return accuserColor;}
+    public String getAccuserPlayer(){return accuserPlayer;}
     //Is'ers
     public boolean isPlayerFlag() { return playerFlag; }
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }

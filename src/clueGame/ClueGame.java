@@ -43,8 +43,7 @@ public class ClueGame extends JFrame {
 
         Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
         JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
-                "Welcome to Clue", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
-
+                "Welcome to Clue...in SPACE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
 
         board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
         board.initialize();

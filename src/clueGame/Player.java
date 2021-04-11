@@ -13,6 +13,8 @@ public abstract class Player {
     protected String startLocation;
     protected ArrayList<Card> playerHand, seenList;
     protected int row, col;
+    protected boolean accusationFlag = false;
+    protected Suggestion suggestion;
 
     public Player(String name, Color color, String startLocation) {
         this.name = name;
@@ -23,6 +25,10 @@ public abstract class Player {
     }
     public abstract Suggestion createSuggestion(Room room, ArrayList<Card> allCards);
     public abstract BoardCell selectTargets(ArrayList<BoardCell> targets);
+
+    public void setAccusationFlag(){
+        accusationFlag = true;
+    }
 
     public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> disproveList = new ArrayList<>();
@@ -77,6 +83,9 @@ public abstract class Player {
         }
     }
     //Setters
+    public void setSuggestion(Suggestion s){
+        suggestion = s;
+    }
     public void setRow(int row) { this.row = row; }
     public void setCol(int col) { this.col = col; }
     public void updateHand(Card card){ playerHand.add(card); }
@@ -86,7 +95,10 @@ public abstract class Player {
         row = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getRow();
         col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
     }
+    //Isers
+    public boolean isAccusationFlag() { return accusationFlag; }
     //Getters
+    public Suggestion getSuggestion() { return suggestion; }
     public int getRow() { return row; }
     public int getCol() { return col; }
     public ArrayList<Card> getSeenList() { return seenList; }
@@ -94,5 +106,5 @@ public abstract class Player {
     public String getName() { return name; }
     public Color getColor() { return color; }
     public String getStartLocation() { return startLocation; }
-    public abstract void doAccusation();
+    public abstract boolean doAccusation(Suggestion s);
 }

@@ -74,8 +74,8 @@ public class Computer extends Player {
     }
 
     @Override
-    public void doAccusation() {
-
+    public boolean doAccusation(Suggestion s) {
+        return Board.getInstance().checkAccusation(s);
     }
 
 

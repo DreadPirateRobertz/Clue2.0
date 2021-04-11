@@ -20,8 +20,8 @@ public class Human extends Player {
     }
 
     @Override
-    public void doAccusation() {
-
+    public boolean doAccusation(Suggestion s) {
+    return true;
     }
 
 
