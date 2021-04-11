@@ -13,7 +13,7 @@ public abstract class Player {
     protected String startLocation;
     protected ArrayList<Card> playerHand, seenList;
     protected int row, col;
-    protected boolean accusationFlag = false;
+    protected boolean accusationFlag = false, stayinRoomFlag = false;
     protected Suggestion suggestion;
 
     public Player(String name, Color color, String startLocation) {
@@ -82,6 +82,15 @@ public abstract class Player {
             g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
         }
     }
+
+    public void setStayInRoomFlag(boolean stayinRoomFlag) {
+        this.stayinRoomFlag = stayinRoomFlag;
+    }
+
+    public boolean isStayInRoomFlag() {
+        return stayinRoomFlag;
+    }
+
     //Setters
     public void setSuggestion(Suggestion s){
         suggestion = s;

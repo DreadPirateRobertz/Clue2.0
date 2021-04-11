@@ -5,7 +5,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 public class GameControlPanel extends JPanel {
     private JTextField guessPersonField, guessRoomField, guessWeaponField;
@@ -87,10 +89,12 @@ public class GameControlPanel extends JPanel {
             guessResultField.setForeground(Color.BLACK);
             int row, col;
             Player playa = null;
-            Object[] options = {"I'll never do this again..."};
+            Object[] option = {"I'll never do this again..."};
+            Object[] optionWinner = {"I Will Bask In The Glory"};
+            Object[] optionLoser = {"I Accept My Fate"};
             if(!board.isPlayerFlag()){
                 JOptionPane.showOptionDialog(null, "You Haven't Taken Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
-                        JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+                        JOptionPane.ERROR_MESSAGE, null, option, option[0]);
             }
             else{
                 ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
@@ -99,11 +103,15 @@ public class GameControlPanel extends JPanel {
                 for (BoardCell target : targets){
                     target.setTarget(false);
                 }
+                repaint();
                 row = board.getWhoseTurn().getRow();
                 col = board.getWhoseTurn().getCol();
                 playa = board.getWhoseTurn();
                 board.calcTargets(board.getCell(row, col), getRoll());
                 targets = new ArrayList<>(board.getTargets());
+                if (playa.isStayInRoomFlag()){
+                    targets.add(board.getCell(playa));
+                }
                 if(playa.getClass().equals(Human.class)) {
                     board.setPlayerFlag(false);
                     for (BoardCell target : targets){
@@ -111,27 +119,40 @@ public class GameControlPanel extends JPanel {
                     }
                     board.repaint();
                 }
-                else{
+                else{//If Player is Computer do all this
+
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
                         if(playa.doAccusation(playa.getSuggestion())){
-                            JOptionPane.showMessageDialog(null, playa.getName() + " you've shown them all how it's done, YOU WON!");
+                            JOptionPane.showOptionDialog(null, "        " + playa.getName() + "\nYou are Indeed Wise & Perceptive",
+                                    "W I N N E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
+                            ;
                             guessResultField.setBackground(playa.getColor());
                             setGuessResult("W I N N E R!!!");
                             setPersonGuessField(board.getTheAnswer_Person());
                             setRoomGuessField(board.getTheAnswer_Room());
                             setWeaponGuessField(board.getTheAnswer_Weapon());
-                            System.out.println(board.getTheAnswer_Person().getCardName());
+                            System.out.println(board.getTheAnswer_Person().getCardName());//Testing Statements
                             System.out.println(board.getTheAnswer_Room().getCardName());
                             System.out.println(board.getTheAnswer_Weapon().getCardName());
                             updateDisplay();
                             return;
                         }
                         else{
-                            JOptionPane.showMessageDialog(null, "You have chosen rather poorly " + playa.getName() + " ,you have lost!");
+                            JOptionPane.showOptionDialog(null, "        " + playa.getName() + "\nYour Poor Choices Lead to Failure",
+                                    "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
+
                             guessResultField.setBackground(playa.getColor());
                             setGuessResult("L O S E R!!!");
                             players.remove(playa);
+                            if(index != 0) {
+                                index--;
+                                board.setIndex(index);
+                            }
+                            else{
+                                index++;
+                                board.setIndex(index);
+                            }
                             board.repaint();
                             updateDisplay();
                             return;
@@ -145,8 +166,15 @@ public class GameControlPanel extends JPanel {
                         Suggestion s = playa.createSuggestion(board.getRoom(board.getCell(playa)), allCards);
                         playa.setSuggestion(s);
                         Player suggestedPlaya = board.getPlayer(s.getPersonCard().getCardName());
+                        int lastPlayerRow = suggestedPlaya.getRow();
+                        int lastPlayerCol = suggestedPlaya.getCol();
                         suggestedPlaya.setRow(playa.getRow());
-                        suggestedPlaya.setCol(playa.getCol());
+                        suggestedPlaya.setCol(playa.getCol());//Calls the suggestedPlaya to the Room
+                        if(!(lastPlayerRow == suggestedPlaya.getRow()) && !(lastPlayerCol == suggestedPlaya.getCol())){
+                            suggestedPlaya.setStayInRoomFlag(true);
+                        }
+
+                        System.out.println(suggestedPlaya.getName());
                         setPersonGuessField(s.getPersonCard());
                         setRoomGuessField(s.getRoomCard());
                         setWeaponGuessField(s.getWeaponCard());
@@ -166,6 +194,9 @@ public class GameControlPanel extends JPanel {
                 }
             }
             updateDisplay();
+            if(playa != null) {
+                playa.setStayInRoomFlag(false);
+            }
         });
         return button;
     }
@@ -215,7 +246,7 @@ public class GameControlPanel extends JPanel {
     //Setters
     public void setWhoseTurn(){
         Player playa = board.setWhoseTurn();
-        whoseTurnField.setText(playa.getName());
+        whoseTurnField.setText(playa.getName().toUpperCase(Locale.ROOT));
         whoseTurnField.setHorizontalAlignment(JLabel.CENTER);
         whoseTurnField.setFont(new Font("Arial Bold", Font.BOLD, 12));
         whoseTurnField.setBackground(playa.getColor());

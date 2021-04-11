@@ -5,6 +5,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 public class GameCardsPanel extends JPanel {
@@ -175,8 +176,9 @@ public class GameCardsPanel extends JPanel {
     //Setters
     private void setFieldsSeen(JPanel panel, ArrayList<Card> seen) {
         for (Card card : seen) {
-            JTextField field = new JTextField(card.getCardName());
+            JTextField field = new JTextField(card.getCardName().toUpperCase(Locale.ROOT));
             field.setBackground(card.getColor());//This will be set in handleSuggestion() method of Board
+            field.setFont(new Font("Arial Bold", Font.BOLD, 12));
             field.setHorizontalAlignment(JTextField.CENTER);
             field.setForeground(Color.WHITE);
             field.setEditable(false);
@@ -185,7 +187,7 @@ public class GameCardsPanel extends JPanel {
     }
     private void setFieldsInHand(JPanel panel, ArrayList<Card> inHand) {
         for (Card card : inHand) {
-            JTextField field = new JTextField(card.getCardName());
+            JTextField field = new JTextField(card.getCardName().toUpperCase(Locale.ROOT));
             Map<Player, ArrayList<Card>> playerMap = Board.getInstance().getPlayerMap();
             for (Player player : playerMap.keySet()){
                 if(player.getClass().equals(Human.class)){
@@ -193,7 +195,8 @@ public class GameCardsPanel extends JPanel {
                     break;//This way it's not hard coded in and can be dynamic if a new ClueSetup is implemented
                 }
             }
-            field.setForeground(Color.MAGENTA);
+            field.setForeground(Color.BLACK);
+            field.setFont(new Font("Arial Bold", Font.BOLD, 12));
             field.setHorizontalAlignment(JTextField.CENTER);
             field.setEditable(false);
             panel.add(field);
@@ -202,8 +205,9 @@ public class GameCardsPanel extends JPanel {
 
     private void setNone(JPanel panel, ArrayList<Card> seen) {
         if (seen.size() == 0) {
-            JTextField field = new JTextField("None");
+            JTextField field = new JTextField("None".toUpperCase(Locale.ROOT));
             field.setForeground(Color.WHITE);
+            field.setFont(new Font("Arial Bold", Font.BOLD, 12));
             field.setHorizontalAlignment(JTextField.CENTER);
             field.setBackground(Color.BLACK);
             field.setEditable(false);
