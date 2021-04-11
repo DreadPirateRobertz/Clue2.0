@@ -84,6 +84,7 @@ public class GameControlPanel extends JPanel {
             guessWeaponField.setText("");
             guessPersonField.setBackground(Color.WHITE);
             guessResultField.setBackground(Color.WHITE);
+            guessResultField.setForeground(Color.BLACK);
             int row, col;
             Player playa = null;
             Object[] options = {"I'll never do this again..."};
@@ -120,14 +121,20 @@ public class GameControlPanel extends JPanel {
                             setPersonGuessField(board.getTheAnswer_Person());
                             setRoomGuessField(board.getTheAnswer_Room());
                             setWeaponGuessField(board.getTheAnswer_Weapon());
+                            System.out.println(board.getTheAnswer_Person().getCardName());
+                            System.out.println(board.getTheAnswer_Room().getCardName());
+                            System.out.println(board.getTheAnswer_Weapon().getCardName());
+                            updateDisplay();
+                            return;
                         }
                         else{
-                            JOptionPane.showMessageDialog(null, "You have chosen rather poorly" + playa.getName() + " ,you have lost!");
+                            JOptionPane.showMessageDialog(null, "You have chosen rather poorly " + playa.getName() + " ,you have lost!");
                             guessResultField.setBackground(playa.getColor());
                             setGuessResult("L O S E R!!!");
                             players.remove(playa);
-                            setWhoseTurn();
                             board.repaint();
+                            updateDisplay();
+                            return;
                         }
                     }
                     BoardCell target = playa.selectTargets(targets);
@@ -149,9 +156,10 @@ public class GameControlPanel extends JPanel {
                             setGuessResult("This Guess Has Been Disproven by " + board.getAccuserPlayer());
                         }
                         else{
-                            setBackground(Color.BLACK);
-                            setForeground(Color.RED);
-                            setGuessResult("U N A B L E  T O  D I S P R O V E...?" + board.getAccuserPlayer());
+                            guessResultField.setBackground(Color.BLACK);
+                            guessResultField.setForeground(Color.RED);
+                            setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+
                         }
                     }
                     board.repaint();
@@ -193,12 +201,13 @@ public class GameControlPanel extends JPanel {
         return panel;
     }
     public void updateDisplay(){
-        repaint();
+
         whoseTurnField.getText();
         guessPersonField.getText();
         guessRoomField.getText();
         guessWeaponField.getText();
         guessResultField.getText();
+        repaint();
     }
 
     //Getters
