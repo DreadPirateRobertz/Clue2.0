@@ -21,6 +21,14 @@ public class GameControlPanel extends JPanel {
     private Suggestion suggestion;
     private ImageIcon dice = null;
     private JLabel dieRoll = null;
+    ImageIcon[] diceIcons = {
+            new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
+            new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
+            new ImageIcon(new ImageIcon("data/dice3.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
+            new ImageIcon(new ImageIcon("data/dice4.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
+            new ImageIcon(new ImageIcon("data/dice5.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
+            new ImageIcon(new ImageIcon("data/dice6.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT))
+    };
 
 
     public GameControlPanel()  {
@@ -67,34 +75,28 @@ public class GameControlPanel extends JPanel {
     private JPanel rollBoxPanel(){
         JPanel panel = new JPanel();
         switch (board.getDie()){
-            case 1 -> dice = new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-            case 2 -> dice = new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-            case 3 -> dice = new ImageIcon(new ImageIcon("data/dice3.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-            case 4 -> dice = new ImageIcon(new ImageIcon("data/dice4.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-            case 5 -> dice = new ImageIcon(new ImageIcon("data/dice5.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-            case 6 -> dice = new ImageIcon(new ImageIcon("data/dice6.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 1 -> dice = diceIcons[0];
+            case 2 -> dice = diceIcons[1];
+            case 3 -> dice = diceIcons[2];
+            case 4 -> dice = diceIcons[3];
+            case 5 -> dice = diceIcons[4];
+            case 6 -> dice = diceIcons[5];
         }
-
         dieRoll = new JLabel(dice);
         panel.add(dieRoll);
         return panel;
     }
-
-
-
 public void updateDice(){
     switch (board.getDie()){
-        case 1 -> dice = new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-        case 2 -> dice = new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-        case 3 -> dice = new ImageIcon(new ImageIcon("data/dice3.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-        case 4 -> dice = new ImageIcon(new ImageIcon("data/dice4.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-        case 5 -> dice = new ImageIcon(new ImageIcon("data/dice5.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
-        case 6 -> dice = new ImageIcon(new ImageIcon("data/dice6.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 1 -> dice = diceIcons[0];
+        case 2 -> dice = diceIcons[1];
+        case 3 -> dice = diceIcons[2];
+        case 4 -> dice = diceIcons[3];
+        case 5 -> dice = diceIcons[4];
+        case 6 -> dice = diceIcons[5];
     }
     dieRoll.setIcon(dice);
-
 }
-
 
 
     private JButton accuseButton(){
@@ -117,8 +119,8 @@ public void updateDice(){
             int row, col;
             Player playa = null;
             Object[] option = {"I'll never do this again..."};
-            Object[] optionWinner = {"I Will Bask In The Glory"};
-            Object[] optionLoser = {"I Accept My Fate"};
+            Object[] optionWinner = {"G A M E   O V E R"};
+            Object[] optionLoser = {"Another One Down"};
             if(!board.isPlayerFlag()){
                 JOptionPane.showOptionDialog(null, "You Haven't Taken Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, option, option[0]);
@@ -152,8 +154,8 @@ public void updateDice(){
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
                         if(playa.doAccusation(playa.getSuggestion())){
-                            JOptionPane.showOptionDialog(null, "        " + playa.getName() + "\nYou are Indeed Wise & Perceptive",
-                                    "W I N N E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
+                            JOptionPane.showOptionDialog(null,  playa.getName() + " has WON\n   You've Lost to a Machine",
+                                    "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
                             ;
                             guessResultField.setBackground(playa.getColor());
                             setGuessResult("W I N N E R!!!");
@@ -167,7 +169,7 @@ public void updateDice(){
                             return;
                         }
                         else{
-                            JOptionPane.showOptionDialog(null, "        " + playa.getName() + "\nYour Poor Choices Lead to Failure",
+                            JOptionPane.showOptionDialog(null, "         " + playa.getName() + "\nYour Poor Choices Lead to Failure",
                                     "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
                             guessResultField.setBackground(playa.getColor());
@@ -202,6 +204,7 @@ public void updateDice(){
                         int lastPlayerRow = suggestedPlaya.getRow();
                         int lastPlayerCol = suggestedPlaya.getCol();
                         if (suggestedPlaya != null) {//If a player is removed as a LOSER then you don't want to do this
+                            board.getCell(suggestedPlaya).setOccupied(false); //Critical had this missing for a while and couldn't figure out he BUG :)
                             suggestedPlaya.setRow(playa.getRow());
                             suggestedPlaya.setCol(playa.getCol());//Calls the suggestedPlaya to the Room
                         }

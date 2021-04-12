@@ -604,6 +604,7 @@ public class Board extends JPanel {
                 int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
                 int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
                 BoardCell whichTarget = null;
+
                 ArrayList<BoardCell> targets = new ArrayList<>(getTargets());
                 for (int i = 0; i < targets.size(); i++) {
                     if (targets.get(i).containsClick(e.getX(), e.getY(), xOffset, yOffset, size)) {
