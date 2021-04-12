@@ -32,7 +32,7 @@ public class Board extends JPanel {
     private boolean playerFlag = false;
     private Color accuserColor;
     private String accuserPlayer;
-
+    private int die = 0;
 
 
     public static ArrayList<Player> getPlayers() {
@@ -599,6 +599,8 @@ public class Board extends JPanel {
                 } else {
                     size = getWidth() / num_rows;
                 }
+                Player playa = getWhoseTurn();
+                getCell(playa).setOccupied(false);
                 int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
                 int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
                 BoardCell whichTarget = null;
@@ -610,8 +612,6 @@ public class Board extends JPanel {
                     }
                 }
                 if (whichTarget != null) {
-                    Player playa = getWhoseTurn();
-                    getCell(playa).setOccupied(false);
                     playa.setRow(whichTarget.getRow());
                     playa.setCol(whichTarget.getCol());
                     for (BoardCell target : targets){
@@ -656,6 +656,17 @@ public class Board extends JPanel {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+    public void setDie(){
+        Random randomize = new Random();
+        die = randomize.nextInt(6)+1;
+    }
+    public int getDie(){
+        return die;
+    }
+
+    public BoardCell[][] getGrid() {
+        return grid;
     }
 
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }

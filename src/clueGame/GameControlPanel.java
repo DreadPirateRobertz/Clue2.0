@@ -19,6 +19,8 @@ public class GameControlPanel extends JPanel {
     private static int roll = 0;
     private Board board = Board.getInstance();
     private Suggestion suggestion;
+    private ImageIcon dice = null;
+    private JLabel dieRoll = null;
 
 
     public GameControlPanel()  {
@@ -29,7 +31,8 @@ public class GameControlPanel extends JPanel {
         whoseTurnField = new JTextField(10);
         dieNumber = new JTextField(3);
         setLayout(new GridLayout(2, 0));
-        roll = setDie();
+        board.setDie();
+        roll = board.getDie();
         setWhoseTurn();
         updateDisplay();
         createLayout();
@@ -63,12 +66,36 @@ public class GameControlPanel extends JPanel {
 
     private JPanel rollBoxPanel(){
         JPanel panel = new JPanel();
-        JLabel roll = new JLabel("Roll:");
-        panel.add(roll);
-        dieNumber.setEditable(false);
-        panel.add(dieNumber);
+        switch (board.getDie()){
+            case 1 -> dice = new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 2 -> dice = new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 3 -> dice = new ImageIcon(new ImageIcon("data/dice3.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 4 -> dice = new ImageIcon(new ImageIcon("data/dice4.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 5 -> dice = new ImageIcon(new ImageIcon("data/dice5.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            case 6 -> dice = new ImageIcon(new ImageIcon("data/dice6.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        }
+
+        dieRoll = new JLabel(dice);
+        panel.add(dieRoll);
         return panel;
     }
+
+
+
+public void updateDice(){
+    switch (board.getDie()){
+        case 1 -> dice = new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 2 -> dice = new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 3 -> dice = new ImageIcon(new ImageIcon("data/dice3.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 4 -> dice = new ImageIcon(new ImageIcon("data/dice4.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 5 -> dice = new ImageIcon(new ImageIcon("data/dice5.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+        case 6 -> dice = new ImageIcon(new ImageIcon("data/dice6.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+    }
+    dieRoll.setIcon(dice);
+
+}
+
+
 
     private JButton accuseButton(){
         JButton button = new JButton("J'Accuse");
@@ -97,16 +124,17 @@ public class GameControlPanel extends JPanel {
                         JOptionPane.ERROR_MESSAGE, null, option, option[0]);
             }
             else{
+
                 ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
+                playa = board.getWhoseTurn();
                 setWhoseTurn();
-                roll = setDie();
-                for (BoardCell target : targets){
-                    target.setTarget(false);
-                }
-                repaint();
+                board.setDie();
+                updateDice();
+                roll = board.getDie();
+                playa = board.getWhoseTurn();
                 row = board.getWhoseTurn().getRow();
                 col = board.getWhoseTurn().getCol();
-                playa = board.getWhoseTurn();
+
                 board.calcTargets(board.getCell(row, col), getRoll());
                 targets = new ArrayList<>(board.getTargets());
                 if (playa.isStayInRoomFlag()){
@@ -143,7 +171,12 @@ public class GameControlPanel extends JPanel {
                                     "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
                             guessResultField.setBackground(playa.getColor());
+                            Suggestion s = playa.getSuggestion();
+                            setPersonGuessField(s.getPersonCard());
+                            setRoomGuessField(s.getRoomCard());
+                            setWeaponGuessField(s.getWeaponCard());
                             setGuessResult("L O S E R!!!");
+                            board.getCell(playa).setOccupied(false);
                             players.remove(playa);
                             if(index != 0) {
                                 index--;
@@ -168,13 +201,15 @@ public class GameControlPanel extends JPanel {
                         Player suggestedPlaya = board.getPlayer(s.getPersonCard().getCardName());
                         int lastPlayerRow = suggestedPlaya.getRow();
                         int lastPlayerCol = suggestedPlaya.getCol();
-                        suggestedPlaya.setRow(playa.getRow());
-                        suggestedPlaya.setCol(playa.getCol());//Calls the suggestedPlaya to the Room
+                        if (suggestedPlaya != null) {//If a player is removed as a LOSER then you don't want to do this
+                            suggestedPlaya.setRow(playa.getRow());
+                            suggestedPlaya.setCol(playa.getCol());//Calls the suggestedPlaya to the Room
+                        }
                         if(!(lastPlayerRow == suggestedPlaya.getRow()) && !(lastPlayerCol == suggestedPlaya.getCol())){
                             suggestedPlaya.setStayInRoomFlag(true);
                         }
 
-                        System.out.println(suggestedPlaya.getName());
+                        System.out.println(suggestedPlaya.getName());//Testing who's called
                         setPersonGuessField(s.getPersonCard());
                         setRoomGuessField(s.getRoomCard());
                         setWeaponGuessField(s.getWeaponCard());
@@ -232,7 +267,7 @@ public class GameControlPanel extends JPanel {
         return panel;
     }
     public void updateDisplay(){
-
+        dieNumber.setText(String.valueOf(board.getDie()));
         whoseTurnField.getText();
         guessPersonField.getText();
         guessRoomField.getText();
@@ -266,12 +301,7 @@ public class GameControlPanel extends JPanel {
         guessWeaponField.setBackground(card.getColor());}
 
     public void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
-    public int setDie(){
-        Random randomize = new Random();
-        int random = randomize.nextInt(6)+1;
-        dieNumber.setText(String.valueOf(random));
-        return random;
-    }
+
 
     //Main\\
     public static void main(String[] args) {
