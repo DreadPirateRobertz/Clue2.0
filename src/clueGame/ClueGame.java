@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class ClueGame extends JFrame {
     private static final int PLAYERS = 6;
@@ -41,9 +42,22 @@ public class ClueGame extends JFrame {
         ArrayList<Card> inHand = null;
         ArrayList<Card> seen = null;
 
-        Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
-        JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
-                "Welcome to Clue...in SPACE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+        class SplashScreen extends Thread{
+            public void run(){
+                try {
+                    TimeUnit.MILLISECONDS.sleep(250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
+                JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
+                        "Welcome to Clue...in SPACE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+            }
+
+        }
+        SplashScreen splashy = new SplashScreen();
+
+        splashy.start();
 
         board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
         board.initialize();
@@ -55,13 +69,12 @@ public class ClueGame extends JFrame {
         board.calcTargets(board.getCell(human), gameControlPanel.getRoll()); //Calculating Targets for the Human Player
         Set<BoardCell> targets = board.getTargets();
 
-        for (BoardCell target : targets){//Sets the initial targets for the Human player
+        for (BoardCell target : targets) {//Sets the initial targets for the Human player
             target.setTarget(true);
         }
         clueGame.add(gameControlPanel, BorderLayout.SOUTH);//Add the panels to the frame
         clueGame.add(gameCardsPanel, BorderLayout.EAST);
         clueGame.add(board, BorderLayout.CENTER);
-
         clueGame.setVisible(true);
+        }
     }
-}

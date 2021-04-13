@@ -60,7 +60,6 @@ public class BoardCell  {
         return false;
     }
 
-
     public void drawRoomName(Graphics2D g, int size, int xOffset, int yOffset) {
         int x = (col * size) + xOffset;
         int y = (row * size) + yOffset;

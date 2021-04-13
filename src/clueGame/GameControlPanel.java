@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class GameControlPanel extends JPanel {
     private JTextField guessPersonField, guessRoomField, guessWeaponField;
@@ -21,6 +22,7 @@ public class GameControlPanel extends JPanel {
     private Suggestion suggestion;
     private ImageIcon dice = null;
     private JLabel dieRoll = null;
+    private boolean gameOverFLag = false;
     ImageIcon[] diceIcons = {
             new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
             new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
@@ -86,17 +88,17 @@ public class GameControlPanel extends JPanel {
         panel.add(dieRoll);
         return panel;
     }
-public void updateDice(){
-    switch (board.getDie()){
-        case 1 -> dice = diceIcons[0];
-        case 2 -> dice = diceIcons[1];
-        case 3 -> dice = diceIcons[2];
-        case 4 -> dice = diceIcons[3];
-        case 5 -> dice = diceIcons[4];
-        case 6 -> dice = diceIcons[5];
+    public void updateDice(){
+        switch (board.getDie()){
+            case 1 -> dice = diceIcons[0];
+            case 2 -> dice = diceIcons[1];
+            case 3 -> dice = diceIcons[2];
+            case 4 -> dice = diceIcons[3];
+            case 5 -> dice = diceIcons[4];
+            case 6 -> dice = diceIcons[5];
+        }
+        dieRoll.setIcon(dice);
     }
-    dieRoll.setIcon(dice);
-}
 
 
     private JButton accuseButton(){
@@ -126,7 +128,6 @@ public void updateDice(){
                         JOptionPane.ERROR_MESSAGE, null, option, option[0]);
             }
             else{
-
                 ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
                 playa = board.getWhoseTurn();
                 setWhoseTurn();
@@ -154,17 +155,16 @@ public void updateDice(){
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
                         if(playa.doAccusation(playa.getSuggestion())){
-                            JOptionPane.showOptionDialog(null,  playa.getName() + " has WON\n   You've Lost to a Machine",
+                            int rv = JOptionPane.showOptionDialog(null,  playa.getName() + " has WON\n   You've Lost to a Machine",
                                     "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
-                            ;
+
                             guessResultField.setBackground(playa.getColor());
                             setGuessResult("W I N N E R!!!");
                             setPersonGuessField(board.getTheAnswer_Person());
                             setRoomGuessField(board.getTheAnswer_Room());
                             setWeaponGuessField(board.getTheAnswer_Weapon());
-                            System.out.println(board.getTheAnswer_Person().getCardName());//Testing Statements
-                            System.out.println(board.getTheAnswer_Room().getCardName());
-                            System.out.println(board.getTheAnswer_Weapon().getCardName());
+
+                            gameOverFLag = true;
                             updateDisplay();
                             return;
                         }
@@ -235,8 +235,33 @@ public void updateDice(){
             if(playa != null) {
                 playa.setStayInRoomFlag(false);
             }
+
         });
+
         return button;
+    }
+
+    public void updateDisplay(){
+        whoseTurnField.getText();
+        guessPersonField.getText();
+        guessRoomField.getText();
+        guessWeaponField.getText();
+        guessResultField.getText();
+
+        if (gameOverFLag){ //The intentionality for running a separate thread was so when there was a winner the GameControlPanel
+            class GameOver extends Thread{ //Would still update and show the winner and the winning cards before it exits
+                public void run(){//Instead of slamming all the information into a dialog box. I thought this solution was more elegant.
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+            GameOver thread = new GameOver();
+            thread.start();
+        }
     }
 
     private JPanel guessPanel(){
@@ -269,18 +294,15 @@ public void updateDice(){
         panel.add(guessResultField);
         return panel;
     }
-    public void updateDisplay(){
-        dieNumber.setText(String.valueOf(board.getDie()));
-        whoseTurnField.getText();
-        guessPersonField.getText();
-        guessRoomField.getText();
-        guessWeaponField.getText();
-        guessResultField.getText();
-        repaint();
-    }
+
 
     //Getters
     public int getRoll() { return roll; }
+
+    public boolean isGameOverFLag() {
+        return gameOverFLag;
+    }
+
     //Setters
     public void setWhoseTurn(){
         Player playa = board.setWhoseTurn();
@@ -296,7 +318,7 @@ public void updateDice(){
         }
     }
     public void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName());
-    guessPersonField.setBackground(card.getColor());}
+        guessPersonField.setBackground(card.getColor());}
     public void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName());
         guessRoomField.setBackground(card.getColor());}
 
