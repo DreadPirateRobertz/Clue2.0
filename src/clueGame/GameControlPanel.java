@@ -6,6 +6,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class GameControlPanel extends JPanel {
@@ -102,6 +103,70 @@ public class GameControlPanel extends JPanel {
 
     private JButton accuseButton(){
         JButton button = new JButton("J'Accuse");
+        Player playa = board.getWhoseTurn();
+        button.addActionListener(e -> {
+            if(board.isPlayerFlag()){
+                Object[] option = {"I'll never do this again..."};
+                JLabel message = new JLabel("It's not your turn!");
+                message.setHorizontalAlignment(JLabel.LEFT);
+                JOptionPane.showOptionDialog(null, message, "Hold Your Horses",JOptionPane.OK_OPTION,
+                        JOptionPane.ERROR_MESSAGE, null, option, option[0]);
+            }
+            else if(!board.isPlayerFlag()){
+                if(!board.getCell(playa).isRoomCenter()){
+                    Object[] option = {"I'll never do this again..."};
+                    JLabel message = new JLabel("You Must be in a Room");
+                    message.setHorizontalAlignment(JLabel.LEFT);
+                    JOptionPane.showOptionDialog(null, message, "Hold Your Horses",JOptionPane.OK_OPTION,
+                            JOptionPane.ERROR_MESSAGE, null, option, option[0]);
+                }
+                else{
+                    HumanAccusationDialog humanAccusationDialog = new HumanAccusationDialog(board.getRoom(board.getCell(playa)), board.getAllCards());
+                    Suggestion humanAccusation = humanAccusationDialog.getHumanAccusation();
+
+                    Object[] optionWinner = {"W I N N E R!!!"};
+                    Object[] optionLoser = {"I Accept My Fate"};
+
+
+                    if (playa.doAccusation(humanAccusation)) {
+                        int rv = JOptionPane.showOptionDialog(null, playa.getName() + " has WON\n   You've Beaten all the Odds!",
+                                "Y O U    W I N", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
+                        guessResultField.setBackground(playa.getColor());
+                        setGuessResult(" W I N N E R!!!");
+                        guessPersonField.setBackground(Color.BLACK);
+                        guessPersonField.setForeground(Color.RED);
+                        guessRoomField.setBackground(Color.BLACK);
+                        guessRoomField.setForeground(Color.RED);
+                        guessWeaponField.setBackground(Color.BLACK);
+                        guessWeaponField.setForeground(Color.RED);
+                        setPersonGuessField(board.getTheAnswer_Person());
+                        setRoomGuessField(board.getTheAnswer_Room());
+                        setWeaponGuessField(board.getTheAnswer_Weapon());
+                        updateDisplay();
+                    } else {
+                        JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
+                                "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
+
+                        guessResultField.setBackground(playa.getColor());
+                        setPersonGuessField(board.getTheAnswer_Person());
+                        guessPersonField.setBackground(Color.BLACK);
+                        guessPersonField.setForeground(Color.RED);
+                        setRoomGuessField(board.getTheAnswer_Room());
+                        guessRoomField.setBackground(Color.BLACK);
+                        guessRoomField.setForeground(Color.RED);
+                        setWeaponGuessField(board.getTheAnswer_Weapon());
+                        guessWeaponField.setBackground(Color.BLACK);
+                        guessWeaponField.setForeground(Color.RED);
+
+                        setGuessResult("L O S E R!!!");
+                        board.repaint();
+                        gameOverFLag = true;
+                        updateDisplay();
+
+                    }
+                }
+            }
+        });
         return button;
     }
 
@@ -153,48 +218,56 @@ public class GameControlPanel extends JPanel {
 
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
-                        JLabel playaName = new JLabel(playa.getName());
-                        playaName.setHorizontalAlignment(JLabel.CENTER);
-                        if(playa.doAccusation(playa.getSuggestion())){
-                            int rv = JOptionPane.showOptionDialog(null,  playa.getName() + " has WON\n   You've Lost to a Machine",
-                                    "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
-
-                            guessResultField.setBackground(playa.getColor());
-                            setGuessResult("C O M P U T E R    W I N N E R!!!");
-                            setPersonGuessField(board.getTheAnswer_Person());
-                            setRoomGuessField(board.getTheAnswer_Room());
-                            setWeaponGuessField(board.getTheAnswer_Weapon());
-
-                            gameOverFLag = true;
-                            updateDisplay();
-                            return;
+                        board.calcTargets(board.getCell(playa), board.getDie());
+                        Set<BoardCell> targetsSet = board.getTargets();
+                        for (BoardCell target : targetsSet) { //Logic to make sure computer has to be in a room before it can make an accuasation
+                            if (target.isRoomCenter()) {
+                                playa.setRow(target.getRow());
+                                playa.setCol(target.getCol());
+                            }
                         }
-                        else{
-                            JOptionPane.showOptionDialog(null, playaName + "\nYour Poor Choices Lead to Failure",
-                                    "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
+                        if (playa.isAccusationFlag() && board.getCell(playa).isRoomCenter()) {
+                            JLabel playaName = new JLabel(playa.getName());
+                            playaName.setHorizontalAlignment(JLabel.CENTER);
+                            if (playa.doAccusation(playa.getSuggestion())) {
+                                int rv = JOptionPane.showOptionDialog(null, playa.getName() + " has WON\n   You've Lost to a Machine",
+                                        "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
 
-                            guessResultField.setBackground(playa.getColor());
-                            Suggestion s = playa.getSuggestion();
-                            setPersonGuessField(s.getPersonCard());
-                            setRoomGuessField(s.getRoomCard());
-                            setWeaponGuessField(s.getWeaponCard());
-                            setGuessResult("L O S E R!!!");
-                            board.getCell(playa).setOccupied(false);
-                            players.remove(playa);
-                            if(index != 0) {
-                                index--;
-                                board.setIndex(index);
+                                guessResultField.setBackground(playa.getColor());
+                                setGuessResult("C O M P U T E R    W I N N E R!!!");
+                                setPersonGuessField(board.getTheAnswer_Person());
+                                setRoomGuessField(board.getTheAnswer_Room());
+                                setWeaponGuessField(board.getTheAnswer_Weapon());
+                                System.out.println(board.getTheAnswer_Person());
+
+                                gameOverFLag = true;
+                                updateDisplay();
+                                return;
+                            } else {
+                                JOptionPane.showOptionDialog(null, playaName + "\nYour Poor Choices Lead to Failure",
+                                        "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
+
+                                guessResultField.setBackground(playa.getColor());
+                                Suggestion s = playa.getSuggestion();
+                                setPersonGuessField(s.getPersonCard());
+                                setRoomGuessField(s.getRoomCard());
+                                setWeaponGuessField(s.getWeaponCard());
+                                setGuessResult("L O S E R!!!");
+                                board.getCell(playa).setOccupied(false);
+                                players.remove(playa);
+                                if (index != 0) {
+                                    index--;
+                                    board.setIndex(index);
+                                } else {
+                                    index++;
+                                    board.setIndex(index);
+                                }
+                                board.repaint();
+                                updateDisplay();
+                                return;
                             }
-                            else{
-                                index++;
-                                board.setIndex(index);
-                            }
-                            board.repaint();
-                            updateDisplay();
-                            return;
                         }
                     }
-
                     BoardCell target = playa.selectTargets(targets);
                     if (target == null){
 

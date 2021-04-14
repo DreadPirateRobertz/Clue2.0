@@ -8,7 +8,6 @@ import java.security.KeyStore;
 import java.util.*;
 
 public class GameCardsPanel extends JPanel {
-    private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
     ArrayList<Card> inHandPersonCards = new ArrayList<>();
     Set<Card> seenPersonCards = new HashSet<>();
     ArrayList<Card> inHandRoomCards = new ArrayList<>();
@@ -66,7 +65,6 @@ public class GameCardsPanel extends JPanel {
         weaponCardsPanel().removeAll();
         revalidate();
         createLayout();
-
     }
 
     private void createLayout() { //Adds all the panels to the main panel
@@ -74,7 +72,6 @@ public class GameCardsPanel extends JPanel {
         add(peopleCardsPanel());
         add(roomCardsPanel());
         add(weaponCardsPanel());
-
     }
 
 

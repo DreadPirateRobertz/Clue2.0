@@ -16,19 +16,12 @@ public class Human extends Player {
             Board.getInstance().getCell(this).setTarget(false);
         }
         return hsp.getHumanSuggestion();
+
     }
 
     @Override
     public BoardCell selectTargets(ArrayList<BoardCell> targets) {
         return null;
     }
-
-    @Override
-    public boolean doAccusation(Suggestion s) {
-    return true;
-    }
-
-
-
 
 }

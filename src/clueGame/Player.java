@@ -91,6 +91,10 @@ public abstract class Player {
         return stayinRoomFlag;
     }
 
+    public boolean doAccusation(Suggestion s) {
+        return Board.getInstance().checkAccusation(s);
+    }
+
     //Setters
     public void setSuggestion(Suggestion s){
         suggestion = s;
@@ -115,5 +119,5 @@ public abstract class Player {
     public String getName() { return name; }
     public Color getColor() { return color; }
     public String getStartLocation() { return startLocation; }
-    public abstract boolean doAccusation(Suggestion s);
+
 }
