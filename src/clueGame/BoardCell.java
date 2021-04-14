@@ -186,6 +186,15 @@ public class BoardCell  {
     public boolean isRoomCenter() { return roomCenter; }
     public boolean isRoomLabel() { return roomLabel; }
     //Setters
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+
     public void addAdjacency(BoardCell cell) { adjList.add(cell); }
     public void setInitial(char initial) { this.initial = initial; }
     public void setDoorway() { doorway = true; }

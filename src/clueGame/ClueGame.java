@@ -8,32 +8,37 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ClueGame extends JFrame {
-    private static final int PLAYERS = 6;
-    private static int playerCount = 0;
+    private static GameCardsPanel gcp = null;
+    public ClueGame() throws HeadlessException {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(1920, 1080);
+        setTitle("ClueGame");
+
+    }
     @Override
     public void setSize(int width, int height) {
         super.setSize(width, height);
     }
-
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
     }
-
     @Override
     public void setDefaultCloseOperation(int operation) {
         super.setDefaultCloseOperation(operation);
     }
-
     @Override
     public void setTitle(String title) {
         super.setTitle(title);
     }
 
-    public ClueGame() throws HeadlessException {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1500, 1000);
-        setTitle("ClueGame");
+    public static GameCardsPanel getGameCardsPanel() {
+        return gcp;
+    }
+
+    public static void pleaseUpdateCards(){
+        gcp.updatePanels();
+
     }
 
     public static void main(String[] args) {
@@ -65,7 +70,7 @@ public class ClueGame extends JFrame {
         Player human = players.get(0);
         GameControlPanel gameControlPanel = new GameControlPanel();
         GameCardsPanel gameCardsPanel = new GameCardsPanel(human.getPlayerHand(), human.getSeenList());
-
+        gcp = gameCardsPanel;
         board.calcTargets(board.getCell(human), gameControlPanel.getRoll()); //Calculating Targets for the Human Player
         Set<BoardCell> targets = board.getTargets();
 

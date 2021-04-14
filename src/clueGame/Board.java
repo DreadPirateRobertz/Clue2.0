@@ -30,9 +30,10 @@ public class Board extends JPanel {
     private static ArrayList<Player> players;
     private int index = 0;
     private boolean playerFlag = false;
-    private Color accuserColor;
-    private String accuserPlayer;
+    private Color disproverColor;
+    private String disproverPlayer;
     private int die = 0;
+
 
 
     public static ArrayList<Player> getPlayers() {
@@ -229,7 +230,7 @@ public class Board extends JPanel {
         players = new ArrayList<>(keys);
         int index = 0;
         for(Player player: players){ //Putting the Human first as I make this list for cycling thru the players to play Clue
-            if (player.getClass().equals(Human.class)){
+            if (player instanceof Human){
                 if(index == 0){
                     break;
                 }
@@ -480,10 +481,10 @@ public class Board extends JPanel {
             }
             Card card = player.disproveSuggestion(suggestion);
             if (card != null){
-                accuserColor = player.getColor();
-                accuserPlayer = player.getName();
+                disproverColor = player.getColor();
+                disproverPlayer = player.getName();
                 accuser.updateSeenList(card);
-                if(accuser.getClass().equals(Human.class)) {//I want this to only start displaying colors in guess fields when Human already knows color or who it's from
+                if(accuser instanceof Human) {//I want this to only start displaying colors in guess fields when Human already knows color/who it's from
                     card.setColor(player.getColor());
                 }
                 return card;
@@ -592,7 +593,8 @@ public class Board extends JPanel {
     private class whichTargetListener implements MouseListener{
         @Override
         public void mouseClicked(MouseEvent e) {
-            if(getWhoseTurn().getClass().equals(Human.class)) {
+            Board board = Board.getInstance();
+            if(getWhoseTurn() instanceof Human) {
                 int size;
                 if (getHeight() < getWidth()) {
                     size = getHeight() / num_cols;
@@ -613,16 +615,38 @@ public class Board extends JPanel {
                     }
                 }
                 if (whichTarget != null) {
-                    playa.setRow(whichTarget.getRow());
-                    playa.setCol(whichTarget.getCol());
+                    if(whichTarget.isRoom()){
+                        playa.setRow(board.getRoom(whichTarget).getCenterCell().getRow());
+                        playa.setCol(board.getRoom(whichTarget).getCenterCell().getCol());
+                    }
+                    else {
+                        playerFlag = true;
+                        playa.setRow(whichTarget.getRow());
+                        playa.setCol(whichTarget.getCol());
+                    }
                     for (BoardCell target : targets){
                         target.setTarget(false);
                     }
-                    if(whichTarget.isRoomCenter()){
-                        playa.createSuggestion(getRoom(whichTarget), allCards); //TODO: STUB
+                    repaint();                                  //TODO: IN PROGRESS!
+                    if(board.getCell(playa).isRoomCenter()){
+                        Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
+                        Card disproveCard = handleSuggestion(playa, s);
+                        if (disproveCard == null){
+                            GameControlPanel.guessResultField.setBackground(Color.BLACK);  //One exception I made to make this static and public so I could change these here
+                            GameControlPanel.guessResultField.setForeground(Color.RED);   //Passing the GCP panel would have been a re-haul of code
+                            GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+                        }
+                        GameControlPanel.setPersonGuessField(s.getPersonCard());
+                        GameControlPanel.setRoomGuessField(s.getRoomCard());
+                        GameControlPanel.setWeaponGuessField(s.getWeaponCard());
+                        if(disproveCard != null){
+                            GameControlPanel.guessResultField.setBackground(board.getDisproverColor());
+                            GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
+                        }
+                        ClueGame.pleaseUpdateCards();
+                        repaint();
                     }
-                    playerFlag = true;
-                    repaint();
+//                    playerFlag = true;
                 }
                 else {
                     Object[] theresOnlyOneAnswer = {"My Bad"};
@@ -670,6 +694,18 @@ public class Board extends JPanel {
         return grid;
     }
 
+    public ArrayList<Card> getPlayerCards() {
+        return playerCards;
+    }
+
+    public ArrayList<Card> getWeaponCards() {
+        return weaponCards;
+    }
+
+    public void setPlayerFlag(Boolean b){
+        playerFlag = b;
+    }
+
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
@@ -683,8 +719,8 @@ public class Board extends JPanel {
     public static Card getTheAnswer_Room(){ return theAnswer.get(1); }
     public static Card getTheAnswer_Weapon(){ return theAnswer.get(2); }
     public Map<Player, ArrayList<Card>> getPlayerMap() { return playerMap; }
-    public Color getAccuserColor(){return accuserColor;}
-    public String getAccuserPlayer(){return accuserPlayer;}
+    public Color getDisproverColor(){return disproverColor;}
+    public String getDisproverPlayer(){return disproverPlayer;}
     //Is'ers
     public boolean isPlayerFlag() { return playerFlag; }
     public boolean isWalkway(BoardCell cell){return getRoom(cell).isWalkWay(); }
@@ -692,6 +728,7 @@ public class Board extends JPanel {
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     public boolean isRoom(BoardCell cell){return getRoom(cell).isRoom(); }
     //Setters
+
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }
     public static void setTheAnswer_Room(Card card){ theAnswer.add(card); }
     public static void setTheAnswer_Weapon(Card card){ theAnswer.add(card); }

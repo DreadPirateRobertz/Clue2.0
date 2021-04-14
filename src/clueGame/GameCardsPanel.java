@@ -4,30 +4,37 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
+import java.security.KeyStore;
+import java.util.*;
 
 public class GameCardsPanel extends JPanel {
     private static Card rustyShankCard, targetedThermoCard, plasmaRifleCard, garroteCard, meatHookCard, syringeCard, wbtCard, csCard, elCard, dpCard, msmCard, pseCard, brig, galley, engine, medical, airlock, vr, therapy, lab, ordnance;
     ArrayList<Card> inHandPersonCards = new ArrayList<>();
-    ArrayList<Card> seenPersonCards = new ArrayList<>();
+    Set<Card> seenPersonCards = new HashSet<>();
     ArrayList<Card> inHandRoomCards = new ArrayList<>();
-    ArrayList<Card> seenRoomCards = new ArrayList<>();
+    Set<Card> seenRoomCards = new HashSet<>();
     ArrayList<Card> inHandWeaponCards = new ArrayList<>();
-    ArrayList<Card> seenWeaponCards = new ArrayList<>();
+    Set<Card> seenWeaponCards = new HashSet<>();
+    ArrayList<Card> inHand, seen;
 
     public GameCardsPanel(ArrayList<Card> inHand, ArrayList<Card> seen) {
+        this.inHand = inHand;
+        this.seen = seen;
+        setBackground(Color.BLACK);
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Known Cards");
+        titledBorder.setTitleColor(Color.GREEN);
         titledBorder.setTitleJustification(TitledBorder.CENTER);
         setBorder(titledBorder);
         setLayout(new GridLayout(3,0));
-        sortCards(inHand, seen);
         updatePanels();
-        createLayout();
     }
 
     private void sortCards(ArrayList<Card> inHand, ArrayList<Card> seen) {
+        inHandPersonCards.clear();
+        inHandRoomCards.clear();
+        inHandWeaponCards.clear();
+
+
         for (Card card : inHand){
             if (card.getCardType().equals(CardType.PERSON)){
                 inHandPersonCards.add(card);
@@ -52,10 +59,22 @@ public class GameCardsPanel extends JPanel {
         }
     }
 
+    public void updatePanels(){
+        removeAll();
+        roomCardsPanel().removeAll();
+        peopleCardsPanel().removeAll();
+        weaponCardsPanel().removeAll();
+        revalidate();
+        createLayout();
+
+    }
+
     private void createLayout() { //Adds all the panels to the main panel
+        sortCards(inHand, seen);
         add(peopleCardsPanel());
         add(roomCardsPanel());
         add(weaponCardsPanel());
+
     }
 
 
@@ -63,16 +82,21 @@ public class GameCardsPanel extends JPanel {
         JPanel panel = new JPanel();
         int rows = setRows(inHandPersonCards, seenPersonCards);
         rows = emptyDecksCheck(rows, inHandPersonCards, seenPersonCards);
+        panel.setBackground(Color.BLACK);
         panel.setLayout(new GridLayout(rows, 0));
-        panel.setBorder(new TitledBorder(new EtchedBorder(), "People"));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("People");
+        titledBorder.setTitleColor(Color.GREEN);
+        panel.setBorder(titledBorder);
         JLabel inHandLabel = new JLabel("In Hand:");
+        inHandLabel.setForeground(Color.GREEN);
         panel.add(inHandLabel);
         setFieldsInHand(panel, inHandPersonCards);
-        setNone(panel, inHandPersonCards);
+        setNoneHand(panel, inHandPersonCards);
         JLabel seenLabel = new JLabel("Seen:");
+        seenLabel.setForeground(Color.GREEN);
         panel.add(seenLabel);
         setFieldsSeen(panel, seenPersonCards);
-        setNone(panel, seenPersonCards);
+        setNoneSeen(panel, seenPersonCards);
         return panel;
     }
 
@@ -80,16 +104,21 @@ public class GameCardsPanel extends JPanel {
         JPanel panel = new JPanel();
         int rows = setRows(inHandRoomCards, seenRoomCards);
         rows = emptyDecksCheck(rows, inHandRoomCards, seenRoomCards);
+        panel.setBackground(Color.BLACK);
         panel.setLayout(new GridLayout(rows, 0));
-        panel.setBorder(new TitledBorder(new EtchedBorder(), "Rooms"));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Rooms");
+        titledBorder.setTitleColor(Color.GREEN);
+        panel.setBorder(titledBorder);
         JLabel inHandLabel = new JLabel("In Hand:");
+        inHandLabel.setForeground(Color.GREEN);
         panel.add(inHandLabel);
         setFieldsInHand(panel, inHandRoomCards);
-        setNone(panel, inHandRoomCards);
+        setNoneHand(panel, inHandRoomCards);
         JLabel seenLabel = new JLabel("Seen:");
+        seenLabel.setForeground(Color.GREEN);
         panel.add(seenLabel);
         setFieldsSeen(panel, seenRoomCards);
-        setNone(panel, seenRoomCards);
+        setNoneSeen(panel, seenRoomCards);
         return panel;
     }
 
@@ -97,84 +126,26 @@ public class GameCardsPanel extends JPanel {
         JPanel panel = new JPanel();
         int rows = setRows(inHandWeaponCards, seenWeaponCards); //Will determine how many rows in GridLayout
         rows = emptyDecksCheck(rows, inHandWeaponCards, seenWeaponCards);
+        panel.setBackground(Color.BLACK);
         panel.setLayout(new GridLayout(rows, 0));
-        panel.setBorder(new TitledBorder(new EtchedBorder(), "Weapons"));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Weapons");
+        titledBorder.setTitleColor(Color.GREEN);
+        panel.setBorder(titledBorder);
         JLabel inHandLabel = new JLabel("In Hand:");
+        inHandLabel.setForeground(Color.GREEN);
         panel.add(inHandLabel);
         setFieldsInHand(panel, inHandWeaponCards);
-        setNone(panel, inHandWeaponCards);
+        setNoneHand(panel, inHandWeaponCards);
         JLabel seenLabel = new JLabel("Seen:");
+        seenLabel.setForeground(Color.GREEN);
         panel.add(seenLabel);
         setFieldsSeen(panel, seenWeaponCards);
-        setNone(panel, seenWeaponCards);
+        setNoneSeen(panel, seenWeaponCards);
         return panel;
     }
-    //Main\\
-    public static void main(String[] args) {
-        ArrayList<Card> inHand = new ArrayList<>();
-        ArrayList<Card> seen = new ArrayList<>();
-        //Cards for Testing
-        rustyShankCard = new Card(CardType.WEAPON, "Rusty Shank");
-        targetedThermoCard = new Card(CardType.WEAPON, "Targeted Thermonuclear Device");
-        plasmaRifleCard = new Card(CardType.WEAPON, "Plasma Rifle");
-        garroteCard = new Card(CardType.WEAPON, "Garrote");
-        meatHookCard = new Card(CardType.WEAPON, "Meat Hook");
-        syringeCard = new Card(CardType.WEAPON, "Syringe of Eternal Midnight");
-        wbtCard = new Card(CardType.PERSON, "Whipping Boy Todd");
-        csCard = new Card(CardType.PERSON, "Commander Sassafras");
-        elCard = new Card(CardType.PERSON, "Ensign Larry");
-        dpCard = new Card(CardType.PERSON, "Doctor Petunia");
-        msmCard = new Card(CardType.PERSON, "Mad Scientist Mikey");
-        pseCard = new Card(CardType.PERSON, "Prisoner Shifty Eyes");
-        brig = new Card(CardType.ROOM, "Brig");
-        galley = new Card(CardType.ROOM, "Galley");
-        engine = new Card(CardType.ROOM, "Engine");
-        medical = new Card(CardType.ROOM, "Medical");
-        vr = new Card(CardType.ROOM, "ImmersiveVR");
-        lab = new Card(CardType.ROOM, "Laboratory");
-        airlock = new Card(CardType.ROOM, "Airlock");
-        ordnance = new Card(CardType.ROOM, "Ordnance");
-        therapy = new Card(CardType.ROOM, "Therapy");
-        //Stress Test
-        inHand.add(airlock);
-        seen.add(vr);
-        seen.add(brig);
-        seen.add(medical);
-        seen.add(lab);
-        seen.add(engine);
-        seen.add(ordnance);
-        seen.add(therapy);
-        seen.add(galley);
-        seen.add(elCard);
-        seen.add(csCard);
-        seen.add(pseCard);
-        seen.add(dpCard);
-        seen.add(msmCard);
-        seen.add(wbtCard);
-        inHand.add(rustyShankCard);
-        seen.add(targetedThermoCard);
-        seen.add(syringeCard);
-        seen.add(garroteCard);
-        seen.add(meatHookCard);
-        seen.add(plasmaRifleCard);
 
-        Board.getInstance().setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
-        Board.getInstance().initialize();//This is a LinkedHashMap and should preserve insertion order of Players
-        GameCardsPanel cardsPanel = new GameCardsPanel(inHand, seen);
-        JFrame frame = new JFrame();  // create the frame
-        frame.setContentPane(cardsPanel); // put the panel in the frame
-        frame.setSize(230, 900);  // size the frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
-
-
-        frame.setVisible(true); // make it visible
-    }
-
-    public void updatePanels(){
-        removeAll();
-    }
     //Setters
-    private void setFieldsSeen(JPanel panel, ArrayList<Card> seen) {
+    private void setFieldsSeen(JPanel panel, Set<Card> seen) {
         for (Card card : seen) {
             JTextField field = new JTextField(card.getCardName().toUpperCase(Locale.ROOT));
             field.setBackground(card.getColor());//This will be set in handleSuggestion() method of Board
@@ -195,7 +166,7 @@ public class GameCardsPanel extends JPanel {
                     break;//This way it's not hard coded in and can be dynamic if a new ClueSetup is implemented
                 }
             }
-            field.setForeground(Color.BLACK);
+            field.setForeground(Color.WHITE);
             field.setFont(new Font("Arial Bold", Font.BOLD, 12));
             field.setHorizontalAlignment(JTextField.CENTER);
             field.setEditable(false);
@@ -203,7 +174,7 @@ public class GameCardsPanel extends JPanel {
         }
     }
 
-    private void setNone(JPanel panel, ArrayList<Card> seen) {
+    private void setNoneSeen(JPanel panel, Set<Card> seen) {
         if (seen.size() == 0) {
             JTextField field = new JTextField("None".toUpperCase(Locale.ROOT));
             field.setForeground(Color.WHITE);
@@ -214,7 +185,19 @@ public class GameCardsPanel extends JPanel {
             panel.add(field);
         }
     }
-    private int emptyDecksCheck(int rows, ArrayList<Card> inHand, ArrayList<Card> seen) {
+
+    private void setNoneHand(JPanel panel, ArrayList<Card> seen) {
+        if (seen.size() == 0) {
+            JTextField field = new JTextField("None".toUpperCase(Locale.ROOT));
+            field.setForeground(Color.WHITE);
+            field.setFont(new Font("Arial Bold", Font.BOLD, 12));
+            field.setHorizontalAlignment(JTextField.CENTER);
+            field.setBackground(Color.BLACK);
+            field.setEditable(false);
+            panel.add(field);
+        }
+    }
+    private int emptyDecksCheck(int rows, ArrayList<Card> inHand, Set<Card> seen) {
         if (inHand.size() == 0) {
             rows++;
         }
@@ -224,7 +207,7 @@ public class GameCardsPanel extends JPanel {
         return rows;
     }
 
-    private int setRows(ArrayList<Card> inHand, ArrayList<Card> seen){
+    private int setRows(ArrayList<Card> inHand, Set<Card> seen){
         return inHand.size() + seen.size() + 2;
     }
 

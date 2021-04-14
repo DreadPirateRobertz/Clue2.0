@@ -6,13 +6,11 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class GameControlPanel extends JPanel {
-    private JTextField guessPersonField, guessRoomField, guessWeaponField;
-    private JTextField guessResultField;
+    private static JTextField guessPersonField, guessRoomField, guessWeaponField;
+    public static JTextField guessResultField;
     private JTextField whoseTurnField;
     private JTextField dieNumber;
     private int index = 0;
@@ -23,6 +21,7 @@ public class GameControlPanel extends JPanel {
     private ImageIcon dice = null;
     private JLabel dieRoll = null;
     private boolean gameOverFLag = false;
+
     ImageIcon[] diceIcons = {
             new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
             new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
@@ -88,7 +87,7 @@ public class GameControlPanel extends JPanel {
         panel.add(dieRoll);
         return panel;
     }
-    public void updateDice(){
+    public void updateDiceIcons(){
         switch (board.getDie()){
             case 1 -> dice = diceIcons[0];
             case 2 -> dice = diceIcons[1];
@@ -124,7 +123,7 @@ public class GameControlPanel extends JPanel {
             Object[] optionWinner = {"G A M E   O V E R"};
             Object[] optionLoser = {"Another One Down"};
             if(!board.isPlayerFlag()){
-                JOptionPane.showOptionDialog(null, "You Haven't Taken Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
+                JOptionPane.showOptionDialog(null, "You Haven't Completed Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, option, option[0]);
             }
             else{
@@ -132,7 +131,7 @@ public class GameControlPanel extends JPanel {
                 playa = board.getWhoseTurn();
                 setWhoseTurn();
                 board.setDie();
-                updateDice();
+                updateDiceIcons(); //Setting the dice ICONS
                 roll = board.getDie();
                 playa = board.getWhoseTurn();
                 row = board.getWhoseTurn().getRow();
@@ -143,7 +142,7 @@ public class GameControlPanel extends JPanel {
                 if (playa.isStayInRoomFlag()){
                     targets.add(board.getCell(playa));
                 }
-                if(playa.getClass().equals(Human.class)) {
+                if(playa instanceof Human) {
                     board.setPlayerFlag(false);
                     for (BoardCell target : targets){
                         target.setTarget(true);
@@ -154,12 +153,14 @@ public class GameControlPanel extends JPanel {
 
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
+                        JLabel playaName = new JLabel(playa.getName());
+                        playaName.setHorizontalAlignment(JLabel.CENTER);
                         if(playa.doAccusation(playa.getSuggestion())){
                             int rv = JOptionPane.showOptionDialog(null,  playa.getName() + " has WON\n   You've Lost to a Machine",
                                     "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
 
                             guessResultField.setBackground(playa.getColor());
-                            setGuessResult("W I N N E R!!!");
+                            setGuessResult("C O M P U T E R    W I N N E R!!!");
                             setPersonGuessField(board.getTheAnswer_Person());
                             setRoomGuessField(board.getTheAnswer_Room());
                             setWeaponGuessField(board.getTheAnswer_Weapon());
@@ -169,7 +170,7 @@ public class GameControlPanel extends JPanel {
                             return;
                         }
                         else{
-                            JOptionPane.showOptionDialog(null, "         " + playa.getName() + "\nYour Poor Choices Lead to Failure",
+                            JOptionPane.showOptionDialog(null, playaName + "\nYour Poor Choices Lead to Failure",
                                     "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
                             guessResultField.setBackground(playa.getColor());
@@ -193,7 +194,11 @@ public class GameControlPanel extends JPanel {
                             return;
                         }
                     }
+
                     BoardCell target = playa.selectTargets(targets);
+                    if (target == null){
+
+                    }
                     board.getCell(playa).setOccupied(false);
                     playa.setRow(target.getRow());
                     playa.setCol(target.getCol());
@@ -212,14 +217,13 @@ public class GameControlPanel extends JPanel {
                             suggestedPlaya.setStayInRoomFlag(true);
                         }
 
-                        System.out.println(suggestedPlaya.getName());//Testing who's called
                         setPersonGuessField(s.getPersonCard());
                         setRoomGuessField(s.getRoomCard());
                         setWeaponGuessField(s.getWeaponCard());
                         Card disproveCard = board.handleSuggestion(playa, s);
                         if(disproveCard != null){
-                            guessResultField.setBackground(board.getAccuserColor());
-                            setGuessResult("This Guess Has Been Disproven by " + board.getAccuserPlayer());
+                            guessResultField.setBackground(board.getDisproverColor());
+                            setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         }
                         else{
                             guessResultField.setBackground(Color.BLACK);
@@ -252,7 +256,7 @@ public class GameControlPanel extends JPanel {
             class GameOver extends Thread{ //Would still update and show the winner and the winning cards before it exits
                 public void run(){//Instead of slamming all the information into a dialog box. I thought this solution was more elegant.
                     try {
-                        TimeUnit.SECONDS.sleep(2);
+                        TimeUnit.MILLISECONDS.sleep(2500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -266,7 +270,8 @@ public class GameControlPanel extends JPanel {
 
     private JPanel guessPanel(){
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(new EtchedBorder(), "Guess"));
+        String stringy = "Guess";
+        panel.setBorder(new TitledBorder(new EtchedBorder(), stringy));
         panel.setLayout(new GridLayout(0,3));
         guessPersonField.setEditable(false);
         guessPersonField.setHorizontalAlignment(JLabel.CENTER);
@@ -286,7 +291,8 @@ public class GameControlPanel extends JPanel {
 
     private JPanel guessResultPanel(){
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(new EtchedBorder(), "Guess Result"));
+        String stringy = "Guess Result";
+        panel.setBorder(new TitledBorder(new EtchedBorder(), stringy));
         panel.setLayout(new GridLayout(1,0));
         guessResultField.setEditable(false);
         guessResultField.setHorizontalAlignment(JLabel.CENTER);
@@ -317,15 +323,15 @@ public class GameControlPanel extends JPanel {
             index++;
         }
     }
-    public void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName());
+    public static void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName());
         guessPersonField.setBackground(card.getColor());}
-    public void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName());
+    public static void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName());
         guessRoomField.setBackground(card.getColor());}
 
-    public void setWeaponGuessField(Card card){ guessWeaponField.setText(card.getCardName());
+    public static void setWeaponGuessField(Card card){ guessWeaponField.setText(card.getCardName());
         guessWeaponField.setBackground(card.getColor());}
 
-    public void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
+    public static void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
 
 
     //Main\\
