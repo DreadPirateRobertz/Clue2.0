@@ -13,14 +13,13 @@ public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
     public static JTextField guessResultField;
     private JTextField whoseTurnField;
-    private JTextField dieNumber;
     private int index = 0;
     private ArrayList<Player> players = Board.getPlayers();
     private static int roll = 0;
     private Board board = Board.getInstance();
-    private Suggestion suggestion;
     private ImageIcon dice = null;
-    private JLabel dieRoll = null;
+    private JLabel dieRoll1 = new JLabel() ;
+    private JLabel dieRoll2 = new JLabel();
     private boolean gameOverFLag = false;
 
     ImageIcon[] diceIcons = {
@@ -39,16 +38,16 @@ public class GameControlPanel extends JPanel {
         guessWeaponField = new JTextField(20);
         guessResultField = new JTextField( 20);
         whoseTurnField = new JTextField(10);
-        dieNumber = new JTextField(3);
         setLayout(new GridLayout(2, 0));
         board.setDie();
         roll = board.getDie();
         setWhoseTurn();
-        updateDisplay();
+        updateDiceIcons();
         createLayout();
     }
 
     private void createLayout(){
+
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new GridLayout(0, 4));
         upperPanel.add(whoseTurnPanel());
@@ -76,28 +75,84 @@ public class GameControlPanel extends JPanel {
 
     private JPanel rollBoxPanel(){
         JPanel panel = new JPanel();
-        switch (board.getDie()){
-            case 1 -> dice = diceIcons[0];
-            case 2 -> dice = diceIcons[1];
-            case 3 -> dice = diceIcons[2];
-            case 4 -> dice = diceIcons[3];
-            case 5 -> dice = diceIcons[4];
-            case 6 -> dice = diceIcons[5];
-        }
-        dieRoll = new JLabel(dice);
-        panel.add(dieRoll);
+        panel.add(dieRoll1);
+        panel.add(dieRoll2);
+
+
         return panel;
     }
+
     public void updateDiceIcons(){
+
         switch (board.getDie()){
-            case 1 -> dice = diceIcons[0];
-            case 2 -> dice = diceIcons[1];
-            case 3 -> dice = diceIcons[2];
-            case 4 -> dice = diceIcons[3];
-            case 5 -> dice = diceIcons[4];
-            case 6 -> dice = diceIcons[5];
+
+            case 2 -> {
+                dice = diceIcons[0];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[0];
+                dieRoll2.setIcon(dice);
+            }
+            case 3 -> {
+                dice = diceIcons[0];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[1];
+                dieRoll2.setIcon(dice);
+            }
+            case 4 -> {
+                dice = diceIcons[1];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[1];
+                dieRoll2.setIcon(dice);
+            }
+            case 5 -> {
+                dice = diceIcons[2];
+                dieRoll2.setIcon(dice);
+                dice = diceIcons[1];
+                dieRoll2.setIcon(dice);
+            }
+            case 6 -> {
+                dice = diceIcons[2];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[2];
+                dieRoll2.setIcon(dice);
+            }
+            case 7 -> {
+                dice = diceIcons[3];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[2];
+                dieRoll2.setIcon(dice);
+            }
+            case 8 -> {
+                dice = diceIcons[3];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[3];
+                dieRoll2.setIcon(dice);
+            }
+            case 9 -> {
+                dice = diceIcons[4];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[3];
+                dieRoll2.setIcon(dice);
+            }
+            case 10 -> {
+                dice = diceIcons[4];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[4];
+                dieRoll2.setIcon(dice);
+            }
+            case 11 -> {
+                dice = diceIcons[5];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[4];
+                dieRoll2.setIcon(dice);
+            }
+            case 12 -> {
+                dice = diceIcons[5];
+                dieRoll1.setIcon(dice);
+                dice = diceIcons[5];
+                dieRoll2.setIcon(dice);
+            }
         }
-        dieRoll.setIcon(dice);
     }
 
 
@@ -133,15 +188,11 @@ public class GameControlPanel extends JPanel {
                                 "Y O U    W I N", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
                         guessResultField.setBackground(playa.getColor());
                         setGuessResult(" W I N N E R!!!");
-                        guessPersonField.setBackground(Color.BLACK);
-                        guessPersonField.setForeground(Color.RED);
-                        guessRoomField.setBackground(Color.BLACK);
-                        guessRoomField.setForeground(Color.RED);
-                        guessWeaponField.setBackground(Color.BLACK);
-                        guessWeaponField.setForeground(Color.RED);
                         setPersonGuessField(board.getTheAnswer_Person());
                         setRoomGuessField(board.getTheAnswer_Room());
                         setWeaponGuessField(board.getTheAnswer_Weapon());
+                        board.repaint();
+                        gameOverFLag = true;
                         updateDisplay();
                     } else {
                         JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
@@ -149,20 +200,12 @@ public class GameControlPanel extends JPanel {
 
                         guessResultField.setBackground(playa.getColor());
                         setPersonGuessField(board.getTheAnswer_Person());
-                        guessPersonField.setBackground(Color.BLACK);
-                        guessPersonField.setForeground(Color.RED);
                         setRoomGuessField(board.getTheAnswer_Room());
-                        guessRoomField.setBackground(Color.BLACK);
-                        guessRoomField.setForeground(Color.RED);
                         setWeaponGuessField(board.getTheAnswer_Weapon());
-                        guessWeaponField.setBackground(Color.BLACK);
-                        guessWeaponField.setForeground(Color.RED);
-
                         setGuessResult("L O S E R!!!");
                         board.repaint();
                         gameOverFLag = true;
                         updateDisplay();
-
                     }
                 }
             }
@@ -232,13 +275,10 @@ public class GameControlPanel extends JPanel {
                             if (playa.doAccusation(playa.getSuggestion())) {
                                 int rv = JOptionPane.showOptionDialog(null, playa.getName() + " has WON\n   You've Lost to a Machine",
                                         "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
-
-                                guessResultField.setBackground(playa.getColor());
-                                setGuessResult("C O M P U T E R    W I N N E R!!!");
-                                setPersonGuessField(board.getTheAnswer_Person());
                                 setRoomGuessField(board.getTheAnswer_Room());
                                 setWeaponGuessField(board.getTheAnswer_Weapon());
-                                System.out.println(board.getTheAnswer_Person());
+                                setPersonGuessField(board.getTheAnswer_Person());
+                                setGuessResult("C O M P U T E R    W I N N E R!!!");
 
                                 gameOverFLag = true;
                                 updateDisplay();
@@ -319,11 +359,22 @@ public class GameControlPanel extends JPanel {
     }
 
     public void updateDisplay(){
+        updateDiceIcons();
+        removeAll();
+        rollBoxPanel().removeAll();
+        whoseTurnPanel().removeAll();
+        guessResultPanel().removeAll();
+        guessPanel().removeAll();
+        revalidate();
+        createLayout();
+
         whoseTurnField.getText();
         guessPersonField.getText();
         guessRoomField.getText();
         guessWeaponField.getText();
         guessResultField.getText();
+
+
 
         if (gameOverFLag){ //The intentionality for running a separate thread was so when there was a winner the GameControlPanel
             class GameOver extends Thread{ //Would still update and show the winner and the winning cards before it exits
@@ -346,6 +397,15 @@ public class GameControlPanel extends JPanel {
         String stringy = "Guess";
         panel.setBorder(new TitledBorder(new EtchedBorder(), stringy));
         panel.setLayout(new GridLayout(0,3));
+        if (gameOverFLag){
+            guessPersonField.setBackground(Color.BLACK);
+            guessPersonField.setForeground(Color.RED);
+            guessRoomField.setBackground(Color.BLACK);
+            guessRoomField.setForeground(Color.RED);
+            guessWeaponField.setBackground(Color.BLACK);
+            guessWeaponField.setForeground(Color.RED);
+            guessResultField.setBackground(board.getWhoseTurn().getColor());
+        }
         guessPersonField.setEditable(false);
         guessPersonField.setHorizontalAlignment(JLabel.CENTER);
         guessPersonField.setFont(new Font("Arial Bold", Font.BOLD, 12));
@@ -378,9 +438,6 @@ public class GameControlPanel extends JPanel {
     //Getters
     public int getRoll() { return roll; }
 
-    public boolean isGameOverFLag() {
-        return gameOverFLag;
-    }
 
     //Setters
     public void setWhoseTurn(){

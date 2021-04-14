@@ -590,6 +590,11 @@ public class Board extends JPanel {
             player.draw((Graphics2D) g, size, xOffset, yOffset, roomOccupancyMap);
         }
     }
+
+    public ArrayList<Card> getRoomCards() {
+        return roomCards;
+    }
+
     private class whichTargetListener implements MouseListener{
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -684,7 +689,7 @@ public class Board extends JPanel {
     }
     public void setDie(){
         Random randomize = new Random();
-        die = randomize.nextInt(6)+1;
+        die = randomize.nextInt(12)+2;
     }
     public int getDie(){
         return die;

@@ -15,7 +15,13 @@ public class Human extends Player {
         if(Board.getInstance().isPlayerFlag()) {
             Board.getInstance().getCell(this).setTarget(false);
         }
-        return hsp.getHumanSuggestion();
+        Suggestion s = hsp.getHumanSuggestion();
+        Player suggestedPlaya = Board.getInstance().getPlayer(s.getPersonCard().getCardName());
+        Board.getInstance().getCell(suggestedPlaya).setOccupied(false);
+        suggestedPlaya.setRow(this.getRow());
+        suggestedPlaya.setCol(this.getCol());
+
+        return s;
 
     }
 
