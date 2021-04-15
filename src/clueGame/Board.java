@@ -599,6 +599,7 @@ public class Board extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             Board board = Board.getInstance();
+            playerFlag = false;
             if(getWhoseTurn() instanceof Human) {
                 int size;
                 if (getHeight() < getWidth()) {
@@ -606,12 +607,12 @@ public class Board extends JPanel {
                 } else {
                     size = getWidth() / num_rows;
                 }
+
                 Player playa = getWhoseTurn();
                 getCell(playa).setOccupied(false);
                 int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
                 int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
                 BoardCell whichTarget = null;
-
 
                 for (BoardCell target : targets) {
                     if (target.containsClick(e.getX(), e.getY(), xOffset, yOffset, size)) {

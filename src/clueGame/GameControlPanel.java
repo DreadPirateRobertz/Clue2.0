@@ -3,11 +3,18 @@ package clueGame;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import java.applet.Applet;
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.io.File;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
@@ -64,7 +71,9 @@ public class GameControlPanel extends JPanel {
 
     private JPanel whoseTurnPanel(){
         JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
         JLabel whoseTurn = new JLabel("Whose turn?");
+        whoseTurn.setForeground(Color.GREEN);
         whoseTurn.setHorizontalAlignment(JLabel.CENTER);
         panel.setLayout(new GridLayout(2, 0));
         panel.add(whoseTurn);
@@ -75,10 +84,9 @@ public class GameControlPanel extends JPanel {
 
     private JPanel rollBoxPanel(){
         JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
         panel.add(dieRoll1);
         panel.add(dieRoll2);
-
-
         return panel;
     }
 
@@ -154,6 +162,27 @@ public class GameControlPanel extends JPanel {
             }
         }
     }
+    public class SoundEffect {
+
+        Clip clip;
+
+        public void setFile(String soundFileName){
+
+            try{
+                File file = new File(soundFileName);
+                AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+                clip = AudioSystem.getClip();
+                clip.open(sound);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        public void play(){
+            clip.start();
+
+        }
+    }
 
 
     private JButton accuseButton(){
@@ -195,6 +224,9 @@ public class GameControlPanel extends JPanel {
                         gameOverFLag = true;
                         updateDisplay();
                     } else {
+//                       SoundEffect soundEffect = new SoundEffect();
+//                       soundEffect.setFile("data/trumpet.wav");
+//                       soundEffect.play();
                         JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
                                 "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
@@ -210,6 +242,8 @@ public class GameControlPanel extends JPanel {
                 }
             }
         });
+        button.setForeground(Color.GREEN);
+        button.setBackground(Color.BLACK);
         return button;
     }
 
@@ -218,13 +252,9 @@ public class GameControlPanel extends JPanel {
         button.addActionListener(e -> {
             setGuessResult("");
             guessPersonField.setText("");
-            guessPersonField.setBackground(Color.WHITE);
             guessRoomField.setText("");
-            guessRoomField.setBackground(Color.WHITE);
             guessWeaponField.setText("");
-            guessPersonField.setBackground(Color.WHITE);
-            guessResultField.setBackground(Color.WHITE);
-            guessResultField.setForeground(Color.BLACK);
+
             int row, col;
             Player playa = null;
             Object[] option = {"I'll never do this again..."};
@@ -354,7 +384,8 @@ public class GameControlPanel extends JPanel {
             }
 
         });
-
+        button.setForeground(Color.GREEN);
+        button.setBackground(Color.BLACK);
         return button;
     }
 
@@ -394,10 +425,12 @@ public class GameControlPanel extends JPanel {
 
     private JPanel guessPanel(){
         JPanel panel = new JPanel();
-        String stringy = "Guess";
-        panel.setBorder(new TitledBorder(new EtchedBorder(), stringy));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Guess");
+        titledBorder.setTitleColor(Color.GREEN);
+        panel.setBackground(Color.BLACK);
+        panel.setBorder(titledBorder);
         panel.setLayout(new GridLayout(0,3));
-        if (gameOverFLag){
+//        if (gameOverFLag){
             guessPersonField.setBackground(Color.BLACK);
             guessPersonField.setForeground(Color.RED);
             guessRoomField.setBackground(Color.BLACK);
@@ -405,7 +438,7 @@ public class GameControlPanel extends JPanel {
             guessWeaponField.setBackground(Color.BLACK);
             guessWeaponField.setForeground(Color.RED);
             guessResultField.setBackground(board.getWhoseTurn().getColor());
-        }
+//        }
         guessPersonField.setEditable(false);
         guessPersonField.setHorizontalAlignment(JLabel.CENTER);
         guessPersonField.setFont(new Font("Arial Bold", Font.BOLD, 12));
@@ -424,10 +457,13 @@ public class GameControlPanel extends JPanel {
 
     private JPanel guessResultPanel(){
         JPanel panel = new JPanel();
-        String stringy = "Guess Result";
-        panel.setBorder(new TitledBorder(new EtchedBorder(), stringy));
+        panel.setBackground(Color.BLACK);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Guess Result");
+        titledBorder.setTitleColor(Color.GREEN);
+        panel.setBorder(titledBorder);
         panel.setLayout(new GridLayout(1,0));
         guessResultField.setEditable(false);
+        guessResultField.setForeground(Color.BLACK);
         guessResultField.setHorizontalAlignment(JLabel.CENTER);
         guessResultField.setFont(new Font("Arial Bold", Font.BOLD, 12));
         panel.add(guessResultField);
@@ -453,14 +489,9 @@ public class GameControlPanel extends JPanel {
             index++;
         }
     }
-    public static void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName());
-        guessPersonField.setBackground(card.getColor());}
-    public static void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName());
-        guessRoomField.setBackground(card.getColor());}
-
-    public static void setWeaponGuessField(Card card){ guessWeaponField.setText(card.getCardName());
-        guessWeaponField.setBackground(card.getColor());}
-
+    public static void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName()); }
+    public static void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName()); }
+    public static void setWeaponGuessField(Card card){ guessWeaponField.setText(card.getCardName()); }
     public static void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
 
 
