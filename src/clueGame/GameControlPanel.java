@@ -18,7 +18,7 @@ import javax.sound.sampled.Clip;
 
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
-    public static JTextField guessResultField;
+    private static JTextField guessResultField;
     private JTextField whoseTurnField;
     private int index = 0;
     private ArrayList<Player> players = Board.getPlayers();
@@ -28,7 +28,7 @@ public class GameControlPanel extends JPanel {
     private JLabel dieRoll1 = new JLabel() ;
     private JLabel dieRoll2 = new JLabel();
     private boolean gameOverFLag = false;
-
+    private static boolean disprovalFlag = false;
     ImageIcon[] diceIcons = {
             new ImageIcon(new ImageIcon("data/dice1.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
             new ImageIcon(new ImageIcon("data/dice2.png").getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT)),
@@ -162,27 +162,35 @@ public class GameControlPanel extends JPanel {
             }
         }
     }
-    public class SoundEffect {
+    public class SoundEffect implements Runnable {
 
         Clip clip;
+        String soundFileName;
 
-        public void setFile(String soundFileName){
 
-            try{
-                File file = new File(soundFileName);
-                AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-                clip = AudioSystem.getClip();
-                clip.open(sound);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-        public void play(){
-            clip.start();
+        SoundEffect(String soundFileName) {
+            this.soundFileName = soundFileName;
+            Thread t = new Thread(this);
+            t.start();
+            t.run();
 
         }
-    }
+
+            public void run() {
+                try{
+                    File file = new File(soundFileName);
+                    AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+                    clip = AudioSystem.getClip();
+                    clip.open(sound);
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
 
 
     private JButton accuseButton(){
@@ -216,7 +224,7 @@ public class GameControlPanel extends JPanel {
                         int rv = JOptionPane.showOptionDialog(null, playa.getName() + " has WON\n   You've Beaten all the Odds!",
                                 "Y O U    W I N", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
                         guessResultField.setBackground(playa.getColor());
-                        setGuessResult(" W I N N E R!!!");
+                        setGuessResult("W      I      N      N      E      R!!!");
                         setPersonGuessField(board.getTheAnswer_Person());
                         setRoomGuessField(board.getTheAnswer_Room());
                         setWeaponGuessField(board.getTheAnswer_Weapon());
@@ -224,17 +232,19 @@ public class GameControlPanel extends JPanel {
                         gameOverFLag = true;
                         updateDisplay();
                     } else {
-//                       SoundEffect soundEffect = new SoundEffect();
-//                       soundEffect.setFile("data/trumpet.wav");
-//                       soundEffect.play();
-                        JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
-                                "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
+
+                        int rv = JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
+                                "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
+                        if(rv == 0) {
+                            SoundEffect soundEffect = new SoundEffect("./data/trumpet.wav");
+
+                        }
                         guessResultField.setBackground(playa.getColor());
                         setPersonGuessField(board.getTheAnswer_Person());
                         setRoomGuessField(board.getTheAnswer_Room());
                         setWeaponGuessField(board.getTheAnswer_Weapon());
-                        setGuessResult("L O S E R!!!");
+                        setGuessResult("G A M E   O V E R!!!");
                         board.repaint();
                         gameOverFLag = true;
                         updateDisplay();
@@ -288,7 +298,7 @@ public class GameControlPanel extends JPanel {
                     board.repaint();
                 }
                 else{//If Player is Computer do all this
-
+                    disprovalFlag = false;
                     ArrayList allCards = board.getAllCards();
                     if(playa.isAccusationFlag()) {
                         board.calcTargets(board.getCell(playa), board.getDie());
@@ -308,7 +318,7 @@ public class GameControlPanel extends JPanel {
                                 setRoomGuessField(board.getTheAnswer_Room());
                                 setWeaponGuessField(board.getTheAnswer_Weapon());
                                 setPersonGuessField(board.getTheAnswer_Person());
-                                setGuessResult("C O M P U T E R    W I N N E R!!!");
+                                setGuessResult("G A M E   O V E R!!!");
 
                                 gameOverFLag = true;
                                 updateDisplay();
@@ -369,10 +379,7 @@ public class GameControlPanel extends JPanel {
                             setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         }
                         else{
-                            guessResultField.setBackground(Color.BLACK);
-                            guessResultField.setForeground(Color.RED);
-                            setGuessResult("U N A B L E  T O  D I S P R O V E...?");
-
+                            disprovalFlag = true;
                         }
                     }
                     board.repaint();
@@ -411,7 +418,7 @@ public class GameControlPanel extends JPanel {
             class GameOver extends Thread{ //Would still update and show the winner and the winning cards before it exits
                 public void run(){//Instead of slamming all the information into a dialog box. I thought this solution was more elegant.
                     try {
-                        TimeUnit.MILLISECONDS.sleep(2500);
+                        TimeUnit.MILLISECONDS.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -425,12 +432,18 @@ public class GameControlPanel extends JPanel {
 
     private JPanel guessPanel(){
         JPanel panel = new JPanel();
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Guess");
+        TitledBorder titledBorder = null;
+        if (gameOverFLag){
+             titledBorder = BorderFactory.createTitledBorder("W I N N I N G   C A R D S");
+        }
+        else{
+             titledBorder = BorderFactory.createTitledBorder("Guess");
+        }
         titledBorder.setTitleColor(Color.GREEN);
         panel.setBackground(Color.BLACK);
         panel.setBorder(titledBorder);
         panel.setLayout(new GridLayout(0,3));
-//        if (gameOverFLag){
+
             guessPersonField.setBackground(Color.BLACK);
             guessPersonField.setForeground(Color.RED);
             guessRoomField.setBackground(Color.BLACK);
@@ -438,7 +451,7 @@ public class GameControlPanel extends JPanel {
             guessWeaponField.setBackground(Color.BLACK);
             guessWeaponField.setForeground(Color.RED);
             guessResultField.setBackground(board.getWhoseTurn().getColor());
-//        }
+
         guessPersonField.setEditable(false);
         guessPersonField.setHorizontalAlignment(JLabel.CENTER);
         guessPersonField.setFont(new Font("Arial Bold", Font.BOLD, 12));
@@ -458,7 +471,13 @@ public class GameControlPanel extends JPanel {
     private JPanel guessResultPanel(){
         JPanel panel = new JPanel();
         panel.setBackground(Color.BLACK);
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Guess Result");
+        TitledBorder titledBorder = null;
+        if (gameOverFLag){
+            titledBorder = BorderFactory.createTitledBorder("          ?                  ?                  ?                  ?                  ?                  ?                  ?                  ?                  ?                  ?                  ?                  ?       ");
+        }
+        else{
+            titledBorder = BorderFactory.createTitledBorder("Guess Result");
+        }
         titledBorder.setTitleColor(Color.GREEN);
         panel.setBorder(titledBorder);
         panel.setLayout(new GridLayout(1,0));
@@ -466,6 +485,11 @@ public class GameControlPanel extends JPanel {
         guessResultField.setForeground(Color.BLACK);
         guessResultField.setHorizontalAlignment(JLabel.CENTER);
         guessResultField.setFont(new Font("Arial Bold", Font.BOLD, 12));
+        if(disprovalFlag){
+            guessResultField.setBackground(Color.BLACK);
+            guessResultField.setForeground(Color.RED);
+            setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+        }
         panel.add(guessResultField);
         return panel;
     }
@@ -489,10 +513,16 @@ public class GameControlPanel extends JPanel {
             index++;
         }
     }
+    public static void setDisprovalFlag(boolean b){
+        disprovalFlag = b;
+    }
     public static void setPersonGuessField(Card card){ guessPersonField.setText(card.getCardName()); }
     public static void setRoomGuessField(Card card){ guessRoomField.setText(card.getCardName()); }
     public static void setWeaponGuessField(Card card){ guessWeaponField.setText(card.getCardName()); }
     public static void setGuessResult(String guessResult){ guessResultField.setText(guessResult); }
+    public static JTextField getGuessResult(){
+        return guessResultField;
+    }
 
 
     //Main\\

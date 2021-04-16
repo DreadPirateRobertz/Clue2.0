@@ -36,7 +36,7 @@ public class ClueGame extends JFrame {
         return gcp;
     }
 
-    public static void pleaseUpdateCards(){
+    public static void updateCardsPanel(){
         gcp.updatePanels();
 
     }

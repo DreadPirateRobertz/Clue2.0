@@ -633,23 +633,21 @@ public class Board extends JPanel {
                     for (BoardCell target : targets){
                         target.setTarget(false);
                     }
-                    repaint();                                  //TODO: IN PROGRESS!
+                    repaint();  //If human player in a room handle suggestion
                     if(board.getCell(playa).isRoomCenter()){
                         Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
                         Card disproveCard = handleSuggestion(playa, s);
                         if (disproveCard == null){
-                            GameControlPanel.guessResultField.setBackground(Color.BLACK);  //One exception I made to make this static and public so I could change these here
-                            GameControlPanel.guessResultField.setForeground(Color.RED);   //Passing the GCP panel would have been a re-haul of code
-                            GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+                            GameControlPanel.setDisprovalFlag(true);
                         }
                         GameControlPanel.setPersonGuessField(s.getPersonCard());
                         GameControlPanel.setRoomGuessField(s.getRoomCard());
                         GameControlPanel.setWeaponGuessField(s.getWeaponCard());
                         if(disproveCard != null){
-                            GameControlPanel.guessResultField.setBackground(board.getDisproverColor());
+                            GameControlPanel.getGuessResult().setBackground(board.getDisproverColor());
                             GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         }
-                        ClueGame.pleaseUpdateCards();
+                        ClueGame.updateCardsPanel();
                         repaint();
                     }
 //                    playerFlag = true;
