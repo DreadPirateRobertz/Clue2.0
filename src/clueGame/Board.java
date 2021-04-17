@@ -599,7 +599,6 @@ public class Board extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             Board board = Board.getInstance();
-            playerFlag = false;
             if(getWhoseTurn() instanceof Human) {
                 int size;
                 if (getHeight() < getWidth()) {
@@ -626,20 +625,19 @@ public class Board extends JPanel {
                         playa.setCol(board.getRoom(whichTarget).getCenterCell().getCol());
                     }
                     else {
-                        playerFlag = true;
                         playa.setRow(whichTarget.getRow());
                         playa.setCol(whichTarget.getCol());
+                        playerFlag = true;
                     }
+
                     for (BoardCell target : targets){
                         target.setTarget(false);
                     }
+
                     repaint();  //If human player in a room handle suggestion
                     if(board.getCell(playa).isRoomCenter()){
                         Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
                         Card disproveCard = handleSuggestion(playa, s);
-                        if (disproveCard == null){
-                            GameControlPanel.setDisprovalFlag(true);
-                        }
                         GameControlPanel.setPersonGuessField(s.getPersonCard());
                         GameControlPanel.setRoomGuessField(s.getRoomCard());
                         GameControlPanel.setWeaponGuessField(s.getWeaponCard());
@@ -647,10 +645,16 @@ public class Board extends JPanel {
                             GameControlPanel.getGuessResult().setBackground(board.getDisproverColor());
                             GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         }
+                        else{
+                            GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+                            GameControlPanel.getGuessResult().setBackground(Color.BLACK);
+                            GameControlPanel.getGuessResult().setForeground(Color.RED);
+                        }
+
                         ClueGame.updateCardsPanel();
                         repaint();
                     }
-//                    playerFlag = true;
+
                 }
                 else {
                     Object[] theresOnlyOneAnswer = {"My Bad"};
@@ -688,7 +692,7 @@ public class Board extends JPanel {
     }
     public void setDie(){
         Random randomize = new Random();
-        die = randomize.nextInt(12)+2;
+        die = randomize.nextInt(11)+2;
     }
     public int getDie(){
         return die;
@@ -706,9 +710,6 @@ public class Board extends JPanel {
         return weaponCards;
     }
 
-    public void setPlayerFlag(Boolean b){
-        playerFlag = b;
-    }
 
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }

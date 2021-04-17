@@ -21,6 +21,7 @@ public class Human extends Player {
         board.getCell(suggestedPlaya).setOccupied(false);
         suggestedPlaya.setRow(this.getRow());
         suggestedPlaya.setCol(this.getCol());
+        board.setPlayerFlag(true);
 
         return s;
 

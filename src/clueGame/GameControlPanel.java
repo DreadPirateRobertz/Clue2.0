@@ -170,27 +170,28 @@ public class GameControlPanel extends JPanel {
 
         SoundEffect(String soundFileName) {
             this.soundFileName = soundFileName;
-            Thread t = new Thread(this);
-            t.start();
-            t.run();
-
         }
 
-            public void run() {
+            public void play() {
                 try{
                     File file = new File(soundFileName);
                     AudioInputStream sound = AudioSystem.getAudioInputStream(file);
                     clip = AudioSystem.getClip();
                     clip.open(sound);
                     clip.start();
-                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                    Thread.sleep(clip.getMicrosecondLength()/1000);
 
                 }
                 catch(Exception e){
                     e.printStackTrace();
                 }
             }
+
+        @Override
+        public void run() {
+
         }
+    }
 
 
     private JButton accuseButton(){
@@ -237,7 +238,8 @@ public class GameControlPanel extends JPanel {
                         int rv = JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
                                 "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
                         if(rv == 0) {
-                            SoundEffect soundEffect = new SoundEffect("./data/trumpet.wav");
+                            SoundEffect soundEffect = new SoundEffect("./data/laser.wav");
+                            soundEffect.play();
 
                         }
                         guessResultField.setBackground(playa.getColor());
