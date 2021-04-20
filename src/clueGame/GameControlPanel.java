@@ -2,18 +2,14 @@ package clueGame;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import java.applet.Applet;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.io.File;
 
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
@@ -173,11 +169,8 @@ public class GameControlPanel extends JPanel {
 
         // constructor to initialize streams and clip
         public SimpleAudioPlayer(String filePath) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
-
-            URL url = SimpleAudioPlayer.class.getResource(filePath);
             clip = AudioSystem.getClip();
-            System.out.println(url);
-            audioInputStream = AudioSystem.getAudioInputStream(url);
+            audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
             clip.open(audioInputStream);
         }
         // Method to play the audio
@@ -185,6 +178,7 @@ public class GameControlPanel extends JPanel {
         {
             //start the clip
             clip.start();
+            clip.loop(1);
 
 
         }

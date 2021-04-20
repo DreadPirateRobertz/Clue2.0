@@ -3,7 +3,6 @@ package clueGame;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +10,8 @@ public class ClueGame extends JFrame {
     private static GameCardsPanel gcp = null;
     public ClueGame() throws HeadlessException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1920, 1080);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(dim.width, dim.height);
         setTitle("ClueGame");
 
     }
