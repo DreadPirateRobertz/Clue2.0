@@ -599,67 +599,66 @@ public class Board extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             Board board = Board.getInstance();
-            if(getWhoseTurn() instanceof Human) {
-                int size;
-                if (getHeight() < getWidth()) {
-                    size = getHeight() / num_cols;
-                } else {
-                    size = getWidth() / num_rows;
-                }
-
-                Player playa = getWhoseTurn();
-                getCell(playa).setOccupied(false);
-                int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
-                int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
-                BoardCell whichTarget = null;
-
-                for (BoardCell target : targets) {
-                    if (target.containsClick(e.getX(), e.getY(), xOffset, yOffset, size)) {
-                        whichTarget = target;
-                        break;
-                    }
-                }
-                if (whichTarget != null) {
-                    if(whichTarget.isRoom()){
-                        playa.setRow(board.getRoom(whichTarget).getCenterCell().getRow());
-                        playa.setCol(board.getRoom(whichTarget).getCenterCell().getCol());
-                    }
-                    else {
-                        playa.setRow(whichTarget.getRow());
-                        playa.setCol(whichTarget.getCol());
-                        playerFlag = true;
+            if (!playerFlag) {
+                if (getWhoseTurn() instanceof Human) {
+                    int size;
+                    if (getHeight() < getWidth()) {
+                        size = getHeight() / num_cols;
+                    } else {
+                        size = getWidth() / num_rows;
                     }
 
-                    for (BoardCell target : targets){
-                        target.setTarget(false);
-                    }
+                    Player playa = getWhoseTurn();
+                    getCell(playa).setOccupied(false);
+                    int xOffset = (getWidth() / 2) - ((num_cols / 2) * size);
+                    int yOffset = (getHeight() / 2) - ((num_rows / 2) * size);
+                    BoardCell whichTarget = null;
 
-                    repaint();  //If human player in a room handle suggestion
-                    if(board.getCell(playa).isRoomCenter()){
-                        Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
-                        Card disproveCard = handleSuggestion(playa, s);
-                        GameControlPanel.setPersonGuessField(s.getPersonCard());
-                        GameControlPanel.setRoomGuessField(s.getRoomCard());
-                        GameControlPanel.setWeaponGuessField(s.getWeaponCard());
-                        if(disproveCard != null){
-                            GameControlPanel.getGuessResult().setBackground(board.getDisproverColor());
-                            GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
+                    for (BoardCell target : targets) {
+                        if (target.containsClick(e.getX(), e.getY(), xOffset, yOffset, size)) {
+                            whichTarget = target;
+                            break;
                         }
-                        else{
-                            GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
-                            GameControlPanel.getGuessResult().setBackground(Color.BLACK);
-                            GameControlPanel.getGuessResult().setForeground(Color.RED);
+                    }
+                    if (whichTarget != null) {
+                        if (whichTarget.isRoom()) {
+                            playa.setRow(board.getRoom(whichTarget).getCenterCell().getRow());
+                            playa.setCol(board.getRoom(whichTarget).getCenterCell().getCol());
+                        } else {
+                            playa.setRow(whichTarget.getRow());
+                            playa.setCol(whichTarget.getCol());
+                            playerFlag = true;
                         }
 
-                        ClueGame.updateCardsPanel();
-                        repaint();
-                    }
+                        for (BoardCell target : targets) {
+                            target.setTarget(false);
+                        }
 
-                }
-                else {
-                    Object[] theresOnlyOneAnswer = {"My Bad"};
-                    JOptionPane.showOptionDialog(null, "Invalid Target Selection",
-                            "This is Not the Way", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+                        repaint();  //If human player in a room handle suggestion
+                        if (board.getCell(playa).isRoomCenter()) {
+                            Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
+                            Card disproveCard = handleSuggestion(playa, s);
+                            GameControlPanel.setPersonGuessField(s.getPersonCard());
+                            GameControlPanel.setRoomGuessField(s.getRoomCard());
+                            GameControlPanel.setWeaponGuessField(s.getWeaponCard());
+                            if (disproveCard != null) {
+                                GameControlPanel.getGuessResult().setBackground(board.getDisproverColor());
+                                GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
+                            } else {
+                                GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
+                                GameControlPanel.getGuessResult().setBackground(Color.BLACK);
+                                GameControlPanel.getGuessResult().setForeground(Color.RED);
+                            }
+
+                            ClueGame.updateCardsPanel();
+                            repaint();
+                        }
+
+                    } else {
+                        Object[] theresOnlyOneAnswer = {"My Bad"};
+                        JOptionPane.showOptionDialog(null, "Invalid Target Selection",
+                                "This is Not the Way", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+                    }
                 }
             }
         }

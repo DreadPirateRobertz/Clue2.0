@@ -1,10 +1,12 @@
 package clueGame;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.applet.Applet;
 import java.awt.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,9 +14,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.io.File;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
@@ -162,35 +161,34 @@ public class GameControlPanel extends JPanel {
             }
         }
     }
-    public class SoundEffect implements Runnable {
+
+
+    class SimpleAudioPlayer {
+
 
         Clip clip;
-        String soundFileName;
 
 
-        SoundEffect(String soundFileName) {
-            this.soundFileName = soundFileName;
+        AudioInputStream audioInputStream;
+
+        // constructor to initialize streams and clip
+        public SimpleAudioPlayer(String filePath) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
+
+            URL url = SimpleAudioPlayer.class.getResource(filePath);
+            clip = AudioSystem.getClip();
+            System.out.println(url);
+            audioInputStream = AudioSystem.getAudioInputStream(url);
+            clip.open(audioInputStream);
+        }
+        // Method to play the audio
+        public void play()
+        {
+            //start the clip
+            clip.start();
+
+
         }
 
-            public void play() {
-                try{
-                    File file = new File(soundFileName);
-                    AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-                    clip = AudioSystem.getClip();
-                    clip.open(sound);
-                    clip.start();
-                    Thread.sleep(clip.getMicrosecondLength()/1000);
-
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-        @Override
-        public void run() {
-
-        }
     }
 
 
@@ -238,8 +236,13 @@ public class GameControlPanel extends JPanel {
                         int rv = JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
                                 "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
                         if(rv == 0) {
-                            SoundEffect soundEffect = new SoundEffect("./data/laser.wav");
-                            soundEffect.play();
+                            try {
+                                SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer("data/trumpet.wav");
+                                audioPlayer.play();
+
+                            } catch (UnsupportedAudioFileException | LineUnavailableException | IOException unsupportedAudioFileException) {
+                                unsupportedAudioFileException.printStackTrace();
+                            }
 
                         }
                         guessResultField.setBackground(playa.getColor());
@@ -262,6 +265,7 @@ public class GameControlPanel extends JPanel {
     private JButton nextButton(){
         JButton button = new JButton("NEXT");
         button.addActionListener(e -> {
+            Toolkit.getDefaultToolkit().beep();
             setGuessResult("");
             guessPersonField.setText("");
             guessRoomField.setText("");
@@ -326,7 +330,7 @@ public class GameControlPanel extends JPanel {
                                 updateDisplay();
                                 return;
                             } else {
-                                JOptionPane.showOptionDialog(null, playaName + "\nYour Poor Choices Lead to Failure",
+                                JOptionPane.showOptionDialog(null, board.getWhoseTurn().getName() + "\nYour Poor Choices Lead to Failure",
                                         "L O S E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
 
                                 guessResultField.setBackground(playa.getColor());
@@ -436,23 +440,23 @@ public class GameControlPanel extends JPanel {
         JPanel panel = new JPanel();
         TitledBorder titledBorder = null;
         if (gameOverFLag){
-             titledBorder = BorderFactory.createTitledBorder("W I N N I N G   C A R D S");
+            titledBorder = BorderFactory.createTitledBorder("W I N N I N G   C A R D S");
         }
         else{
-             titledBorder = BorderFactory.createTitledBorder("Guess");
+            titledBorder = BorderFactory.createTitledBorder("Guess");
         }
         titledBorder.setTitleColor(Color.GREEN);
         panel.setBackground(Color.BLACK);
         panel.setBorder(titledBorder);
         panel.setLayout(new GridLayout(0,3));
 
-            guessPersonField.setBackground(Color.BLACK);
-            guessPersonField.setForeground(Color.RED);
-            guessRoomField.setBackground(Color.BLACK);
-            guessRoomField.setForeground(Color.RED);
-            guessWeaponField.setBackground(Color.BLACK);
-            guessWeaponField.setForeground(Color.RED);
-            guessResultField.setBackground(board.getWhoseTurn().getColor());
+        guessPersonField.setBackground(Color.BLACK);
+        guessPersonField.setForeground(Color.RED);
+        guessRoomField.setBackground(Color.BLACK);
+        guessRoomField.setForeground(Color.RED);
+        guessWeaponField.setBackground(Color.BLACK);
+        guessWeaponField.setForeground(Color.RED);
+        guessResultField.setBackground(board.getWhoseTurn().getColor());
 
         guessPersonField.setEditable(false);
         guessPersonField.setHorizontalAlignment(JLabel.CENTER);
@@ -536,10 +540,6 @@ public class GameControlPanel extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // allow it to close
         frame.setVisible(true); // make it visible
 
-        // test filling in the data
-//        controlPanel.setWhoseTurn(new Computer("Larry", Color.green, "Galley"));
-//        controlPanel.setGuess( ":)");
-//        controlPanel.setGuessResult( ":):):)");
     }
 }
 

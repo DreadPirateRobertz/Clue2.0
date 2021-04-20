@@ -18,6 +18,9 @@ public class HumanSuggestionDialog extends JDialog {
     Room room = Board.getInstance().getRoom(Board.getInstance().getCell(Board.getInstance().getWhoseTurn()));
     ArrayList<Card> allCards = Board.getInstance().getAllCards();
     HumanSuggestionDialog(Room room, ArrayList<Card> allCards){
+        for (var t : board.getTargets()){
+            t.setTarget(false);
+        }
         setTitle("Make A Suggestion");
         createLayout();
     }
@@ -70,6 +73,7 @@ public class HumanSuggestionDialog extends JDialog {
         JButton button = new JButton("Submit");
         button.addActionListener(e ->{
             setVisible(false);
+
             Card roomCard = new Card(CardType.ROOM, room.getName()); //Producing the roomCard
             humanSuggestion.setPersonCard(playerCards.get(personComboBox.getSelectedIndex()));
             humanSuggestion.setWeaponCard(weaponCards.get(weaponComboBox.getSelectedIndex()));
