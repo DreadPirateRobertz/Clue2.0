@@ -1,7 +1,10 @@
 package clueGame;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +60,33 @@ public class ClueGame extends JFrame {
                 Object[] theresOnlyOneAnswer = {"Hell Yeah!"};
                 JOptionPane.showOptionDialog(clueGame, "                 You are Prisoner Shifty Eyes.\n Can you find the solution before the Computer players?",
                         "Welcome to Clue...in SPACE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, theresOnlyOneAnswer, theresOnlyOneAnswer[0]);
+                class SimpleAudioPlayer { //Not sure how to link my sound card/mixer with Ubuntu and IntelliJ but is playing fine on Windows
+                    //Fix^
+                    Clip clip;
+                    AudioInputStream audioInputStream;
+
+                    // constructor to initialize streams and clip
+                    public SimpleAudioPlayer(String filePath) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
+                        clip = AudioSystem.getClip();
+                        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
+                        clip.open(audioInputStream);
+                    }
+                    // Method to play the audio
+                    public void play()
+                    {
+                        //start the clip
+                        clip.start();
+                        clip.loop(1);
+                    }
+                }
+                SimpleAudioPlayer sap = null;
+                try {
+                    sap = new SimpleAudioPlayer("data/r2d2.wav");
+                } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+                    e.printStackTrace();
+                }
+                assert sap != null;
+                sap.play();
             }
 
         }

@@ -11,6 +11,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static javax.swing.KeyStroke.getKeyStroke;
+
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
     private static JTextField guessResultField;
@@ -159,12 +161,9 @@ public class GameControlPanel extends JPanel {
     }
 
 
-    class SimpleAudioPlayer {
-
-
+    class SimpleAudioPlayer { //Not sure how to link my sound card/mixer with Ubuntu and IntelliJ but is playing fine on Windows
+        //Fix^
         Clip clip;
-
-
         AudioInputStream audioInputStream;
 
         // constructor to initialize streams and clip
@@ -179,12 +178,8 @@ public class GameControlPanel extends JPanel {
             //start the clip
             clip.start();
             clip.loop(1);
-
-
         }
-
     }
-
 
     private JButton accuseButton(){
         JButton button = new JButton("J'Accuse");
@@ -216,6 +211,12 @@ public class GameControlPanel extends JPanel {
                     if (playa.doAccusation(humanAccusation)) {
                         int rv = JOptionPane.showOptionDialog(null, playa.getName() + " has WON\n   You've Beaten all the Odds!",
                                 "Y O U    W I N", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionWinner, optionWinner[0]);
+                        try {
+                            SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer("data/trumpet.wav");
+                            audioPlayer.play();
+                        } catch (LineUnavailableException | IOException | UnsupportedAudioFileException lineUnavailableException) {
+                            lineUnavailableException.printStackTrace();
+                        }
                         guessResultField.setBackground(playa.getColor());
                         setGuessResult("W      I      N      N      E      R!!!");
                         setPersonGuessField(board.getTheAnswer_Person());
@@ -231,7 +232,7 @@ public class GameControlPanel extends JPanel {
                                 "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
                         if(rv == 0) {
                             try {
-                                SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer("data/trumpet.wav");
+                                SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer("data/trombone.wav");
                                 audioPlayer.play();
 
                             } catch (UnsupportedAudioFileException | LineUnavailableException | IOException unsupportedAudioFileException) {
@@ -259,6 +260,14 @@ public class GameControlPanel extends JPanel {
     private JButton nextButton(){
         JButton button = new JButton("NEXT");
         button.addActionListener(e -> {
+//            component.getInputMap().put(KeyStroke.getKeyStroke("F2"),
+//                    "doSomething");
+//            component.getActionMap().put("doSomething",
+//                    anAction);
+//            this.getInputMap().put(getKeyStroke("SPACE"), "Next");
+
+
+
             Toolkit.getDefaultToolkit().beep();
             setGuessResult("");
             guessPersonField.setText("");
@@ -270,11 +279,10 @@ public class GameControlPanel extends JPanel {
             Object[] option = {"I'll never do this again..."};
             Object[] optionWinner = {"G A M E   O V E R"};
             Object[] optionLoser = {"Another One Down"};
-            if(!board.isPlayerFlag()){
-                JOptionPane.showOptionDialog(null, "You Haven't Completed Your Turn", "Hold Your Horses",JOptionPane.OK_OPTION,
+            if (!board.isPlayerFlag()) {
+                JOptionPane.showOptionDialog(null, "You Haven't Completed Your Turn", "Hold Your Horses", JOptionPane.OK_OPTION,
                         JOptionPane.ERROR_MESSAGE, null, option, option[0]);
-            }
-            else{
+            } else {
                 ArrayList<BoardCell> targets = new ArrayList<>(board.getTargets());
                 playa = board.getWhoseTurn();
                 setWhoseTurn();
@@ -287,20 +295,19 @@ public class GameControlPanel extends JPanel {
 
                 board.calcTargets(board.getCell(row, col), getRoll());
                 targets = new ArrayList<>(board.getTargets());
-                if (playa.isStayInRoomFlag()){
+                if (playa.isStayInRoomFlag()) {
                     targets.add(board.getCell(playa));
                 }
-                if(playa instanceof Human) {
+                if (playa instanceof Human) {
                     board.setPlayerFlag(false);
-                    for (BoardCell target : targets){
+                    for (BoardCell target : targets) {
                         target.setTarget(true);
                     }
                     board.repaint();
-                }
-                else{//If Player is Computer do all this
+                } else {//If Player is Computer do all this
                     disprovalFlag = false;
                     ArrayList allCards = board.getAllCards();
-                    if(playa.isAccusationFlag()) {
+                    if (playa.isAccusationFlag()) {
                         board.calcTargets(board.getCell(playa), board.getDie());
                         Set<BoardCell> targetsSet = board.getTargets();
                         for (BoardCell target : targetsSet) { //Logic to make sure computer has to be in a room before it can make an accuasation
@@ -349,13 +356,13 @@ public class GameControlPanel extends JPanel {
                         }
                     }
                     BoardCell target = playa.selectTargets(targets);
-                    if (target == null){
+                    if (target == null) {
 
                     }
                     board.getCell(playa).setOccupied(false);
                     playa.setRow(target.getRow());
                     playa.setCol(target.getCol());
-                    if(board.getCell(playa).isRoomCenter()) {
+                    if (board.getCell(playa).isRoomCenter()) {
                         Suggestion s = playa.createSuggestion(board.getRoom(board.getCell(playa)), allCards);
                         playa.setSuggestion(s);
                         Player suggestedPlaya = board.getPlayer(s.getPersonCard().getCardName());
@@ -366,7 +373,7 @@ public class GameControlPanel extends JPanel {
                             suggestedPlaya.setRow(playa.getRow());
                             suggestedPlaya.setCol(playa.getCol());//Calls the suggestedPlaya to the Room
                         }
-                        if(!(lastPlayerRow == suggestedPlaya.getRow()) && !(lastPlayerCol == suggestedPlaya.getCol())){
+                        if (!(lastPlayerRow == suggestedPlaya.getRow()) && !(lastPlayerCol == suggestedPlaya.getCol())) {
                             suggestedPlaya.setStayInRoomFlag(true);
                         }
 
@@ -374,11 +381,10 @@ public class GameControlPanel extends JPanel {
                         setRoomGuessField(s.getRoomCard());
                         setWeaponGuessField(s.getWeaponCard());
                         Card disproveCard = board.handleSuggestion(playa, s);
-                        if(disproveCard != null){
+                        if (disproveCard != null) {
                             guessResultField.setBackground(board.getDisproverColor());
                             setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
-                        }
-                        else{
+                        } else {
                             disprovalFlag = true;
                         }
                     }
@@ -386,11 +392,12 @@ public class GameControlPanel extends JPanel {
                 }
             }
             updateDisplay();
-            if(playa != null) {
+            if (playa != null) {
                 playa.setStayInRoomFlag(false);
             }
 
         });
+
         button.setForeground(Color.GREEN);
         button.setBackground(Color.BLACK);
         return button;
