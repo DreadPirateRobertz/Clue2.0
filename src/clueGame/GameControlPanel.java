@@ -11,8 +11,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static javax.swing.KeyStroke.getKeyStroke;
-
 public class GameControlPanel extends JPanel {
     private static JTextField guessPersonField, guessRoomField, guessWeaponField;
     private static JTextField guessResultField;
@@ -177,7 +175,6 @@ public class GameControlPanel extends JPanel {
         {
             //start the clip
             clip.start();
-            clip.loop(1);
         }
     }
 
@@ -217,12 +214,14 @@ public class GameControlPanel extends JPanel {
                         } catch (LineUnavailableException | IOException | UnsupportedAudioFileException lineUnavailableException) {
                             lineUnavailableException.printStackTrace();
                         }
+
                         guessResultField.setBackground(playa.getColor());
                         setGuessResult("W      I      N      N      E      R!!!");
                         setPersonGuessField(board.getTheAnswer_Person());
                         setRoomGuessField(board.getTheAnswer_Room());
                         setWeaponGuessField(board.getTheAnswer_Weapon());
                         board.repaint();
+                        disprovalFlag = false;
                         gameOverFLag = true;
                         updateDisplay();
                     } else {
@@ -246,6 +245,7 @@ public class GameControlPanel extends JPanel {
                         setWeaponGuessField(board.getTheAnswer_Weapon());
                         setGuessResult("G A M E   O V E R!!!");
                         board.repaint();
+                        disprovalFlag = false;
                         gameOverFLag = true;
                         updateDisplay();
                     }
@@ -268,7 +268,6 @@ public class GameControlPanel extends JPanel {
 
 
 
-            Toolkit.getDefaultToolkit().beep();
             setGuessResult("");
             guessPersonField.setText("");
             guessRoomField.setText("");
@@ -326,8 +325,15 @@ public class GameControlPanel extends JPanel {
                                 setWeaponGuessField(board.getTheAnswer_Weapon());
                                 setPersonGuessField(board.getTheAnswer_Person());
                                 setGuessResult("G A M E   O V E R!!!");
-
+                                disprovalFlag = false;
                                 gameOverFLag = true;
+                                try {
+                                    SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer("data/trombone.wav");
+                                    audioPlayer.play();
+
+                                } catch (UnsupportedAudioFileException | LineUnavailableException | IOException unsupportedAudioFileException) {
+                                    unsupportedAudioFileException.printStackTrace();
+                                }
                                 updateDisplay();
                                 return;
                             } else {
@@ -350,6 +356,7 @@ public class GameControlPanel extends JPanel {
                                     board.setIndex(index);
                                 }
                                 board.repaint();
+                                disprovalFlag = false;
                                 updateDisplay();
                                 return;
                             }
@@ -385,6 +392,13 @@ public class GameControlPanel extends JPanel {
                             guessResultField.setBackground(board.getDisproverColor());
                             setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         } else {
+                            SimpleAudioPlayer sap = null;
+                            try {
+                                sap = new SimpleAudioPlayer("data/raygun.wav");
+                            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lineUnavailableException) {
+                                lineUnavailableException.printStackTrace();
+                            }
+                            sap.play();
                             disprovalFlag = true;
                         }
                     }
