@@ -76,7 +76,6 @@ public class ClueGame extends JFrame {
                     {
                         //start the clip
                         clip.start();
-                        clip.loop(1);
                     }
                 }
                 SimpleAudioPlayer sap = null;
