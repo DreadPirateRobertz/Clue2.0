@@ -26,7 +26,7 @@ public class HumanAccusationDialog extends JDialog {
 
     private void createLayout(){
         setLayout(new GridLayout(4,2));
-        JLabel roomLabel = new JLabel("Current Room:");
+        JLabel roomLabel = new JLabel("Rooms:");
         JLabel personLabel = new JLabel("Person:");
         JLabel weaponLabel = new JLabel("Weapon:");
         roomComboBox = new JComboBox();

@@ -598,6 +598,7 @@ public class Board extends JPanel {
     private class whichTargetListener implements MouseListener{
         @Override
         public void mouseClicked(MouseEvent e) {
+
             Board board = Board.getInstance();
             if (!playerFlag) {
                 if (getWhoseTurn() instanceof Human) {
@@ -629,6 +630,7 @@ public class Board extends JPanel {
                             playa.setCol(whichTarget.getCol());
                             playerFlag = true;
                         }
+                        GameControlPanel.setDisprovalFlag(false);
 
                         for (BoardCell target : targets) {
                             target.setTarget(false);
