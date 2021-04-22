@@ -225,8 +225,6 @@ public class GameControlPanel extends JPanel {
                         gameOverFLag = true;
                         updateDisplay();
                     } else {
-
-
                         int rv = JOptionPane.showOptionDialog(null, playa.getName() + "\nYour Poor Choices Lead to Failure",
                                 "G A M E   O V E R", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionLoser, optionLoser[0]);
                         if(rv == 0) {
@@ -239,13 +237,13 @@ public class GameControlPanel extends JPanel {
                             }
 
                         }
+                        disprovalFlag = false;
                         guessResultField.setBackground(playa.getColor());
                         setPersonGuessField(board.getTheAnswer_Person());
                         setRoomGuessField(board.getTheAnswer_Room());
                         setWeaponGuessField(board.getTheAnswer_Weapon());
                         setGuessResult("G A M E   O V E R!!!");
                         board.repaint();
-                        disprovalFlag = false;
                         gameOverFLag = true;
                         updateDisplay();
                     }
@@ -260,14 +258,6 @@ public class GameControlPanel extends JPanel {
     private JButton nextButton(){
         JButton button = new JButton("NEXT");
         button.addActionListener(e -> {
-//            component.getInputMap().put(KeyStroke.getKeyStroke("F2"),
-//                    "doSomething");
-//            component.getActionMap().put("doSomething",
-//                    anAction);
-//            this.getInputMap().put(getKeyStroke("SPACE"), "Next");
-
-
-
             setGuessResult("");
             guessPersonField.setText("");
             guessRoomField.setText("");
@@ -409,9 +399,7 @@ public class GameControlPanel extends JPanel {
             if (playa != null) {
                 playa.setStayInRoomFlag(false);
             }
-
         });
-
         button.setForeground(Color.GREEN);
         button.setBackground(Color.BLACK);
         return button;
@@ -432,8 +420,6 @@ public class GameControlPanel extends JPanel {
         guessRoomField.getText();
         guessWeaponField.getText();
         guessResultField.getText();
-
-
 
         if (gameOverFLag){ //The intentionality for running a separate thread was so when there was a winner the GameControlPanel
             class GameOver extends Thread{ //Would still update and show the winner and the winning cards before it exits
@@ -514,12 +500,8 @@ public class GameControlPanel extends JPanel {
         panel.add(guessResultField);
         return panel;
     }
-
-
     //Getters
     public int getRoll() { return roll; }
-
-
     //Setters
     public void setWhoseTurn(){
         Player playa = board.setWhoseTurn();
@@ -544,7 +526,6 @@ public class GameControlPanel extends JPanel {
     public static JTextField getGuessResult(){
         return guessResultField;
     }
-
 
     //Main\\
     public static void main(String[] args) {

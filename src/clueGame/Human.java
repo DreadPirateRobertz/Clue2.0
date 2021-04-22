@@ -22,9 +22,7 @@ public class Human extends Player {
         suggestedPlaya.setRow(this.getRow());
         suggestedPlaya.setCol(this.getCol());
         board.setPlayerFlag(true);
-
         return s;
-
     }
 
     @Override

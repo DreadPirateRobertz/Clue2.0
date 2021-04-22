@@ -1,10 +1,7 @@
 package clueGame;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.security.KeyStore;
 import java.util.*;
 
 public class GameCardsPanel extends JPanel {
@@ -32,7 +29,6 @@ public class GameCardsPanel extends JPanel {
         inHandPersonCards.clear();
         inHandRoomCards.clear();
         inHandWeaponCards.clear();
-
 
         for (Card card : inHand){
             if (card.getCardType().equals(CardType.PERSON)){
@@ -73,7 +69,6 @@ public class GameCardsPanel extends JPanel {
         add(roomCardsPanel());
         add(weaponCardsPanel());
     }
-
 
     private JPanel peopleCardsPanel(){
         JPanel panel = new JPanel();

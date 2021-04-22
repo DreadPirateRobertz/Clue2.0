@@ -11,13 +11,14 @@ import java.util.concurrent.TimeUnit;
 
 public class ClueGame extends JFrame {
     private static GameCardsPanel gcp = null;
+
     public ClueGame() throws HeadlessException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(dim.width, dim.height);
         setTitle("ClueGame");
-
     }
+
     @Override
     public void setSize(int width, int height) {
         super.setSize(width, height);
@@ -34,21 +35,16 @@ public class ClueGame extends JFrame {
     public void setTitle(String title) {
         super.setTitle(title);
     }
-
     public static GameCardsPanel getGameCardsPanel() {
         return gcp;
     }
-
-    public static void updateCardsPanel(){
+    public static void updateCardsPanel() {
         gcp.updatePanels();
-
     }
-
+    /////OFFICIAL MAIN FOR CLUEGAME\\\\\
     public static void main(String[] args) {
         ClueGame clueGame = new ClueGame();
         Board board = Board.getInstance();
-        ArrayList<Card> inHand = null;
-        ArrayList<Card> seen = null;
 
         class SplashScreen extends Thread{
             public void run(){
@@ -64,7 +60,6 @@ public class ClueGame extends JFrame {
                     //Fix^
                     Clip clip;
                     AudioInputStream audioInputStream;
-
                     // constructor to initialize streams and clip
                     public SimpleAudioPlayer(String filePath) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
                         clip = AudioSystem.getClip();
@@ -90,7 +85,6 @@ public class ClueGame extends JFrame {
 
         }
         SplashScreen splashy = new SplashScreen();
-
         splashy.start();
 
         board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
@@ -111,4 +105,4 @@ public class ClueGame extends JFrame {
         clueGame.add(board, BorderLayout.CENTER);
         clueGame.setVisible(true);
         }
-    }
+}

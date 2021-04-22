@@ -44,6 +44,4 @@ public class Room {
         unUsed = true;
     }
     public void setRoom() {room = true; }
-
-
 }

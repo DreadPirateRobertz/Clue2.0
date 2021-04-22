@@ -162,7 +162,7 @@ public class BoardCell  {
         }
 
     }
-        //Getters
+    //Getters
     public int getRow() {
         return row;
     }
@@ -173,10 +173,6 @@ public class BoardCell  {
     public char getInitial() { return initial; }
     public DoorDirection getDoorDirection() { return doorDirection; }
     public char getSecretPassage() { return secretPassage; }
-
-
-
-
     //Is'ers
     public boolean isRoom(){ return room;}
     public boolean isOccupied() { return occupied; }
@@ -186,15 +182,6 @@ public class BoardCell  {
     public boolean isRoomCenter() { return roomCenter; }
     public boolean isRoomLabel() { return roomLabel; }
     //Setters
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
-    }
-
     public void addAdjacency(BoardCell cell) { adjList.add(cell); }
     public void setInitial(char initial) { this.initial = initial; }
     public void setDoorway() { doorway = true; }
@@ -203,7 +190,6 @@ public class BoardCell  {
     public void setRoomCenter() { roomCenter = true; }
     public void setSecretPassage(char secretPassage) { this.secretPassage = secretPassage; }
     public void setOccupied(boolean b) { occupied = b; }
-
     public void setTarget(boolean b) {
         target = b;
     }
@@ -213,11 +199,9 @@ public class BoardCell  {
     public void setUnUsed() {
         unUsed = true;
     }
-
     public void setWalkWay() {
         walkWay= true;
     }
-
-
-
+    public void setRow(int row) { this.row = row; }
+    public void setCol(int col) { this.col = col; }
 }

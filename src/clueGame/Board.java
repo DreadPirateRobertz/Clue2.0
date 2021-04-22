@@ -34,12 +34,6 @@ public class Board extends JPanel {
     private String disproverPlayer;
     private int die = 0;
 
-
-
-    public static ArrayList<Player> getPlayers() {
-        return players;
-    }
-
     public void initialize() {//Set-up board
         theAnswer = new ArrayList<>();
         visited = new HashSet<>();
@@ -246,7 +240,6 @@ public class Board extends JPanel {
         while(!workingDeck.isEmpty()) {//Deals any residual cards after general allotment is made
             for (Card card : workingDeck) {//There was mention of adding more cards so figured this may be needed
                 Player player = keys.get(randomize.nextInt(keys.size()));
-//                card.setColor(player.getColor());
                 player.updateHand(card); //Reverse link will also update playerMap appropriately
                 workingDeck.remove(card);
                 keys.remove(player);
@@ -598,7 +591,6 @@ public class Board extends JPanel {
     private class whichTargetListener implements MouseListener{
         @Override
         public void mouseClicked(MouseEvent e) {
-
             Board board = Board.getInstance();
             if (!playerFlag) {
                 if (getWhoseTurn() instanceof Human) {
@@ -622,7 +614,7 @@ public class Board extends JPanel {
                         }
                     }
                     if (whichTarget != null) {
-                        if (whichTarget.isRoom()) {
+                        if (whichTarget.isRoom()) { //Makes sure the Player is reassigned to center of the Room
                             playa.setRow(board.getRoom(whichTarget).getCenterCell().getRow());
                             playa.setCol(board.getRoom(whichTarget).getCenterCell().getCol());
                         } else {
@@ -636,7 +628,7 @@ public class Board extends JPanel {
                             target.setTarget(false);
                         }
 
-                        repaint();  //If human player in a room handle suggestion
+                        repaint();  //If human player is in a room, handle suggestion
                         if (board.getCell(playa).isRoomCenter()) {
                             Suggestion s = playa.createSuggestion(getRoom(whichTarget), allCards);
                             Card disproveCard = handleSuggestion(playa, s);
@@ -683,35 +675,18 @@ public class Board extends JPanel {
     public ArrayList<Card> getAllCards() {
         return allCards;
     }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-    public void setDie(){
-        Random randomize = new Random();
-        die = randomize.nextInt(11)+2;
-    }
     public int getDie(){
         return die;
     }
-
-    public BoardCell[][] getGrid() {
-        return grid;
-    }
-
     public ArrayList<Card> getPlayerCards() {
         return playerCards;
     }
-
     public ArrayList<Card> getWeaponCards() {
         return weaponCards;
     }
-
-
+    public static ArrayList<Player> getPlayers() {
+        return players;
+    }
     public Set<BoardCell> getAdjList(int row, int col) { return getCell(row, col).getAdjList(); }
     public Room getRoom(BoardCell cell) { return roomMap.get(cell.getInitial()); }
     public Room getRoom(char key) { return roomMap.get(key); }
@@ -734,7 +709,13 @@ public class Board extends JPanel {
     public boolean isRoom(char symbol) { return roomMap.containsKey(symbol); }
     public boolean isRoom(BoardCell cell){return getRoom(cell).isRoom(); }
     //Setters
-
+    public void setDie(){
+        Random randomize = new Random();
+        die = randomize.nextInt(11)+2;
+    }
+    public void setIndex(int index) {
+        this.index = index;
+    }
     public static void setTheAnswer_Person(Card card){ theAnswer.add(card); }
     public static void setTheAnswer_Room(Card card){ theAnswer.add(card); }
     public static void setTheAnswer_Weapon(Card card){ theAnswer.add(card); }

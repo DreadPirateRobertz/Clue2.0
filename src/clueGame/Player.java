@@ -25,10 +25,7 @@ public abstract class Player {
     }
     public abstract Suggestion createSuggestion(Room room, ArrayList<Card> allCards);
     public abstract BoardCell selectTargets(ArrayList<BoardCell> targets);
-
-    public void setAccusationFlag(){
-        accusationFlag = true;
-    }
+    public boolean doAccusation(Suggestion s) { return Board.getInstance().checkAccusation(s); }
 
     public Card disproveSuggestion(Suggestion s){
         ArrayList<Card> disproveList = new ArrayList<>();
@@ -82,20 +79,10 @@ public abstract class Player {
             g.drawRoundRect(this.getCol() * size + xOffset, this.getRow() * size + yOffset, size - 1, size - 1, size - 1, size - 1);
         }
     }
-
-    public void setStayInRoomFlag(boolean stayinRoomFlag) {
-        this.stayinRoomFlag = stayinRoomFlag;
-    }
-
-    public boolean isStayInRoomFlag() {
-        return stayinRoomFlag;
-    }
-
-    public boolean doAccusation(Suggestion s) {
-        return Board.getInstance().checkAccusation(s);
-    }
-
     //Setters
+    public void setAccusationFlag(){
+        accusationFlag = true;
+    }
     public void setSuggestion(Suggestion s){
         suggestion = s;
     }
@@ -109,8 +96,14 @@ public abstract class Player {
         col = Board.getInstance().getRoom(startLocation.charAt(0)).getCenterCell().getCol();
     }
     //Isers
+    public boolean isStayInRoomFlag() {
+        return stayinRoomFlag;
+    }
     public boolean isAccusationFlag() { return accusationFlag; }
     //Getters
+    public void setStayInRoomFlag(boolean stayinRoomFlag) {
+        this.stayinRoomFlag = stayinRoomFlag;
+    }
     public Suggestion getSuggestion() { return suggestion; }
     public int getRow() { return row; }
     public int getCol() { return col; }
@@ -119,5 +112,4 @@ public abstract class Player {
     public String getName() { return name; }
     public Color getColor() { return color; }
     public String getStartLocation() { return startLocation; }
-
 }

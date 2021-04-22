@@ -15,9 +15,11 @@ public class HumanSuggestionDialog extends JDialog {
     ArrayList<Card> weaponCards = board.getWeaponCards();
     JComboBox personComboBox;
     JComboBox  weaponComboBox;
-    Room room = Board.getInstance().getRoom(Board.getInstance().getCell(Board.getInstance().getWhoseTurn()));
-    ArrayList<Card> allCards = Board.getInstance().getAllCards();
+    Room room;
+    ArrayList<Card> allCards;
     HumanSuggestionDialog(Room room, ArrayList<Card> allCards){
+        this.room = room;
+        this.allCards = allCards;
         for (var t : board.getTargets()){
             t.setTarget(false);
         }
@@ -53,7 +55,6 @@ public class HumanSuggestionDialog extends JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int w = dialog.getSize().width;
         int h = dialog.getSize().height;
-
         int x = (dim.width - w) / 2;
         int y = (dim.height - h) / 2;
         dialog.setLocation(x-60, y-80);
@@ -73,7 +74,6 @@ public class HumanSuggestionDialog extends JDialog {
         JButton button = new JButton("Submit");
         button.addActionListener(e ->{
             setVisible(false);
-
             Card roomCard = new Card(CardType.ROOM, room.getName()); //Producing the roomCard
             humanSuggestion.setPersonCard(playerCards.get(personComboBox.getSelectedIndex()));
             humanSuggestion.setWeaponCard(weaponCards.get(weaponComboBox.getSelectedIndex()));
