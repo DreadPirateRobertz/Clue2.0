@@ -1,11 +1,14 @@
 package clueGame;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Board extends JPanel {
@@ -641,10 +644,15 @@ public class Board extends JPanel {
                                 GameControlPanel.setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                             } else {
                                 GameControlPanel.setGuessResult("U N A B L E  T O  D I S P R O V E...?");
-                                GameControlPanel.getGuessResult().setBackground(Color.BLACK);
+                                GameControlPanel.getGuessResult().setBackground(Color.BLACK);     //Disapproval Flag not triggering so have to put this code again here
                                 GameControlPanel.getGuessResult().setForeground(Color.RED);
+                                try {
+                                    SimpleAudioPlayer sap = new SimpleAudioPlayer("data/raygun.wav");
+                                    sap.play();
+                                } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lineUnavailableException) {
+                                    lineUnavailableException.printStackTrace();
+                                }
                             }
-
                             ClueGame.updateCardsPanel();
                             repaint();
                         }

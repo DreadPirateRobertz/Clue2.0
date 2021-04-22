@@ -1,10 +1,10 @@
 package clueGame;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -158,25 +158,6 @@ public class GameControlPanel extends JPanel {
         }
     }
 
-
-    class SimpleAudioPlayer { //Not sure how to link my sound card/mixer with Ubuntu and IntelliJ but is playing fine on Windows
-        //Fix^
-        Clip clip;
-        AudioInputStream audioInputStream;
-
-        // constructor to initialize streams and clip
-        public SimpleAudioPlayer(String filePath) throws LineUnavailableException, UnsupportedAudioFileException, IOException {
-            clip = AudioSystem.getClip();
-            audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
-            clip.open(audioInputStream);
-        }
-        // Method to play the audio
-        public void play()
-        {
-            //start the clip
-            clip.start();
-        }
-    }
 
     private JButton accuseButton(){
         JButton button = new JButton("J'Accuse");
@@ -382,13 +363,6 @@ public class GameControlPanel extends JPanel {
                             guessResultField.setBackground(board.getDisproverColor());
                             setGuessResult("This Guess Has Been Disproven by " + board.getDisproverPlayer());
                         } else {
-                            SimpleAudioPlayer sap = null;
-                            try {
-                                sap = new SimpleAudioPlayer("data/raygun.wav");
-                            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lineUnavailableException) {
-                                lineUnavailableException.printStackTrace();
-                            }
-                            sap.play();
                             disprovalFlag = true;
                         }
                     }
@@ -493,6 +467,13 @@ public class GameControlPanel extends JPanel {
         guessResultField.setHorizontalAlignment(JLabel.CENTER);
         guessResultField.setFont(new Font("Arial Bold", Font.BOLD, 12));
         if(disprovalFlag){
+            SimpleAudioPlayer sap = null;
+            try {
+                sap = new SimpleAudioPlayer("data/raygun.wav");
+            } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lineUnavailableException) {
+                lineUnavailableException.printStackTrace();
+            }
+            sap.play();
             guessResultField.setBackground(Color.BLACK);
             guessResultField.setForeground(Color.RED);
             setGuessResult("U N A B L E  T O  D I S P R O V E...?");
