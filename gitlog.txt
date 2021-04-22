@@ -1,3 +1,166 @@
+commit febf07651a128abd0718358fcbd177dd5e4c761b
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Thu Apr 22 13:40:22 2021 -0600
+
+    C25A -> README
+
+commit 4f17a5820c478822e279995d8afe20c151f3496e
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Thu Apr 22 13:32:14 2021 -0600
+
+    C25A -> Modded jar and fine details project is pretty much done besides writing all details in README
+
+commit d8a35a72d070123b29bcdb3f29e9b2946acfcfdc
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Thu Apr 22 12:20:34 2021 -0600
+
+    C25A -> Modded jar and fine details project is pretty much done besides writing all details in README
+
+commit 30458a8a674ce9c40d3ad0f1a40bfe5c410e37c6
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Thu Apr 22 11:11:57 2021 -0600
+
+    C25A -> Modded jar
+
+commit 08f598d04b128265f02018feb7bc03f6095d6899
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Thu Apr 22 10:46:37 2021 -0600
+
+    C25A -> Refactored and cleaned up all code and made another .jar with all refinements made will be rebooting to my Windows machine to test all sound for production release
+
+commit e8881eb636f2e497b712473bba80e090b2c44e00
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Wed Apr 21 18:39:26 2021 -0600
+
+    C25A -> Sounds work on windows box that are causing the whole program to null out with Linux Mint and their sound card issues
+
+commit 8a61a990d3084b0830fb2127cd86dfe61c1f21b3
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 21 17:40:53 2021 -0600
+
+    C25A -> Modded jar
+
+commit 63e09b850f15f0fd714f2a155d9446ef4064920b
+Author: DreadPirateRobertz <77945604+DreadPirateRobertz@users.noreply.github.com>
+Date:   Wed Apr 21 17:38:38 2021 -0600
+
+    Delete Clue2.0.jar
+
+commit 714582368093ba27022079281ff8db3b5e38fe32
+Merge: 67b6e42 b26ed42
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 21 17:36:40 2021 -0600
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 67b6e4210f64e3a20fc4ae91d8df12b6ffdfab3f
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 21 17:36:18 2021 -0600
+
+    C25A -> Going to transfer over to the windows box and test the jar!
+
+commit b26ed426d7a54e88de1d3753b45856b21ce1f869
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Wed Apr 21 08:20:43 2021 -0600
+
+    C25A -> Sounds added all around more ad hoc testing
+
+commit 484051cbbe5d2d73e58104cb5ddc4d45025e0e0e
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 20 15:55:59 2021 -0600
+
+    C25A -> Putting in some more sounds and will switch over to windows box to confirm playing correctly.
+
+commit 8d3e9b9b1098323bd2ee7022e8c6419bc9b78b43
+Author: Chris Deal <cdeal@mymail.mines.edu>
+Date:   Tue Apr 20 12:51:22 2021 -0600
+
+    C25A -> Sounds works on the windows box! I was right the mixer is not being set in intellij/ubuntu correctly
+
+commit 31d26eaaff6463d52fdbfd251c4275a24efab0c9
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 20 11:40:36 2021 -0600
+
+    C25A -> Sound is giving me trouble going to switch over to my Windows box see if it is something with the sound card
+
+commit cf52ff8cffe264140fc62fef594fa43ccfdebb66
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 17 13:35:48 2021 -0600
+
+    C25A -> Forgot to add my dialogs to Git and also fixed a small playerFlag issue.
+
+commit 1c635e562db8dba4ce461fc1655667d337fade3c
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Thu Apr 15 20:12:52 2021 -0600
+
+    C25A -> Attempting to add sound effects now but code is looking great
+
+commit 5f05ebb1fdac612d110bb48a192402af35146062
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 14 21:11:53 2021 -0600
+
+    C25A -> Made all the coloring and design look really rad -> Finishing touches to entire game on the way
+
+commit cb0b865f2061c839685388baa3902c808d8690a6
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Wed Apr 14 13:53:25 2021 -0600
+
+    C25A -> Implemented 2 dice in the game play.  I think it plays way better b/c if you get caught in a long game with the computers they can trap you in an area if they keep calling you to a room.
+
+commit f135c2a8d25b9856f0f4e979f6dadad3eb64d807
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 13 23:40:21 2021 -0600
+
+    C25A -> Looking good did some refactoring...now sleep
+
+commit 3a13c9d6cf4dc5d567125f0d5dd87606bd64c4ae
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Tue Apr 13 20:18:51 2021 -0600
+
+    C25A -> Alright suggestion for the Human with modal dialog and the GameCardsPanel is updating nicely
+
+commit 2f37df0d4877c44f5ee96d0bbf78137fd8e064ca
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 12 22:54:30 2021 -0600
+
+    C25A -> WOW, I am excited I figured out how to get the splash screen to display after the board displays and also how to end the game and still have my gcp show the winner and the winning cards....THREADZ
+
+commit 4e52c8ef3541fbd212bd8f866df6fc64740cd46b
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Mon Apr 12 00:54:17 2021 -0600
+
+    C25A -> Solved the targeting Bug...When I was calling the suggested Player to the room I wasn't setting the cell to not OCCUPIED :)
+
+commit e01fb0192f73d986ba10ea2b79d7fe14d833658e
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sun Apr 11 22:41:35 2021 -0600
+
+    C25A -> Put in Dice/Die to tell the Player the roll.....wow that took me forever.
+
+commit 73178d2355f08fe39ccb1c269e6e5a792076d4e3
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sun Apr 11 12:52:06 2021 -0600
+
+    C25A -> Lot of work on dialog/display for winning and losing conditions.  Note: Bug on targeting some targets are not being highlighted trying to sort that one out
+
+commit 97e6b37348122b778fd1eefa9187ea8fec685c4c
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 23:43:41 2021 -0600
+
+    C25A -> Just did the accusation logic for the computer looks good and did sufficient tests on it...now time for the Human
+
+commit bd22f606fd867794563a5273d81d17cd782e919b
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 23:08:47 2021 -0600
+
+    C25A -> Have suggestion code looking nice for the Computer Player and working on accusation logic
+
+commit d9295c9f17755f44c9d5281dce8fe743a7fa9aca
+Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
+Date:   Sat Apr 10 17:18:07 2021 -0600
+
+    C23A --> Committing gitlog and preparing to ZIP^
+
 commit 0bc91a337fa9aa3ec8c29173b790eb4596cb15f3
 Author: DreadPirateRobertz <cdeal@mymail.mines.edu>
 Date:   Sat Apr 10 17:17:26 2021 -0600
