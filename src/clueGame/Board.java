@@ -623,6 +623,7 @@ public class Board extends JPanel {
                             playerFlag = true;
                         }
                         GameControlPanel.setDisprovalFlag(false);
+                        ClueGame.updateCardsPanel();
 
                         for (BoardCell target : targets) {
                             target.setTarget(false);
